@@ -101,3 +101,74 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Implement 'Edit Assumptions' modal to allow users to customize default constants used in ROI calculations and recalculate results with updated values"
+
+backend:
+  - task: "Add backend API endpoint for updating ROI assumptions"
+    implemented: false
+    working: "NA"  
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Task identified. Need to add API endpoint to accept new assumptions and recalculate ROI"
+
+  - task: "Add ROI recalculation with custom constants"
+    implemented: false
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Need to modify calculate_enhanced_roi_with_tasks function to accept custom constants"
+
+frontend:
+  - task: "Create EditAssumptionsModal component"
+    implemented: true
+    working: false
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Modal component exists but not yet integrated with backend API. Need to add state management and API calls"
+
+  - task: "Integrate EditAssumptionsModal with AuditResults page"
+    implemented: false
+    working: "NA"
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Need to add button and state management to show modal in AuditResults component"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Add backend API endpoint for updating ROI assumptions"
+    - "Add ROI recalculation with custom constants"
+    - "Integrate EditAssumptionsModal with AuditResults page"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+      message: "Starting implementation of Edit Assumptions modal. Identified existing modal component but needs backend integration and proper integration with audit results page. Current ROI calculation system uses constants in calculate_enhanced_roi_with_tasks function."
