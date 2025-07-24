@@ -539,14 +539,22 @@ def analyze_custom_fields(sf_client, org_context, department_salaries=None):
         if unused_field_count > 0:
             active_users = org_context.get('active_users', 10)
             
-            # Use new ROI calculation if department salaries provided
+            # Create org data for enhanced calculation
+            org_data = {
+                'opportunity_count': org_context.get('opportunity_count', 0),
+                'account_count': org_context.get('account_count', 0),
+                'active_users': active_users
+            }
+            
+            # Use enhanced ROI calculation if department salaries provided
             if department_salaries:
                 finding_data = {
                     'category': 'Time Savings',
                     'title': f'{unused_field_count} Potentially Unused Custom Fields',
-                    'field_count': unused_field_count
+                    'field_count': unused_field_count,
+                    'type': 'custom_fields'
                 }
-                roi_calc = calculate_roi_with_department_salaries(finding_data, department_salaries, active_users)
+                roi_calc = calculate_enhanced_roi_with_tasks(finding_data, department_salaries, active_users, org_data)
                 
                 findings.append({
                     "id": str(uuid.uuid4()),
@@ -561,6 +569,11 @@ def analyze_custom_fields(sf_client, org_context, department_salaries=None):
                     "annual_user_savings": roi_calc['annual_user_savings'],
                     "net_annual_roi": roi_calc['net_annual_roi'],
                     "roi_estimate": roi_calc['net_annual_roi'],  # For backward compatibility
+                    "confidence": roi_calc['confidence'],
+                    "task_breakdown": roi_calc['task_breakdown'],
+                    "role_attribution": roi_calc['role_attribution'],
+                    "one_time_costs": roi_calc['one_time_costs'],
+                    "recurring_savings": roi_calc['recurring_savings'],
                     "recommendation": "Review field usage reports and consider removing or consolidating unused custom fields. Start with fields that have no default values and are not required.",
                     "affected_objects": key_objects,
                     "salesforce_data": {
@@ -569,8 +582,8 @@ def analyze_custom_fields(sf_client, org_context, department_salaries=None):
                         "analysis_criteria": "Fields with no formula, default value, or required flag",
                         "objects_analyzed": len(key_objects),
                         "users_affected": active_users,
-                        "calculation_method": f"One-time: {unused_field_count} fields × 15min × $40/hr = ${roi_calc['cleanup_cost']}. Monthly: {active_users} users × 2min/field × {unused_field_count} fields = {roi_calc['monthly_savings_hours']}h × ${roi_calc['avg_hourly_rate']}/hr = ${roi_calc['monthly_user_savings']}/month",
-                        "roi_breakdown": roi_calc['calculation_details']
+                        "calculation_method": f"Enhanced task-based calculation with {roi_calc['confidence']} confidence",
+                        "roi_breakdown": roi_calc.get('calculation_details', {})
                     }
                 })
             else:
@@ -588,6 +601,7 @@ def analyze_custom_fields(sf_client, org_context, department_salaries=None):
                     "description": f"Found {unused_field_count} custom fields across key objects that may not be actively used. These fields clutter page layouts and confuse users. Analysis based on {total_fields_analyzed} total custom fields across {len(key_objects)} objects.",
                     "impact": "Medium" if unused_field_count > 10 else "Low",
                     "time_savings_hours": round(total_time_savings, 1),
+                    "confidence": "Medium",
                     "recommendation": "Review field usage reports and consider removing or consolidating unused custom fields. Start with fields that have no default values and are not required.",
                     "affected_objects": key_objects,
                     "salesforce_data": {
