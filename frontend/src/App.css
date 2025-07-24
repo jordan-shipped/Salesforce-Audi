@@ -426,11 +426,8 @@ body {
     text-align: center;
   }
   
-  .connection-strip .status {
-    margin-bottom: var(--space-sm);
-  }
-  
-  .sessions-summary {
+  .sessions-list {
+    min-height: calc(100vh - 120px);
     padding: var(--space-md);
   }
   
@@ -438,14 +435,9 @@ body {
     grid-template-columns: 1fr;
   }
   
-  .sessions-list.empty {
-    padding: var(--space-md);
-    min-height: 250px;
-  }
-  
-  .empty-card {
+  .empty-card.premium {
     max-width: 100%;
-    padding: var(--space-md);
+    padding: var(--space-lg) var(--space-md);
   }
   
   .session-card {
