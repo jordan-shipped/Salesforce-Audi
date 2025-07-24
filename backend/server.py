@@ -66,6 +66,8 @@ class AuditRequest(BaseModel):
     session_id: str
     department_salaries: Optional[DepartmentSalaries] = None
     use_quick_estimate: bool = True
+
+class AuditSession(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     org_name: str
     org_id: str
