@@ -234,28 +234,38 @@ def analyze_validation_rules(sf_client):
     
     return findings
 
-def analyze_data_quality(sf_client):
+def analyze_data_quality(sf_client, org_context):
     """Analyze data quality issues"""
     findings = []
     
     try:
+        active_users = org_context.get('active_users', 10)
+        complexity_multiplier = org_context.get('complexity_multiplier', 1.0)
+        
         # Check for orphaned opportunities (no account)
         orphaned_opps = sf_client.query("SELECT COUNT() FROM Opportunity WHERE AccountId = null")
         orphaned_count = orphaned_opps['totalSize']
         
         if orphaned_count > 0:
+            # More realistic time calculation: 10 minutes per record + management overhead
+            base_cleanup_time = orphaned_count * 0.17  # 10 minutes per record
+            management_overhead = (orphaned_count / 20) * 0.5  # 30 min per 20 records for coordination
+            total_time = (base_cleanup_time + management_overhead) * complexity_multiplier
+            
             findings.append({
                 "id": str(uuid.uuid4()),
                 "category": "Revenue Leaks",
                 "title": f"{orphaned_count} Orphaned Opportunity Records",
-                "description": f"Found {orphaned_count} opportunities without proper account associations, making pipeline reporting inaccurate.",
-                "impact": "High",
-                "time_savings_hours": orphaned_count * 0.1,  # 6 minutes per record to fix
-                "recommendation": "Implement data quality rules and assign team to clean up orphaned records.",
+                "description": f"Found {orphaned_count} opportunities without proper account associations, making pipeline reporting inaccurate. This affects {active_users} users who rely on accurate pipeline data.",
+                "impact": "High" if orphaned_count > 50 else "Medium",
+                "time_savings_hours": round(total_time, 1),
+                "recommendation": "Implement data quality rules and assign team to clean up orphaned records. Set up validation rules to prevent future occurrences.",
                 "affected_objects": ["Opportunity", "Account"],
                 "salesforce_data": {
                     "orphaned_opportunities": orphaned_count,
-                    "query_used": "SELECT COUNT() FROM Opportunity WHERE AccountId = null"
+                    "query_used": "SELECT COUNT() FROM Opportunity WHERE AccountId = null",
+                    "users_affected": active_users,
+                    "calculation_method": f"Cleanup time (10 min/record) + management overhead, scaled by complexity ({complexity_multiplier:.1f}x)"
                 }
             })
         
@@ -264,18 +274,25 @@ def analyze_data_quality(sf_client):
         stale_count = stale_leads['totalSize']
         
         if stale_count > 0:
+            # Scale time based on actual volume and team size
+            base_review_time = min(stale_count * 0.05, 20)  # 3 min per lead, max 20 hours
+            process_improvement_time = 2  # Time to set up automation
+            total_time = (base_review_time + process_improvement_time) * complexity_multiplier
+            
             findings.append({
                 "id": str(uuid.uuid4()),
                 "category": "Revenue Leaks",
                 "title": f"{stale_count} Stale Lead Records",
-                "description": f"{stale_count} leads haven't had activity in 180+ days, representing potential lost revenue.",
-                "impact": "Medium",
-                "time_savings_hours": stale_count * 0.05,  # 3 minutes per lead
-                "recommendation": "Implement lead scoring and automated nurture campaigns. Archive truly cold leads.",
+                "description": f"{stale_count} leads haven't had activity in 180+ days, representing potential lost revenue. With {active_users} users, this indicates process gaps in lead management.",
+                "impact": "High" if stale_count > 500 else "Medium",
+                "time_savings_hours": round(total_time, 1),
+                "recommendation": "Implement lead scoring and automated nurture campaigns. Archive truly cold leads and improve lead assignment processes.",
                 "affected_objects": ["Lead", "Campaign"],
                 "salesforce_data": {
                     "stale_leads": stale_count,
-                    "query_used": "SELECT COUNT() FROM Lead WHERE LastActivityDate < LAST_N_DAYS:180"
+                    "query_used": "SELECT COUNT() FROM Lead WHERE LastActivityDate < LAST_N_DAYS:180",
+                    "users_affected": active_users,
+                    "calculation_method": f"Review time (3 min/lead, max 20h) + process setup (2h), scaled by complexity ({complexity_multiplier:.1f}x)"
                 }
             })
     
