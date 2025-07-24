@@ -203,7 +203,7 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   const handleSalaryChange = (department, value) => {
     setDepartmentSalaries(prev => ({
       ...prev,
-      [department]: value ? parseInt(value) : null
+      [department]: value && value.trim() !== '' ? parseInt(value) : null
     }));
   };
 
