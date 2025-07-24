@@ -207,32 +207,6 @@ def analyze_custom_fields(sf_client, org_context):
     
     return findings
 
-def analyze_validation_rules(sf_client):
-    """Analyze validation rules for duplicates or issues"""
-    findings = []
-    
-    try:
-        # This would require Metadata API access in full implementation
-        # For now, simulate based on typical findings
-        findings.append({
-            "id": str(uuid.uuid4()),
-            "category": "Time Savings",
-            "title": "Validation Rule Analysis Needed",
-            "description": "Recommend reviewing validation rules for potential consolidation and optimization.",
-            "impact": "Low",
-            "time_savings_hours": 2.0,
-            "recommendation": "Use Salesforce Setup Audit Trail and Metadata API to analyze validation rule patterns.",
-            "affected_objects": ["Account", "Opportunity", "Contact"],
-            "salesforce_data": {
-                "analysis_type": "validation_rules",
-                "requires_metadata_api": True
-            }
-        })
-    
-    except Exception as e:
-        logger.error(f"Error analyzing validation rules: {e}")
-    
-    return findings
 
 def analyze_data_quality(sf_client, org_context):
     """Analyze data quality issues"""
