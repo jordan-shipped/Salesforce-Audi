@@ -220,18 +220,18 @@ async def mock_oauth_connect(request: OAuthRequest):
 async def run_audit():
     """Run audit analysis with mock data"""
     try:
-        # Generate mock findings
-        findings = generate_mock_audit_data()
-        summary = calculate_audit_summary(findings)
+        # Generate mock findings (returns plain dicts)
+        findings_data = generate_mock_audit_data()
+        summary = calculate_audit_summary(findings_data)
         
-        # Create audit session with explicit datetime string
+        # Create audit session with plain dict
         session_id = str(uuid.uuid4())
         session_data = {
             "id": session_id,
             "org_name": "Demo Salesforce Org",
             "created_at": datetime.utcnow().isoformat(),
             "status": "completed",
-            "findings_count": len(findings),
+            "findings_count": len(findings_data),
             "estimated_savings": {
                 "monthly_hours": summary["total_time_savings_hours"],
                 "annual_dollars": summary["total_annual_roi"]
@@ -241,25 +241,13 @@ async def run_audit():
         # Store session in database
         await db.audit_sessions.insert_one(session_data)
         
-        # Store findings with explicit conversion
-        findings_data = []
-        for finding in findings:
-            finding_data = {
-                "id": finding["id"],
-                "session_id": session_id,
-                "category": finding["category"],
-                "title": finding["title"],
-                "description": finding["description"],
-                "impact": finding["impact"],
-                "time_savings_hours": finding["time_savings_hours"],
-                "roi_estimate": finding["roi_estimate"],
-                "recommendation": finding["recommendation"],
-                "affected_objects": finding["affected_objects"]
-            }
-            findings_data.append(finding_data)
+        # Store findings
+        for finding in findings_data:
+            finding["session_id"] = session_id
         
         await db.audit_findings.insert_many(findings_data)
         
+        # Return plain dict response (no Pydantic models)
         return {
             "session_id": session_id,
             "summary": summary,
@@ -267,7 +255,7 @@ async def run_audit():
         }
     except Exception as e:
         logger.error(f"Error in run_audit: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Audit failed: {str(e)}")
+        return {"error": f"Audit failed: {str(e)}"}
 
 @api_router.get("/audit/sessions")
 async def get_audit_sessions():
