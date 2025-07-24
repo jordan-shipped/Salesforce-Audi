@@ -123,7 +123,10 @@ def calculate_roi_with_department_salaries(finding_data, department_salaries, ac
         if salary and salary > 0:
             dept_hourly_rates[dept] = salary / HOURS_PER_YEAR
         else:
-            dept_hourly_rates[dept] = DEFAULT_SALARIES.get(dept, 50000) / HOURS_PER_YEAR
+            # Use default if salary is None, 0, or empty
+            default_salary = DEFAULT_SALARIES.get(dept, 50000)
+            dept_hourly_rates[dept] = default_salary / HOURS_PER_YEAR
+            print(f"Using default salary for {dept}: ${default_salary:,} (${dept_hourly_rates[dept]:.2f}/hr)")
     
     # Calculate weighted average hourly rate across all users
     # Assume even distribution across departments for now
