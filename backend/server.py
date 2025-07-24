@@ -811,13 +811,34 @@ async def run_audit(audit_request: AuditRequest):
         # Convert department salaries to dict if provided
         dept_salaries_dict = None
         if department_salaries and not use_quick_estimate:
-            dept_salaries_dict = {
-                'customer_service': department_salaries.customer_service,
-                'sales': department_salaries.sales,
-                'marketing': department_salaries.marketing,
-                'engineering': department_salaries.engineering,
-                'executives': department_salaries.executives
-            }
+            # Only use department salaries if at least one value is provided
+            has_custom_values = any([
+                department_salaries.customer_service,
+                department_salaries.sales,
+                department_salaries.marketing,
+                department_salaries.engineering,
+                department_salaries.executives
+            ])
+            
+            if has_custom_values:
+                dept_salaries_dict = {
+                    'customer_service': department_salaries.customer_service,
+                    'sales': department_salaries.sales,
+                    'marketing': department_salaries.marketing,
+                    'engineering': department_salaries.engineering,
+                    'executives': department_salaries.executives
+                }
+                logger.info("Using custom department salaries for audit")
+            else:
+                logger.info("No custom salaries provided, falling back to defaults")
+                # Still use custom calculation but with all defaults
+                dept_salaries_dict = {
+                    'customer_service': None,
+                    'sales': None,
+                    'marketing': None,
+                    'engineering': None,
+                    'executives': None
+                }
         
         findings_data, org_name, org_id = await loop.run_in_executor(
             executor, run_salesforce_audit_with_salaries, access_token, instance_url, dept_salaries_dict
