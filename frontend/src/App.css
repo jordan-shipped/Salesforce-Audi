@@ -466,128 +466,198 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Ultra-Clean Dashboard - Apple-Inspired */
+/* Ultra-Clean Dashboard - Apple-Inspired Premium */
 .dashboard {
   min-height: 100vh;
   background: var(--bg-page);
 }
 
-/* 1️⃣ Connection Status Strip - Fixed Layout */
+/* 1️⃣ Connection Status Strip - Generous Spacing */
 .connection-strip {
   display: flex;
-  justify-content: space-between; /* status left, button right */
+  justify-content: space-between;
   align-items: center;
   background: var(--bg-alt);
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-lg) var(--space-xl); /* Much more generous padding */
   border-bottom: 1px solid var(--divider);
 }
 
 .connection-strip .status {
-  color: #FF9F0A; /* warning orange */
+  color: #FF9F0A;
   font-size: var(--fs-body);
   font-weight: 500;
 }
 
-/* 2️⃣ Sessions Area */
+/* 2️⃣ Sessions Area - Natural Breathing Room */
 .sessions-list {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 80px); /* fill below strip */
-  padding: var(--space-lg);
+  min-height: 60vh; /* More natural, less aggressive than 100vh */
+  padding: var(--space-xl); /* Much more generous padding */
   background: var(--bg-page);
 }
 
-/* When sessions exist: Grid layout */
+/* When sessions exist: Grid layout with better spacing */
 .sessions-list.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg); /* Increased gap */
   align-items: start;
   min-height: auto;
-  max-width: 1200px;
+  max-width: 1400px; /* Slightly wider max width */
   margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
 }
 
-/* Premium Empty-State Card */
+/* Premium Empty-State Card - Apple-Style */
 .empty-card.premium {
   text-align: center;
   background: var(--bg-alt);
-  border-radius: var(--radius-card);
-  padding: var(--space-xl) var(--space-lg);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  max-width: 380px;
-  border: 1px solid var(--divider);
+  border-radius: 20px; /* Much more generous radius like landing page */
+  padding: var(--space-xl) var(--space-lg); /* Increased internal padding */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04); /* Softer, more Apple-style shadow */
+  max-width: 480px; /* Wider card for better proportions */
+  min-height: 320px; /* Better aspect ratio */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.06); /* Subtler border */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.empty-card.premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.06);
 }
 
 .empty-icon {
-  font-size: 48px;
-  margin-bottom: var(--space-md);
-  opacity: 0.8;
+  font-size: 64px; /* Larger, more prominent icon */
+  margin-bottom: var(--space-lg); /* More space below icon */
+  opacity: 0.9;
+  line-height: 1;
 }
 
 .empty-title {
-  font-size: 24px;
+  font-size: 28px; /* Larger, more prominent title */
   font-weight: 600;
-  margin: var(--space-sm) 0;
+  margin: 0 0 var(--space-md) 0; /* Better spacing */
+  line-height: 1.2;
 }
 
 .empty-sub {
-  font-size: var(--fs-body);
+  font-size: 18px; /* Larger, more readable text */
   color: var(--text-secondary);
-  margin-bottom: var(--space-lg);
-  line-height: 1.4;
+  margin: 0 0 var(--space-xl) 0; /* Much more space before button */
+  line-height: 1.5;
+  max-width: 400px;
 }
 
-/* Session Cards */
+.empty-card.premium .btn-primary {
+  margin-top: var(--space-md);
+  padding: var(--space-md) var(--space-xl); /* Larger, more prominent button */
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px; /* Rounded button to match card */
+}
+
+/* Session Cards - Enhanced Premium Style */
 .session-card {
   background: var(--bg-page);
-  border-radius: var(--radius-card);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: var(--space-md);
+  border-radius: 16px; /* More generous radius */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); /* Softer shadow */
+  padding: var(--space-lg); /* More generous padding */
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-  border: 1px solid var(--divider);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  min-height: 80px; /* Better proportions */
 }
 
 .session-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .session-card:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.5);
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.3);
 }
 
 .session-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px; /* Slightly more space between elements */
   flex: 1;
 }
 
 .session-org {
-  font-size: var(--fs-body);
+  font-size: 18px; /* Slightly larger for better hierarchy */
   font-weight: 600;
   margin: 0;
+  line-height: 1.3;
 }
 
 .session-meta {
-  font-size: var(--fs-small);
+  font-size: 15px; /* Slightly larger for readability */
   color: var(--text-secondary);
   margin: 0;
+  line-height: 1.4;
 }
 
 .session-date {
-  font-size: var(--fs-small);
+  font-size: 14px;
   color: var(--text-secondary);
   white-space: nowrap;
   margin: 0;
-  margin-left: var(--space-md);
+  margin-left: var(--space-lg); /* More generous spacing */
+  font-weight: 500;
+}
+
+/* Enhanced Button Styles */
+.btn-primary {
+  background: var(--gradient-tech);
+  color: #ffffff;
+  border: none;
+  padding: 0.875rem 1.75rem; /* More generous button padding */
+  border-radius: 10px; /* More rounded */
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 102, 255, 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1.5px solid var(--divider);
+  padding: 0.875rem 1.75rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-outline:hover {
+  border-color: var(--text-secondary);
+  background: var(--bg-alt);
+  transform: translateY(-1px);
 }
 
 /* Visually Hidden for Screen Readers */
@@ -603,18 +673,20 @@ body {
   border: 0;
 }
 
-/* Loading States */
+/* Enhanced Loading States */
 .loading-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-md);
+  gap: var(--space-lg);
+  min-height: 200px;
 }
 
 .loading-state p {
   color: var(--text-secondary);
   margin: 0;
+  font-size: 16px;
 }
 
 .slide-in-up {
