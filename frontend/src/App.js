@@ -6,98 +6,70 @@ import './App.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Landing Page Component with Apple-style Premium Design
+// Landing Page Component - Simply Scale Design
 const LandingPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
-      {/* Premium Navigation */}
-      <nav className="premium-nav">
-        <div className="premium-nav-content">
-          <div className="premium-nav-brand">SalesAudit Pro</div>
-          <div className="premium-nav-actions">
-            <Link to="/about" className="text-small" style={{ color: 'var(--color-text-secondary)' }}>About</Link>
-            <Link to="/contact" className="text-small" style={{ color: 'var(--color-text-secondary)' }}>Contact</Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <div className="premium-container">
-        <div className="text-center" style={{ paddingTop: 'var(--spacing-2xl)', paddingBottom: 'var(--spacing-2xl)' }}>
-          <h1 
-            className="slide-in-up"
-            style={{ 
-              fontSize: '48px', 
-              fontWeight: 700, 
-              color: 'var(--color-text-primary)',
-              marginBottom: 'var(--spacing-lg)',
-              lineHeight: 1.1
-            }}
-          >
-            Optimize Your Salesforce
-            <br />
-            <span style={{ color: 'var(--color-accent-blue)' }}>Like Never Before</span>
-          </h1>
-          
-          <p 
-            className="text-body slide-in-up"
-            style={{ 
-              color: 'var(--color-text-secondary)', 
-              marginBottom: 'var(--spacing-2xl)',
-              maxWidth: '600px',
-              margin: '0 auto var(--spacing-2xl) auto',
-              fontSize: '18px',
-              lineHeight: 1.6
-            }}
-          >
-            Discover hidden inefficiencies, automate manual processes, and unlock substantial cost savings 
-            with our AI-powered Salesforce audit tool.
-          </p>
-
-          <button
+    <div className="App">
+      {/* Header - Simply Scale Style */}
+      <header className="header">
+        <Link to="/" className="logo">SalesAudit Pro</Link>
+        <nav>
+          <Link to="/about">About</Link>
+          <Link to="/contact">Services</Link>
+          <Link to="/contact">Success Stories</Link>
+          <button 
+            className="btn-primary"
             onClick={() => navigate('/dashboard')}
-            className="btn-primary slide-in-up"
-            style={{ 
-              fontSize: 'var(--font-size-body)',
-              padding: 'var(--spacing-md) var(--spacing-xl)',
-              borderRadius: '12px'
-            }}
+          >
+            Let's Talk
+          </button>
+        </nav>
+      </header>
+
+      {/* Hero Section - Simply Scale Style */}
+      <section className="hero">
+        <div className="container">
+          <h1 className="slide-in-up">
+            Optimize Your Salesforce<br/>
+            <span className="accent">Like Never Before</span>
+          </h1>
+          <p className="subhead slide-in-up">
+            Discover hidden inefficiencies, automate manual processes, and unlock 
+            substantial cost savings with our AI-powered Salesforce audit tool.
+          </p>
+          <button 
+            className="btn-primary size-lg slide-in-up"
+            onClick={() => navigate('/dashboard')}
           >
             🚀 Start Free Audit
           </button>
         </div>
+      </section>
 
-        {/* Features Section */}
-        <div className="premium-section">
-          <div className="summary-cards-container">
-            <div className="summary-card slide-in-up">
-              <span className="summary-card-icon">🔍</span>
-              <h3 className="text-section-heading" style={{ marginBottom: 'var(--spacing-xs)' }}>Deep Analysis</h3>
-              <p className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
-                Comprehensive audit of custom fields, data quality, and automation opportunities
-              </p>
-            </div>
-
-            <div className="summary-card slide-in-up">
-              <span className="summary-card-icon">💰</span>
-              <h3 className="text-section-heading" style={{ marginBottom: 'var(--spacing-xs)' }}>ROI Insights</h3>
-              <p className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
-                Transparent cost-benefit analysis with customizable assumptions and detailed breakdowns
-              </p>
-            </div>
-
-            <div className="summary-card slide-in-up">
-              <span className="summary-card-icon">📊</span>
-              <h3 className="text-section-heading" style={{ marginBottom: 'var(--spacing-xs)' }}>Actionable Reports</h3>
-              <p className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
-                Professional PDF reports with prioritized recommendations and implementation guidance
-              </p>
-            </div>
+      {/* Features Section - Simply Scale Style */}
+      <section className="features">
+        <div className="container">
+          <div className="feature-card slide-in-up">
+            <span className="icon">🔍</span>
+            <h3>Deep Analysis</h3>
+            <p>Comprehensive audit of custom fields, data quality, and automation opportunities</p>
+          </div>
+          
+          <div className="feature-card slide-in-up">
+            <span className="icon">💰</span>
+            <h3>ROI Insights</h3>
+            <p>Transparent cost-benefit analysis with customizable assumptions and detailed breakdowns</p>
+          </div>
+          
+          <div className="feature-card slide-in-up">
+            <span className="icon">📊</span>
+            <h3>Actionable Reports</h3>
+            <p>Professional PDF reports with prioritized recommendations and implementation guidance</p>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
