@@ -499,13 +499,13 @@ body {
   background: var(--bg-page);
 }
 
-/* 1️⃣ Connection Status Strip - Generous Spacing */
+/* 1️⃣ Connection Status Strip - Slim and Consistent */
 .connection-strip {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: var(--bg-alt);
-  padding: var(--space-lg) var(--space-xl); /* Much more generous padding */
+  padding: 16px 24px; /* 1rem top/bottom, 1.5rem sides */
   border-bottom: 1px solid var(--divider);
 }
 
@@ -515,77 +515,91 @@ body {
   font-weight: 500;
 }
 
-/* 2️⃣ Sessions Area - Natural Breathing Room */
+/* 2️⃣ Sessions Area - Consistent Padding */
 .sessions-list {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 60vh; /* More natural, less aggressive than 100vh */
-  padding: var(--space-xl); /* Much more generous padding */
+  padding: 32px; /* 2rem all around */
+  min-height: calc(100vh - 56px); /* subtract strip height (~56px) */
+  box-sizing: border-box;
   background: var(--bg-page);
 }
 
-/* When sessions exist: Grid layout with better spacing */
+/* When sessions exist: Grid layout */
 .sessions-list.grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--space-lg); /* Increased gap */
+  gap: var(--space-lg);
   align-items: start;
   min-height: auto;
-  max-width: 1400px; /* Slightly wider max width */
+  max-width: 1400px;
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-lg);
+  padding: 32px;
 }
 
-/* Premium Empty-State Card - Apple-Style */
+/* Premium Empty-State Card - Tightened Apple Float */
 .empty-card.premium {
+  max-width: 360px; /* cap width so it's not too wide */
+  width: 100%; /* but shrink on mobile */
+  margin: 0 auto; /* center horizontally */
+  padding: 32px 24px; /* 2rem top/bottom, 1.5rem sides */
   text-align: center;
   background: var(--bg-alt);
-  border-radius: 20px; /* Much more generous radius like landing page */
-  padding: var(--space-xl) var(--space-lg); /* Increased internal padding */
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04); /* Softer, more Apple-style shadow */
-  max-width: 480px; /* Wider card for better proportions */
-  min-height: 320px; /* Better aspect ratio */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.06); /* Subtler border */
+  border-radius: var(--radius-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .empty-card.premium:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
 .empty-icon {
-  font-size: 64px; /* Larger, more prominent icon */
-  margin-bottom: var(--space-lg); /* More space below icon */
+  font-size: 40px; /* slightly smaller than 48px */
+  margin-bottom: 24px; /* 1.5rem */
   opacity: 0.9;
   line-height: 1;
 }
 
 .empty-title {
-  font-size: 28px; /* Larger, more prominent title */
+  font-size: 20px; /* 1.25rem */
   font-weight: 600;
-  margin: 0 0 var(--space-md) 0; /* Better spacing */
+  margin: 0 0 12px 0; /* 0.75rem bottom */
   line-height: 1.2;
 }
 
 .empty-sub {
-  font-size: 18px; /* Larger, more readable text */
+  font-size: 14px; /* 0.875rem */
   color: var(--text-secondary);
-  margin: 0 0 var(--space-xl) 0; /* Much more space before button */
+  margin: 0 0 24px 0; /* match icon/title spacing */
   line-height: 1.5;
-  max-width: 400px;
 }
 
-.empty-card.premium .btn-primary {
-  margin-top: var(--space-md);
-  padding: var(--space-md) var(--space-xl); /* Larger, more prominent button */
-  font-size: 16px;
+/* Button Fix - Prevent Full-Width Stretch */
+.empty-card .btn-primary,
+.connection-strip .btn-primary {
+  width: auto; /* auto sizing */
+  display: inline-block;
+  padding: 12px 24px; /* 0.75rem top/bottom, 1.5rem sides */
+  font-size: 14px; /* 0.875rem */
+  border-radius: 8px;
+  margin: 0; /* remove unwanted margins */
+  background: var(--gradient-tech);
+  color: #ffffff;
+  border: none;
   font-weight: 600;
-  border-radius: 12px; /* Rounded button to match card */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+/* Add a little hover/explore lift */
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
 }
 
 /* Session Cards - Enhanced Premium Style */
