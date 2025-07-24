@@ -277,7 +277,7 @@ def get_org_context(sf_client):
         }
 
 # Salesforce Analysis Functions
-def analyze_custom_fields(sf_client, org_context):
+def analyze_custom_fields(sf_client, org_context, department_salaries=None):
     """Analyze custom fields for unused ones"""
     findings = []
     
@@ -320,35 +320,68 @@ def analyze_custom_fields(sf_client, org_context):
                     continue
         
         if unused_field_count > 0:
-            # More realistic time calculation based on org context
             active_users = org_context.get('active_users', 10)
-            complexity_multiplier = org_context.get('complexity_multiplier', 1.0)
             
-            # Base time: 30 minutes per field for admin + 5 minutes per user for layout confusion
-            base_time_per_field = 0.5  # Admin cleanup time
-            user_confusion_time = (active_users * 5) / 60  # 5 min per user per month
-            total_time_per_field = base_time_per_field + (user_confusion_time / unused_field_count)
-            
-            total_time_savings = unused_field_count * total_time_per_field * complexity_multiplier
-            
-            findings.append({
-                "id": str(uuid.uuid4()),
-                "category": "Time Savings",
-                "title": f"{unused_field_count} Potentially Unused Custom Fields",
-                "description": f"Found {unused_field_count} custom fields across key objects that may not be actively used. These fields clutter page layouts and confuse users. Analysis based on {total_fields_analyzed} total custom fields across {len(key_objects)} objects.",
-                "impact": "Medium" if unused_field_count > 10 else "Low",
-                "time_savings_hours": round(total_time_savings, 1),
-                "recommendation": "Review field usage reports and consider removing or consolidating unused custom fields. Start with fields that have no default values and are not required.",
-                "affected_objects": key_objects,
-                "salesforce_data": {
-                    "total_custom_fields": custom_field_count,
-                    "potentially_unused": unused_field_count,
-                    "analysis_criteria": "Fields with no formula, default value, or required flag",
-                    "objects_analyzed": len(key_objects),
-                    "users_affected": active_users,
-                    "calculation_method": f"Admin cleanup ({base_time_per_field}h per field) + user confusion time scaled by {active_users} users"
+            # Use new ROI calculation if department salaries provided
+            if department_salaries:
+                finding_data = {
+                    'category': 'Time Savings',
+                    'title': f'{unused_field_count} Potentially Unused Custom Fields',
+                    'field_count': unused_field_count
                 }
-            })
+                roi_calc = calculate_roi_with_department_salaries(finding_data, department_salaries, active_users)
+                
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Time Savings",
+                    "title": f"{unused_field_count} Potentially Unused Custom Fields",
+                    "description": f"Found {unused_field_count} custom fields across key objects that may not be actively used. These fields clutter page layouts and confuse users. Analysis based on {total_fields_analyzed} total custom fields across {len(key_objects)} objects.",
+                    "impact": "Medium" if unused_field_count > 10 else "Low",
+                    "time_savings_hours": roi_calc['monthly_savings_hours'],
+                    "cleanup_cost": roi_calc['cleanup_cost'],
+                    "cleanup_hours": roi_calc['cleanup_hours'],
+                    "monthly_user_savings": roi_calc['monthly_user_savings'],
+                    "annual_user_savings": roi_calc['annual_user_savings'],
+                    "net_annual_roi": roi_calc['net_annual_roi'],
+                    "roi_estimate": roi_calc['net_annual_roi'],  # For backward compatibility
+                    "recommendation": "Review field usage reports and consider removing or consolidating unused custom fields. Start with fields that have no default values and are not required.",
+                    "affected_objects": key_objects,
+                    "salesforce_data": {
+                        "total_custom_fields": custom_field_count,
+                        "potentially_unused": unused_field_count,
+                        "analysis_criteria": "Fields with no formula, default value, or required flag",
+                        "objects_analyzed": len(key_objects),
+                        "users_affected": active_users,
+                        "calculation_method": f"One-time: {unused_field_count} fields × 15min × $40/hr = ${roi_calc['cleanup_cost']}. Monthly: {active_users} users × 2min/field × {unused_field_count} fields = {roi_calc['monthly_savings_hours']}h × ${roi_calc['avg_hourly_rate']}/hr = ${roi_calc['monthly_user_savings']}/month",
+                        "roi_breakdown": roi_calc['calculation_details']
+                    }
+                })
+            else:
+                # Fallback to old calculation method
+                complexity_multiplier = org_context.get('complexity_multiplier', 1.0)
+                base_time_per_field = 0.5
+                user_confusion_time = (active_users * 5) / 60
+                total_time_per_field = base_time_per_field + (user_confusion_time / unused_field_count)
+                total_time_savings = unused_field_count * total_time_per_field * complexity_multiplier
+                
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Time Savings",
+                    "title": f"{unused_field_count} Potentially Unused Custom Fields",
+                    "description": f"Found {unused_field_count} custom fields across key objects that may not be actively used. These fields clutter page layouts and confuse users. Analysis based on {total_fields_analyzed} total custom fields across {len(key_objects)} objects.",
+                    "impact": "Medium" if unused_field_count > 10 else "Low",
+                    "time_savings_hours": round(total_time_savings, 1),
+                    "recommendation": "Review field usage reports and consider removing or consolidating unused custom fields. Start with fields that have no default values and are not required.",
+                    "affected_objects": key_objects,
+                    "salesforce_data": {
+                        "total_custom_fields": custom_field_count,
+                        "potentially_unused": unused_field_count,
+                        "analysis_criteria": "Fields with no formula, default value, or required flag",
+                        "objects_analyzed": len(key_objects),
+                        "users_affected": active_users,
+                        "calculation_method": f"Admin cleanup ({base_time_per_field}h per field) + user confusion time scaled by {active_users} users"
+                    }
+                })
     
     except Exception as e:
         logger.error(f"Error analyzing custom fields: {e}")
