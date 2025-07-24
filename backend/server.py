@@ -161,11 +161,18 @@ def generate_mock_audit_data():
     
     for finding_data in findings_data:
         roi = finding_data["time_savings_hours"] * hourly_rate * 12  # Annual savings
-        finding = AuditFinding(
-            **finding_data,
-            roi_estimate=roi
-        )
-        findings.append(finding)
+        finding_dict = {
+            "id": str(uuid.uuid4()),
+            "category": finding_data["category"],
+            "title": finding_data["title"],
+            "description": finding_data["description"],
+            "impact": finding_data["impact"],
+            "time_savings_hours": finding_data["time_savings_hours"],
+            "roi_estimate": roi,
+            "recommendation": finding_data["recommendation"],
+            "affected_objects": finding_data["affected_objects"]
+        }
+        findings.append(finding_dict)
     
     return findings
 
