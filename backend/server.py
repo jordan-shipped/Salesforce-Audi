@@ -263,6 +263,10 @@ async def get_audit_details(session_id: str):
     # Get findings
     findings = await db.audit_findings.find({"session_id": session_id}).to_list(100)
     
+    # Convert ObjectIds to strings
+    session = convert_objectid(session)
+    findings = [convert_objectid(finding) for finding in findings]
+    
     # Calculate summary
     findings_objects = [AuditFinding(**f) for f in findings]
     summary = calculate_audit_summary(findings_objects)
