@@ -337,7 +337,7 @@ const Dashboard = () => {
             {sessions.length === 0 ? (
               <div className="empty-card premium">
                 <div className="empty-icon">📊</div>
-                <h3 className="empty-title gradient-text">No Audit Sessions Yet</h3>
+                <h3 className="empty-title">No Audit Sessions Yet</h3>
                 <p className="empty-sub">
                   Connect your Salesforce org to run your first audit and unlock insights.
                 </p>
