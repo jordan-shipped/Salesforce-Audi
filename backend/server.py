@@ -82,6 +82,52 @@ class SalesforceOAuthState(BaseModel):
     state: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+def get_org_context(sf_client):
+    """Get org context for realistic ROI calculations"""
+    try:
+        # Get user count for scaling calculations
+        active_users = sf_client.query("SELECT COUNT() FROM User WHERE IsActive = true")['totalSize']
+        
+        # Get record volumes for complexity assessment
+        account_count = sf_client.query("SELECT COUNT() FROM Account")['totalSize']
+        opportunity_count = sf_client.query("SELECT COUNT() FROM Opportunity")['totalSize']
+        
+        # Get org info for context
+        org_info = sf_client.query("SELECT Id, Name, OrganizationType FROM Organization LIMIT 1")
+        org_name = org_info['records'][0]['Name'] if org_info['records'] else "Unknown Org"
+        org_type = org_info['records'][0].get('OrganizationType', 'Unknown')
+        
+        # Estimate hourly rate based on org type and size
+        if org_type == 'Developer Edition':
+            hourly_rate = 65  # Lower for dev orgs
+        elif active_users < 10:
+            hourly_rate = 70  # Small business
+        elif active_users < 50:
+            hourly_rate = 85  # Mid-market
+        else:
+            hourly_rate = 95  # Enterprise
+        
+        return {
+            'active_users': active_users,
+            'account_count': account_count,
+            'opportunity_count': opportunity_count,
+            'org_name': org_name,
+            'org_type': org_type,
+            'estimated_hourly_rate': hourly_rate,
+            'complexity_multiplier': min(2.0, 1.0 + (active_users / 50))  # Scale with team size
+        }
+    except Exception as e:
+        logger.error(f"Error getting org context: {e}")
+        return {
+            'active_users': 10,
+            'account_count': 100,
+            'opportunity_count': 50,
+            'org_name': 'Unknown Org',
+            'org_type': 'Unknown',
+            'estimated_hourly_rate': 75,
+            'complexity_multiplier': 1.0
+        }
+
 # Salesforce Analysis Functions
 def analyze_custom_fields(sf_client):
     """Analyze custom fields for unused ones"""
