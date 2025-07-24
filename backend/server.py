@@ -248,7 +248,9 @@ async def run_audit():
 async def get_audit_sessions():
     """Get all audit sessions"""
     sessions = await db.audit_sessions.find().sort("created_at", -1).to_list(50)
-    return [AuditSession(**session) for session in sessions]
+    # Convert ObjectIds to strings
+    converted_sessions = [convert_objectid(session) for session in sessions]
+    return [AuditSession(**session) for session in converted_sessions]
 
 @api_router.get("/audit/{session_id}")
 async def get_audit_details(session_id: str):
