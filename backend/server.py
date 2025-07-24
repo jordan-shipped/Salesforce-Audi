@@ -129,7 +129,7 @@ def get_org_context(sf_client):
         }
 
 # Salesforce Analysis Functions
-def analyze_custom_fields(sf_client):
+def analyze_custom_fields(sf_client, org_context):
     """Analyze custom fields for unused ones"""
     findings = []
     
