@@ -6,29 +6,13 @@ import './App.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Landing Page Component - Simply Scale Design
+// Landing Page Component - Ultra-Clean, Header-less Design
 const LandingPage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="App">
-      {/* Header - Simply Scale Style */}
-      <header className="header">
-        <Link to="/" className="logo">SalesAudit Pro</Link>
-        <nav>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Services</Link>
-          <Link to="/contact">Success Stories</Link>
-          <button 
-            className="btn-primary"
-            onClick={() => navigate('/dashboard')}
-          >
-            Let's Talk
-          </button>
-        </nav>
-      </header>
-
-      {/* Hero Section - Simply Scale Style */}
+      {/* Hero Section - No Header, Immediate Impact */}
       <section className="hero">
         <div className="container">
           <h1 className="slide-in-up">
@@ -43,7 +27,7 @@ const LandingPage = () => {
             className="btn-primary size-lg slide-in-up"
             onClick={() => navigate('/dashboard')}
           >
-            🚀 Start Free Audit
+            Start Free Audit
           </button>
         </div>
       </section>
