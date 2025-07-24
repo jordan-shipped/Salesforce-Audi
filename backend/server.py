@@ -863,12 +863,16 @@ def run_salesforce_audit_with_salaries(access_token, instance_url, department_sa
         custom_fields_findings = analyze_custom_fields(sf, org_context, department_salaries)
         data_quality_findings = analyze_data_quality(sf, org_context)
         automation_findings = analyze_automation_opportunities(sf, org_context)
+        system_config_findings = analyze_system_configuration(sf, org_context)
+        data_governance_findings = analyze_data_governance(sf, org_context)
         
-        logger.info(f"Analysis results: Custom Fields={len(custom_fields_findings)}, Data Quality={len(data_quality_findings)}, Automation={len(automation_findings)}")
+        logger.info(f"Analysis results: Custom Fields={len(custom_fields_findings)}, Data Quality={len(data_quality_findings)}, Automation={len(automation_findings)}, System Config={len(system_config_findings)}, Data Governance={len(data_governance_findings)}")
         
         findings.extend(custom_fields_findings)
         findings.extend(data_quality_findings)
         findings.extend(automation_findings)
+        findings.extend(system_config_findings)
+        findings.extend(data_governance_findings)
         
         # Calculate ROI for each finding
         for finding in findings:
