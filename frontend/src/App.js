@@ -219,278 +219,154 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
 };
 
 // Dashboard Component
+// Ultra-Clean Dashboard Component - Apple-Inspired
 const Dashboard = () => {
+  const [sessionId, setSessionId] = useState(localStorage.getItem('salesforce_session_id'));
   const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
-  const [sessionId, setSessionId] = useState(null);
   const [showOrgProfile, setShowOrgProfile] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     loadSessions();
-    
-    // Check for session ID in localStorage (from OAuth callback)
-    const storedSessionId = localStorage.getItem('salesforce_session_id');
-    if (storedSessionId) {
-      setSessionId(storedSessionId);
-      console.log('Found stored session ID:', storedSessionId);
-    }
-    
-    // Also check URL parameters as fallback
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlSession = urlParams.get('session');
-    if (urlSession) {
-      setSessionId(urlSession);
-      localStorage.setItem('salesforce_session_id', urlSession);
-      // Clean up URL
-      window.history.replaceState({}, document.title, '/dashboard');
-    }
   }, []);
 
   const loadSessions = async () => {
     try {
-      const response = await axios.get(`${API}/audit/sessions`);
+      const response = await axios.get(`${API}/audit-sessions`);
       setSessions(response.data);
     } catch (error) {
       console.error('Failed to load sessions:', error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleConnect = () => {
+    window.location.href = `${API}/oauth/authorize`;
+  };
+
+  const handleDisconnect = () => {
+    localStorage.removeItem('salesforce_session_id');
+    setSessionId(null);
   };
 
   const handleRunAudit = () => {
     if (!sessionId) {
-      alert('Please connect to Salesforce first by going to the home page and clicking "Connect with Salesforce"');
-      navigate('/');
+      handleConnect();
       return;
     }
     setShowOrgProfile(true);
   };
 
-  const runAuditWithProfile = async (auditRequest) => {
+  const runAuditWithProfile = async (departmentSalaries) => {
     setRunning(true);
     setShowOrgProfile(false);
     
     try {
-      console.log('Running audit with profile:', auditRequest);
-      console.log('API URL:', `${API}/audit/run`);
-      
-      const response = await axios.post(`${API}/audit/run`, auditRequest, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      const response = await axios.post(`${API}/run-audit`, {
+        session_id: sessionId,
+        department_salaries: departmentSalaries,
+        use_quick_estimate: false
       });
-      
-      console.log('Audit response:', response.data);
       
       if (response.data.session_id) {
         navigate(`/audit/${response.data.session_id}`);
-      } else if (response.data.error) {
-        alert(`Audit failed: ${response.data.error}`);
-        // If session expired, clear it
-        if (response.data.error.includes('Invalid or expired session')) {
-          localStorage.removeItem('salesforce_session_id');
-          setSessionId(null);
-        }
       }
     } catch (error) {
-      console.error('Audit failed with error:', error);
-      console.error('Error response:', error.response?.data);
-      console.error('Error status:', error.response?.status);
-      
-      if (error.response && error.response.status === 401) {
-        alert('Session expired. Please connect to Salesforce again.');
-        localStorage.removeItem('salesforce_session_id');
-        setSessionId(null);
-        navigate('/');
-      } else if (error.response && error.response.data) {
-        alert(`Audit failed: ${JSON.stringify(error.response.data)}`);
-      } else {
-        alert(`Audit failed: ${error.message}. Please check console for details.`);
-      }
+      console.error('Audit failed:', error);
+      alert('Audit failed. Please try again.');
     } finally {
       setRunning(false);
     }
   };
 
-  const disconnectSalesforce = () => {
-    localStorage.removeItem('salesforce_session_id');
-    setSessionId(null);
-    alert('Disconnected from Salesforce. Click "Connect with Salesforce" to reconnect.');
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const formatCurrency = (amount) => {
+    if (!amount) return '$0';
+    return `$${Math.round(amount).toLocaleString()}`;
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
-      {/* Simply Scale Header */}
-      <header className="header">
-        <Link to="/" className="logo">SalesAudit Pro</Link>
-        <nav>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-lg)' }}>
-            <div style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--fs-body)' }}>
-              {sessionId ? (
-                <>
-                  <span style={{ color: 'var(--color-accent)' }}>✅ Connected</span>
-                  <button
-                    onClick={disconnectSalesforce}
-                    style={{ 
-                      marginLeft: 'var(--space-sm)', 
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--color-text-secondary)',
-                      fontSize: 'var(--fs-small)',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Disconnect
-                  </button>
-                </>
-              ) : (
-                <span style={{ color: '#FF9500' }}>⚠️ Not connected</span>
-              )}
-            </div>
-          </div>
-        </nav>
-      </header>
-
-      <div className="premium-container">
-        {/* Header */}
-        <div style={{ paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-lg)' }}>
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 style={{ 
-                fontSize: 'var(--fs-hero-lg)', 
-                fontWeight: 'var(--fw-bold)', 
-                color: 'var(--color-text-primary)',
-                marginBottom: 'var(--space-xs)'
-              }}>
-                Salesforce Audit Dashboard
-              </h1>
-              <p style={{ 
-                fontSize: 'var(--fs-body)', 
-                color: 'var(--color-text-secondary)' 
-              }}>
-                Run comprehensive audits and view historical results
-              </p>
-            </div>
-            <button
-              onClick={handleRunAudit}
-              disabled={running || !sessionId}
-              className={sessionId ? 'btn-primary' : 'btn-secondary'}
-              style={{ 
-                opacity: (running || !sessionId) ? 0.5 : 1,
-                cursor: (running || !sessionId) ? 'not-allowed' : 'pointer'
-              }}
-            >
-              {running ? (
-                <>
-                  <svg className="loading-spinner-premium" style={{ width: '16px', height: '16px' }}></svg>
-                  Running Enhanced Audit...
-                </>
-              ) : sessionId ? (
-                <>
-                  🔍 Run New Audit
-                </>
-              ) : (
-                <>
-                  🔒 Connect to Salesforce First
-                </>
-              )}
+    <main className="dashboard">
+      {/* 1️⃣ Connection Status Strip */}
+      <section className="connection-strip">
+        {sessionId ? (
+          <>
+            <div className="status connected">✅ Connected to Salesforce</div>
+            <button onClick={handleDisconnect} className="btn-outline">
+              Disconnect
             </button>
-          </div>
-        </div>
+            <button 
+              onClick={handleRunAudit} 
+              disabled={running}
+              className="btn-primary"
+            >
+              {running ? 'Running Audit...' : 'Run New Audit'}
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="status">⚠️ Not connected</div>
+            <button onClick={handleConnect} className="btn-primary">
+              Connect to Salesforce
+            </button>
+          </>
+        )}
+      </section>
 
-        {/* Recent Audits */}
-        <div style={{ paddingBottom: 'var(--space-xl)' }}>
-          <div className="bg-premium border-premium rounded-premium" style={{ overflow: 'hidden', boxShadow: '0 2px 8px var(--color-card-shadow)' }}>
-            <div style={{ 
-              padding: 'var(--space-lg)', 
-              borderBottom: '1px solid var(--color-border)',
-              background: 'var(--color-bg-alt)'
-            }}>
-              <h3 style={{ 
-                fontSize: 'var(--fs-h2)', 
-                fontWeight: 'var(--fw-semibold)', 
-                color: 'var(--color-text-primary)',
-                marginBottom: 'var(--space-xs)'
-              }}>
-                Recent Audit Sessions
-              </h3>
-              <p style={{ 
-                fontSize: 'var(--fs-body)', 
-                color: 'var(--color-text-secondary)',
-                margin: 0
-              }}>
-                Click on any session to view detailed results
-              </p>
-            </div>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {sessions.length === 0 ? (
-                <li style={{ padding: 'var(--space-lg)' }}>
-                  <p style={{ 
-                    fontSize: 'var(--fs-body)', 
-                    color: 'var(--color-text-secondary)',
-                    margin: 0
-                  }}>
-                    No audit sessions yet. Run your first audit to get started!
-                  </p>
-                </li>
-              ) : (
-                sessions.map((session) => (
-                  <li 
-                    key={session.id} 
-                    style={{ 
-                      padding: 'var(--space-lg)', 
-                      borderBottom: '1px solid var(--color-border)',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s ease'
-                    }}
-                    onClick={() => navigate(`/audit/${session.id}`)}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-alt)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div style={{ 
-                          width: '40px',
-                          height: '40px',
-                          borderRadius: '50%',
-                          background: 'var(--color-bg-alt)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginRight: 'var(--space-md)'
-                        }}>
-                          <span style={{ fontSize: '16px' }}>📊</span>
-                        </div>
-                        <div>
-                          <div style={{ 
-                            fontSize: 'var(--fs-body)', 
-                            fontWeight: 'var(--fw-medium)', 
-                            color: 'var(--color-text-primary)',
-                            marginBottom: '2px'
-                          }}>
-                            {session.org_name}
-                          </div>
-                          <div style={{ 
-                            fontSize: 'var(--fs-small)', 
-                            color: 'var(--color-text-secondary)'
-                          }}>
-                            {session.findings_count} findings • Potential savings: ${session.estimated_savings.annual_dollars?.toLocaleString()}/year
-                          </div>
-                        </div>
-                      </div>
-                      <div style={{ 
-                        fontSize: 'var(--fs-small)', 
-                        color: 'var(--color-text-secondary)'
-                      }}>
-                        {new Date(session.created_at).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </li>
-                ))
-              )}
-            </ul>
+      {/* 2️⃣ Sessions Summary */}
+      <section className="sessions-summary" aria-labelledby="sessions-heading">
+        <h2 id="sessions-heading">Your Audit Sessions</h2>
+        {loading ? (
+          <div className="loading-state">
+            <div className="loading-spinner-premium"></div>
+            <p>Loading your audit sessions...</p>
           </div>
-        </div>
-      </div>
+        ) : (
+          <div className="session-list" role="list">
+            {sessions.length === 0 ? (
+              <div className="empty-state">
+                <p>No audit sessions yet. Connect to Salesforce and run your first audit to get started!</p>
+              </div>
+            ) : (
+              sessions.map((session) => (
+                <div 
+                  key={session.id}
+                  className="session-card"
+                  role="listitem"
+                  tabIndex="0"
+                  onClick={() => navigate(`/audit/${session.id}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      navigate(`/audit/${session.id}`);
+                    }
+                  }}
+                >
+                  <div className="session-info">
+                    <p className="session-org gradient-text">{session.org_name}</p>
+                    <p className="session-meta">
+                      {session.findings_count} findings • <span className="gradient-text">
+                        {formatCurrency(session.estimated_savings?.annual_dollars)}/yr
+                      </span>
+                    </p>
+                  </div>
+                  <p className="session-date">{formatDate(session.created_at)}</p>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </section>
 
       {/* Org Profile Modal */}
       <OrgProfileModal 
@@ -499,7 +375,7 @@ const Dashboard = () => {
         onSubmit={runAuditWithProfile}
         sessionId={sessionId}
       />
-    </div>
+    </main>
   );
 };
 
