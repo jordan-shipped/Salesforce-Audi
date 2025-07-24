@@ -324,6 +324,39 @@ body {
   .findings-list {
     padding: 1rem;
   }
+  
+  /* Hero Mobile Styles */
+  .hero {
+    padding: 3rem 0;
+    min-height: 100vh;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero p.subhead {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .hero .btn-primary.size-lg {
+    margin-top: 1rem;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  /* Features Mobile */
+  .features .container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .feature-card {
+    width: 100%;
+    max-width: 320px;
+  }
 }
 
 /* Loading States */
