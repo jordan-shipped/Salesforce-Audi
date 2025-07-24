@@ -119,14 +119,21 @@ def calculate_roi_with_department_salaries(finding_data, department_salaries, ac
     
     # Convert department salaries to hourly rates
     dept_hourly_rates = {}
-    for dept, salary in department_salaries.items():
+    
+    # Ensure all departments are covered, even if not provided
+    all_departments = ['customer_service', 'sales', 'marketing', 'engineering', 'executives']
+    
+    for dept in all_departments:
+        salary = department_salaries.get(dept) if department_salaries else None
+        
         if salary and salary > 0:
             dept_hourly_rates[dept] = salary / HOURS_PER_YEAR
+            logger.info(f"Using custom salary for {dept}: ${salary:,} (${dept_hourly_rates[dept]:.2f}/hr)")
         else:
-            # Use default if salary is None, 0, or empty
+            # Use default if salary is None, 0, empty, or department not provided
             default_salary = DEFAULT_SALARIES.get(dept, 50000)
             dept_hourly_rates[dept] = default_salary / HOURS_PER_YEAR
-            print(f"Using default salary for {dept}: ${default_salary:,} (${dept_hourly_rates[dept]:.2f}/hr)")
+            logger.info(f"Using default salary for {dept}: ${default_salary:,} (${dept_hourly_rates[dept]:.2f}/hr)")
     
     # Calculate weighted average hourly rate across all users
     # Assume even distribution across departments for now
