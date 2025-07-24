@@ -199,11 +199,19 @@ const Dashboard = () => {
   useEffect(() => {
     loadSessions();
     
-    // Check for OAuth session from URL
+    // Check for session ID in localStorage (from OAuth callback)
+    const storedSessionId = localStorage.getItem('salesforce_session_id');
+    if (storedSessionId) {
+      setSessionId(storedSessionId);
+      console.log('Found stored session ID:', storedSessionId);
+    }
+    
+    // Also check URL parameters as fallback
     const urlParams = new URLSearchParams(window.location.search);
-    const session = urlParams.get('session');
-    if (session) {
-      setSessionId(session);
+    const urlSession = urlParams.get('session');
+    if (urlSession) {
+      setSessionId(urlSession);
+      localStorage.setItem('salesforce_session_id', urlSession);
       // Clean up URL
       window.history.replaceState({}, document.title, '/dashboard');
     }
@@ -220,25 +228,44 @@ const Dashboard = () => {
 
   const runAudit = async () => {
     if (!sessionId) {
-      alert('Please connect to Salesforce first');
+      alert('Please connect to Salesforce first by going to the home page and clicking "Connect with Salesforce"');
       navigate('/');
       return;
     }
     
     setRunning(true);
     try {
+      console.log('Running audit with session ID:', sessionId);
       const response = await axios.post(`${API}/audit/run?session_id=${sessionId}`);
       if (response.data.session_id) {
         navigate(`/audit/${response.data.session_id}`);
       } else if (response.data.error) {
         alert(`Audit failed: ${response.data.error}`);
+        // If session expired, clear it
+        if (response.data.error.includes('Invalid or expired session')) {
+          localStorage.removeItem('salesforce_session_id');
+          setSessionId(null);
+        }
       }
     } catch (error) {
       console.error('Audit failed:', error);
-      alert('Audit failed. Please try connecting to Salesforce again.');
+      if (error.response && error.response.status === 401) {
+        alert('Session expired. Please connect to Salesforce again.');
+        localStorage.removeItem('salesforce_session_id');
+        setSessionId(null);
+        navigate('/');
+      } else {
+        alert('Audit failed. Please try again.');
+      }
     } finally {
       setRunning(false);
     }
+  };
+
+  const disconnectSalesforce = () => {
+    localStorage.removeItem('salesforce_session_id');
+    setSessionId(null);
+    alert('Disconnected from Salesforce. Click "Connect with Salesforce" to reconnect.');
   };
 
   return (
