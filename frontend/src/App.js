@@ -741,35 +741,29 @@ const EditAssumptionsModal = ({ isOpen, onClose, onUpdate, assumptions }) => {
   );
 };
 
-// Enhanced Finding Card Component with Progressive Disclosure
+// Enhanced Finding Card Component with Apple-style Premium Design
 const EnhancedFindingCard = ({ finding, index }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const getImpactColor = (impact) => {
     switch (impact) {
-      case 'High': return 'bg-red-100 text-red-800';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800';
-      case 'Low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'High': return 'var(--color-red-negative)';
+      case 'Medium': return '#FF9500'; // Apple Orange
+      case 'Low': return 'var(--color-green-positive)';
+      default: return 'var(--color-text-secondary)';
     }
   };
 
   const getConfidenceBadge = (confidence) => {
-    const badgeClasses = {
-      'High': 'bg-green-100 text-green-800',
-      'Medium': 'bg-yellow-100 text-yellow-800', 
-      'Low': 'bg-red-100 text-red-800'
-    };
-    
-    const badgeIcons = {
+    const icons = {
       'High': '🟢',
       'Medium': '🟡',
       'Low': '🔴'
     };
 
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeClasses[confidence] || badgeClasses['Medium']}`}>
-        {badgeIcons[confidence] || badgeIcons['Medium']} {confidence || 'Medium'} Confidence
+      <span className="confidence-badge">
+        {icons[confidence] || icons['Medium']} {confidence || 'Medium'} Confidence
       </span>
     );
   };
@@ -785,54 +779,84 @@ const EnhancedFindingCard = ({ finding, index }) => {
   };
 
   return (
-    <div className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} px-4 py-5 sm:px-6`}>
+    <div 
+      className="slide-in-up"
+      style={{ 
+        padding: 'var(--spacing-lg)',
+        borderBottom: '1px solid var(--color-border-light)',
+        backgroundColor: index % 2 === 0 ? 'var(--color-bg-primary)' : 'var(--color-bg-secondary)'
+      }}
+    >
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-lg font-medium text-gray-900">{finding.title}</h4>
-            <div className="flex space-x-2">
+            <h4 className="text-section-heading" style={{ marginBottom: 0 }}>{finding.title}</h4>
+            <div className="flex items-center gap-2">
               {getConfidenceBadge(finding.confidence)}
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getImpactColor(finding.impact)}`}>
+              <span 
+                className="confidence-badge"
+                style={{ 
+                  borderColor: getImpactColor(finding.impact),
+                  color: getImpactColor(finding.impact)
+                }}
+              >
                 {finding.impact} Impact
               </span>
             </div>
           </div>
 
-          <p className="text-sm text-gray-600 mb-3">{finding.description}</p>
+          <p className="text-body" style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-md)' }}>
+            {finding.description}
+          </p>
 
-          {/* Summary ROI Display */}
-          <div className="bg-white border rounded-lg p-4 mb-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Premium ROI Summary */}
+          <div 
+            className="rounded-premium border-premium" 
+            style={{ 
+              padding: 'var(--spacing-md)', 
+              marginBottom: 'var(--spacing-md)',
+              backgroundColor: 'var(--color-bg-primary)'
+            }}
+          >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               {finding.cleanup_cost && (
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-red-600">{formatCurrency(finding.cleanup_cost)}</div>
-                  <div className="text-xs text-gray-500">One-time Cost</div>
+                <div>
+                  <div className="text-card-number" style={{ color: 'var(--color-red-negative)' }}>
+                    {formatCurrency(finding.cleanup_cost)}
+                  </div>
+                  <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>One-time Cost</div>
                 </div>
               )}
               {finding.monthly_user_savings && (
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-green-600">{formatCurrency(finding.monthly_user_savings)}</div>
-                  <div className="text-xs text-gray-500">Monthly Savings</div>
+                <div>
+                  <div className="text-card-number text-positive">
+                    {formatCurrency(finding.monthly_user_savings)}
+                  </div>
+                  <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>Monthly Savings</div>
                 </div>
               )}
               {finding.annual_user_savings && (
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-blue-600">{formatCurrency(finding.annual_user_savings)}</div>
-                  <div className="text-xs text-gray-500">Annual Savings</div>
+                <div>
+                  <div className="text-card-number text-accent">
+                    {formatCurrency(finding.annual_user_savings)}
+                  </div>
+                  <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>Annual Savings</div>
                 </div>
               )}
               {finding.net_annual_roi && (
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-purple-600">{formatCurrency(finding.net_annual_roi)}</div>
-                  <div className="text-xs text-gray-500">Net Annual ROI</div>
+                <div>
+                  <div className="text-card-number" style={{ color: '#5856D6' }}>
+                    {formatCurrency(finding.net_annual_roi)}
+                  </div>
+                  <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>Net Annual ROI</div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Progressive Disclosure Button */}
+          {/* Quick Stats and Toggle */}
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
+            <div className="flex items-center gap-4 text-small" style={{ color: 'var(--color-text-secondary)' }}>
               {finding.time_savings_hours && (
                 <span>⏱️ {formatHours(finding.time_savings_hours)}/month</span>
               )}
@@ -840,7 +864,8 @@ const EnhancedFindingCard = ({ finding, index }) => {
             </div>
             <button
               onClick={() => setShowDetails(!showDetails)}
-              className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50"
+              className="btn-secondary"
+              style={{ fontSize: 'var(--font-size-small)' }}
             >
               {showDetails ? '👆 Hide Details' : '👇 See Details'}
             </button>
@@ -848,31 +873,53 @@ const EnhancedFindingCard = ({ finding, index }) => {
 
           {/* Detailed Breakdown - Progressive Disclosure */}
           {showDetails && (
-            <div className="mt-4 space-y-4 border-t pt-4">
+            <div 
+              className="slide-in-up"
+              style={{ 
+                marginTop: 'var(--spacing-md)', 
+                paddingTop: 'var(--spacing-md)',
+                borderTop: '1px solid var(--color-border-light)'
+              }}
+            >
               
               {/* Task Breakdown */}
               {finding.task_breakdown && finding.task_breakdown.length > 0 && (
-                <div>
-                  <h5 className="font-medium text-gray-900 mb-2">📋 Task Breakdown</h5>
+                <div style={{ marginBottom: 'var(--spacing-md)' }}>
+                  <h5 className="text-section-heading">📋 Task Breakdown</h5>
                   <div className="space-y-2">
                     {finding.task_breakdown.map((task, idx) => (
-                      <div key={idx} className="bg-gray-50 rounded p-3">
+                      <div 
+                        key={idx} 
+                        className="rounded-premium border-premium"
+                        style={{ 
+                          padding: 'var(--spacing-md)',
+                          backgroundColor: 'var(--color-bg-secondary)'
+                        }}
+                      >
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
-                            <div className="font-medium text-sm">{task.task}</div>
-                            <div className="text-xs text-gray-600">{task.description}</div>
-                            <div className="text-xs text-blue-600 mt-1">👤 {task.role}</div>
+                            <div className="text-small" style={{ fontWeight: 500 }}>{task.task}</div>
+                            <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>{task.description}</div>
+                            <div className="text-small text-accent" style={{ marginTop: 'var(--spacing-xs)' }}>👤 {task.role}</div>
                           </div>
                           <div className="text-right ml-4">
                             {task.type === 'one_time' ? (
                               <div>
-                                <div className="font-medium text-sm text-red-600">{formatCurrency(task.cost)}</div>
-                                <div className="text-xs text-gray-500">{formatHours(task.hours)} one-time</div>
+                                <div className="text-small" style={{ fontWeight: 500, color: 'var(--color-red-negative)' }}>
+                                  {formatCurrency(task.cost)}
+                                </div>
+                                <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
+                                  {formatHours(task.hours)} one-time
+                                </div>
                               </div>
                             ) : (
                               <div>
-                                <div className="font-medium text-sm text-green-600">{formatCurrency(task.cost_per_month)}</div>
-                                <div className="text-xs text-gray-500">{formatHours(task.hours_per_month)}/month</div>
+                                <div className="text-small text-positive" style={{ fontWeight: 500 }}>
+                                  {formatCurrency(task.cost_per_month)}
+                                </div>
+                                <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
+                                  {formatHours(task.hours_per_month)}/month
+                                </div>
                               </div>
                             )}
                           </div>
@@ -885,19 +932,29 @@ const EnhancedFindingCard = ({ finding, index }) => {
 
               {/* Role Attribution */}
               {finding.role_attribution && Object.keys(finding.role_attribution).length > 0 && (
-                <div>
-                  <h5 className="font-medium text-gray-900 mb-2">👥 Role Attribution</h5>
+                <div style={{ marginBottom: 'var(--spacing-md)' }}>
+                  <h5 className="text-section-heading">👥 Role Attribution</h5>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {Object.entries(finding.role_attribution).map(([role, attribution]) => (
-                      <div key={role} className="bg-blue-50 rounded p-3">
-                        <div className="font-medium text-sm text-blue-900">{role}</div>
+                      <div 
+                        key={role} 
+                        className="rounded-premium"
+                        style={{ 
+                          padding: 'var(--spacing-md)',
+                          backgroundColor: 'rgba(10, 132, 255, 0.05)',
+                          border: '1px solid rgba(10, 132, 255, 0.1)'
+                        }}
+                      >
+                        <div className="text-small text-accent" style={{ fontWeight: 500, marginBottom: 'var(--spacing-xs)' }}>
+                          {role}
+                        </div>
                         {attribution.one_time_cost > 0 && (
-                          <div className="text-xs text-gray-600">
+                          <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
                             One-time: {formatHours(attribution.one_time_hours)} ({formatCurrency(attribution.one_time_cost)})
                           </div>
                         )}
                         {attribution.monthly_savings > 0 && (
-                          <div className="text-xs text-gray-600">
+                          <div className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
                             Monthly: {formatHours(attribution.monthly_hours)} ({formatCurrency(attribution.monthly_savings)})
                           </div>
                         )}
@@ -909,20 +966,39 @@ const EnhancedFindingCard = ({ finding, index }) => {
 
               {/* Calculation Method */}
               {finding.salesforce_data?.calculation_method && (
-                <div>
-                  <h5 className="font-medium text-gray-900 mb-2">🧮 Calculation Method</h5>
-                  <div className="bg-yellow-50 rounded p-3">
-                    <div className="text-sm text-yellow-800">{finding.salesforce_data.calculation_method}</div>
+                <div style={{ marginBottom: 'var(--spacing-md)' }}>
+                  <h5 className="text-section-heading">🧮 Calculation Method</h5>
+                  <div 
+                    className="rounded-premium"
+                    style={{ 
+                      padding: 'var(--spacing-md)',
+                      backgroundColor: 'rgba(255, 149, 0, 0.05)',
+                      border: '1px solid rgba(255, 149, 0, 0.1)'
+                    }}
+                  >
+                    <div className="text-small" style={{ color: '#D2691E' }}>
+                      {finding.salesforce_data.calculation_method}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           )}
 
-          {/* Recommendation */}
-          <div className="mt-3 p-3 bg-blue-50 rounded-md">
-            <h5 className="text-sm font-medium text-blue-900">💡 Recommendation:</h5>
-            <p className="mt-1 text-sm text-blue-800">{finding.recommendation}</p>
+          {/* Premium Recommendation */}
+          <div 
+            className="rounded-premium"
+            style={{ 
+              marginTop: 'var(--spacing-md)',
+              padding: 'var(--spacing-md)',
+              backgroundColor: 'rgba(10, 132, 255, 0.05)',
+              border: '1px solid rgba(10, 132, 255, 0.1)'
+            }}
+          >
+            <h5 className="text-small text-accent" style={{ fontWeight: 500, marginBottom: 'var(--spacing-xs)' }}>
+              💡 Recommendation:
+            </h5>
+            <p className="text-small text-accent">{finding.recommendation}</p>
           </div>
         </div>
       </div>
