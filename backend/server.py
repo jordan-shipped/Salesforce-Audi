@@ -375,23 +375,32 @@ def run_salesforce_audit(access_token, instance_url):
         # Initialize Salesforce client
         sf = Salesforce(instance_url=instance_url, session_id=access_token)
         
-        # Get org info
-        org_info = sf.query("SELECT Id, Name, OrganizationType FROM Organization LIMIT 1")
-        org_name = org_info['records'][0]['Name'] if org_info['records'] else "Unknown Org"
-        org_id = org_info['records'][0]['Id'] if org_info['records'] else "Unknown"
+        # Get org context for realistic calculations
+        org_context = get_org_context(sf)
+        org_name = org_context['org_name']
+        hourly_rate = org_context['estimated_hourly_rate']
         
-        logger.info(f"Starting audit for org: {org_name}")
+        # Get org ID from context
+        org_id = sf.query("SELECT Id FROM Organization LIMIT 1")['records'][0]['Id']
         
-        # Run analysis modules
-        findings.extend(analyze_custom_fields(sf))
-        findings.extend(analyze_validation_rules(sf))
-        findings.extend(analyze_data_quality(sf))
-        findings.extend(analyze_automation_opportunities(sf))
+        logger.info(f"Starting audit for org: {org_name} (Type: {org_context['org_type']}, Users: {org_context['active_users']}, Rate: ${hourly_rate}/hr)")
         
-        # Calculate ROI for each finding
-        hourly_rate = 75
+        # Run analysis modules with org context
+        findings.extend(analyze_custom_fields(sf, org_context))
+        findings.extend(analyze_data_quality(sf, org_context))
+        findings.extend(analyze_automation_opportunities(sf, org_context))
+        
+        # Calculate ROI for each finding using org-specific hourly rate
         for finding in findings:
             finding["roi_estimate"] = finding["time_savings_hours"] * hourly_rate * 12  # Annual
+            # Add org context to finding
+            finding["org_context"] = {
+                "hourly_rate": hourly_rate,
+                "active_users": org_context['active_users'],
+                "org_type": org_context['org_type']
+            }
+        
+        logger.info(f"Audit completed: {len(findings)} findings, estimated ${sum(f['roi_estimate'] for f in findings):,.0f} annual value")
         
         return findings, org_name, org_id
         
