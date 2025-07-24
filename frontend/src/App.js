@@ -325,17 +325,20 @@ const Dashboard = () => {
 
       {/* 2️⃣ Sessions Summary */}
       <section className="sessions-summary" aria-labelledby="sessions-heading">
-        <h2 id="sessions-heading">Your Audit Sessions</h2>
         {loading ? (
           <div className="loading-state">
             <div className="loading-spinner-premium"></div>
             <p>Loading your audit sessions...</p>
           </div>
         ) : (
-          <div className="session-list" role="list">
+          <div className="sessions-list" role="list">
             {sessions.length === 0 ? (
-              <div className="empty-state">
-                <p>No audit sessions yet. Connect to Salesforce and run your first audit to get started!</p>
+              <div className="empty-card">
+                <p className="empty-title">No Audit Sessions Yet</p>
+                <p className="empty-sub">Connect to Salesforce and run your first audit to get started.</p>
+                <button onClick={handleConnect} className="btn-black">
+                  Connect to Salesforce
+                </button>
               </div>
             ) : (
               sessions.map((session) => (
