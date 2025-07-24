@@ -220,9 +220,13 @@ async def mock_oauth_connect(request: OAuthRequest):
 async def run_audit():
     """Run audit analysis with mock data"""
     try:
+        logger.info("Starting audit run...")
+        
         # Generate mock findings (returns plain dicts)
         findings_data = generate_mock_audit_data()
         summary = calculate_audit_summary(findings_data)
+        
+        logger.info(f"Generated {len(findings_data)} findings")
         
         # Create audit session with plain dict
         session_id = str(uuid.uuid4())
@@ -233,29 +237,50 @@ async def run_audit():
             "status": "completed",
             "findings_count": len(findings_data),
             "estimated_savings": {
-                "monthly_hours": summary["total_time_savings_hours"],
-                "annual_dollars": summary["total_annual_roi"]
+                "monthly_hours": float(summary["total_time_savings_hours"]),
+                "annual_dollars": float(summary["total_annual_roi"])
             }
         }
         
+        logger.info("Storing session in database...")
         # Store session in database
-        await db.audit_sessions.insert_one(session_data)
+        session_result = await db.audit_sessions.insert_one(session_data)
+        logger.info(f"Session stored with MongoDB ID: {session_result.inserted_id}")
         
-        # Store findings
+        # Store findings with explicit copying to avoid references
+        findings_to_store = []
         for finding in findings_data:
-            finding["session_id"] = session_id
+            finding_copy = finding.copy()
+            finding_copy["session_id"] = session_id
+            findings_to_store.append(finding_copy)
         
-        await db.audit_findings.insert_many(findings_data)
+        logger.info("Storing findings in database...")
+        findings_result = await db.audit_findings.insert_many(findings_to_store)
+        logger.info(f"Stored {len(findings_result.inserted_ids)} findings")
         
-        # Return plain dict response (no Pydantic models)
-        return {
+        # Create clean response without any MongoDB objects
+        response_data = {
             "session_id": session_id,
-            "summary": summary,
-            "findings": findings_data
+            "summary": {
+                "total_findings": int(summary["total_findings"]),
+                "total_time_savings_hours": float(summary["total_time_savings_hours"]),
+                "total_annual_roi": float(summary["total_annual_roi"]),
+                "category_breakdown": summary["category_breakdown"],
+                "high_impact_count": int(summary["high_impact_count"]),
+                "medium_impact_count": int(summary["medium_impact_count"]),
+                "low_impact_count": int(summary["low_impact_count"])
+            },
+            "findings": findings_data  # Original data without session_id
         }
+        
+        logger.info("Audit run completed successfully")
+        return response_data
+        
     except Exception as e:
         logger.error(f"Error in run_audit: {str(e)}")
-        return {"error": f"Audit failed: {str(e)}"}
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return {"error": f"Audit failed: {str(e)}", "session_id": None}
 
 @api_router.get("/audit/sessions")
 async def get_audit_sessions():
