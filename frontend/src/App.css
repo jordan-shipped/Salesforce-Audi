@@ -417,14 +417,11 @@ body {
   }
 }
 
-/* Hero Section for Landing Page - Header-less Design */
+/* Hero Section for Landing Page - Compact Above-the-Fold Design */
 .hero {
   background: var(--bg-strip);
-  padding: 80px 0 4rem 0; /* Increased top padding since no header */
+  padding: 3rem 0 2rem 0; /* Reduced padding for compact layout */
   text-align: center;
-  min-height: 100vh; /* Full viewport height for impact */
-  display: flex;
-  align-items: center;
 }
 
 .hero .container {
@@ -434,10 +431,10 @@ body {
 }
 
 .hero h1 {
-  font-size: 3rem;
+  font-size: 2.8rem; /* Slightly smaller for compact layout */
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* Reduced margin */
   line-height: 1.1;
 }
 
@@ -449,16 +446,16 @@ body {
 }
 
 .hero p.subhead {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
   max-width: 600px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.6;
+  margin: 0 auto 1.5rem; /* Reduced margin */
+  line-height: 1.5;
 }
 
 .hero .btn-primary.size-lg {
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
+  padding: 0.875rem 1.75rem; /* Slightly smaller for compact layout */
+  font-size: 1rem;
   font-weight: 600;
 }
 
