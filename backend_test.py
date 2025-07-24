@@ -141,8 +141,70 @@ class SalesforceAuditAPITester:
             "POST",
             "audit/run",
             401,
-            params={"session_id": "invalid_session"}
+            data={"session_id": "invalid_session", "use_quick_estimate": True}
         )
+
+    def test_enhanced_audit_request_structure(self):
+        """Test the new enhanced audit request structure with department salaries"""
+        print("\n🔍 Testing Enhanced Audit Request Structure...")
+        
+        # Test Quick Estimate request
+        quick_request = {
+            "session_id": "test_session_id",
+            "use_quick_estimate": True,
+            "department_salaries": None
+        }
+        
+        success1, response1 = self.run_test(
+            "Enhanced Audit Request (Quick)",
+            "POST",
+            "audit/run",
+            401,  # Should fail due to invalid session, but structure should be accepted
+            data=quick_request
+        )
+        
+        # Test Custom Estimate request with department salaries
+        custom_request = {
+            "session_id": "test_session_id",
+            "use_quick_estimate": False,
+            "department_salaries": {
+                "customer_service": 45000,
+                "sales": 65000,
+                "marketing": 60000,
+                "engineering": 95000,
+                "executives": 150000
+            }
+        }
+        
+        success2, response2 = self.run_test(
+            "Enhanced Audit Request (Custom)",
+            "POST",
+            "audit/run",
+            401,  # Should fail due to invalid session, but structure should be accepted
+            data=custom_request
+        )
+        
+        # Both should fail with session error, not structure error
+        if success1 or success2:
+            # Check if the error is about session, not structure
+            error1 = response1.get('error', '') if response1 else ''
+            error2 = response2.get('error', '') if response2 else ''
+            
+            structure_valid = (
+                'Invalid or expired session' in error1 or 
+                'Invalid or expired session' in error2 or
+                'session' in error1.lower() or 
+                'session' in error2.lower()
+            )
+            
+            if structure_valid:
+                print("✅ Enhanced audit request structure accepted (failed on session as expected)")
+                return True, {"structure_test": "passed"}
+            else:
+                print(f"❌ Unexpected error - may be structure issue: {error1} | {error2}")
+                return False, {}
+        
+        return success1 or success2, response1 or response2
 
     def test_get_audit_details_not_found(self):
         """Test getting audit details for non-existent session"""
