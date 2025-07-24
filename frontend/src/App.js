@@ -189,8 +189,140 @@ const LandingPage = () => {
   );
 };
 
-// Dashboard Component
-const Dashboard = () => {
+// Org Profile Modal Component
+const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
+  const [useQuickEstimate, setUseQuickEstimate] = useState(true);
+  const [departmentSalaries, setDepartmentSalaries] = useState({
+    customer_service: '',
+    sales: '',
+    marketing: '',
+    engineering: '',
+    executives: ''
+  });
+
+  const handleSalaryChange = (department, value) => {
+    setDepartmentSalaries(prev => ({
+      ...prev,
+      [department]: value ? parseInt(value) : null
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const auditRequest = {
+      session_id: sessionId,
+      use_quick_estimate: useQuickEstimate,
+      department_salaries: useQuickEstimate ? null : departmentSalaries
+    };
+    onSubmit(auditRequest);
+  };
+
+  const defaultSalaries = {
+    customer_service: 45000,
+    sales: 65000,
+    marketing: 60000,
+    engineering: 95000,
+    executives: 150000
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Org Profile</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <span className="text-2xl">×</span>
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          {/* Quick vs Custom Toggle */}
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  checked={useQuickEstimate}
+                  onChange={() => setUseQuickEstimate(true)}
+                  className="mr-2"
+                />
+                <span className="font-medium">Quick Estimate</span>
+                <span className="text-sm text-gray-500 ml-2">(Uses U.S. national averages)</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  checked={!useQuickEstimate}
+                  onChange={() => setUseQuickEstimate(false)}
+                  className="mr-2"
+                />
+                <span className="font-medium">Custom Estimate</span>
+                <span className="text-sm text-gray-500 ml-2">(Enter your team's salaries)</span>
+              </label>
+            </div>
+          </div>
+
+          {!useQuickEstimate && (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600 mb-4">
+                Enter average annual salaries for each department (USD). Leave blank to use national averages.
+              </p>
+              
+              {Object.entries(defaultSalaries).map(([dept, defaultValue]) => (
+                <div key={dept} className="flex items-center space-x-4">
+                  <label className="w-32 text-sm font-medium text-gray-700 capitalize">
+                    {dept.replace('_', ' ')}:
+                  </label>
+                  <div className="flex-1">
+                    <input
+                      type="number"
+                      placeholder={`$${defaultValue.toLocaleString()} (default)`}
+                      value={departmentSalaries[dept] || ''}
+                      onChange={(e) => handleSalaryChange(dept, e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    />
+                  </div>
+                  <span className="text-sm text-gray-500 w-20">
+                    ≈ ${Math.round((departmentSalaries[dept] || defaultValue) / 2080)}/hr
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Assumptions Summary */}
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h3 className="font-medium text-blue-900 mb-2">Calculation Assumptions:</h3>
+            <ul className="text-sm text-blue-800 space-y-1">
+              <li>• Admin cleanup rate: $40/hour (U.S. average Salesforce admin)</li>
+              <li>• Custom field cleanup time: 15 minutes per field</li>
+              <li>• User confusion time: 2 minutes per user per field per month</li>
+              <li>• Salaries converted to hourly rate (÷ 2,080 hours/year)</li>
+            </ul>
+          </div>
+
+          <div className="flex justify-end space-x-4 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            >
+              {useQuickEstimate ? '🚀 Quick Audit' : '📊 Custom Audit'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
   const [sessions, setSessions] = useState([]);
   const [running, setRunning] = useState(false);
   const [sessionId, setSessionId] = useState(null);
