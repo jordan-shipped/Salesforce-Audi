@@ -916,6 +916,23 @@ async def run_audit(audit_request: AuditRequest):
         logger.error(f"Error in run_audit: {str(e)}")
         return {"error": f"Audit failed: {str(e)}", "session_id": None}
 
+@api_router.get("/debug/sessions")
+async def debug_oauth_sessions():
+    """Debug endpoint to see current OAuth sessions"""
+    try:
+        sessions = await db.oauth_sessions.find().to_list(10)
+        current_time = datetime.utcnow()
+        
+        result = []
+        for session in sessions:
+            session_data = convert_objectid(session)
+            session_data['is_expired'] = session_data.get('expires_at', current_time) < current_time
+            result.append(session_data)
+        
+        return {"current_time": current_time.isoformat(), "oauth_sessions": result}
+    except Exception as e:
+        return {"error": str(e)}
+
 @api_router.get("/audit/sessions")
 async def get_audit_sessions():
     """Get all audit sessions"""
