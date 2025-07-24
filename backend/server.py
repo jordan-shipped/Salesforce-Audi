@@ -251,6 +251,201 @@ def calculate_roi_with_department_salaries(finding_data, department_salaries, ac
         'admin_hourly_rate': ADMIN_HOURLY_RATE,
         'calculation_details': {}
     }
+def calculate_enhanced_roi_with_tasks(finding_data, department_salaries, active_users, org_data):
+    """
+    Enhanced ROI calculation with task-specific breakdowns and role attribution
+    
+    Args:
+        finding_data: Dict with finding details
+        department_salaries: Dict with department annual salaries  
+        active_users: Number of active users
+        org_data: Real org data (record counts, etc.)
+    """
+    
+    # Constants
+    ADMIN_RATE = 40  # $/hr for all one-time cleanup
+    CLEANUP_TIME_PER_FIELD = 0.25  # hours per custom field cleanup
+    DAILY_WORKDAYS = 22  # average workdays/month
+    DEFAULT_CONFUSION_MIN = 2  # min/user/field/month
+    HOURS_PER_YEAR = 2080
+    
+    # Role mapping - simplified and intuitive
+    ROLE_MAPPING = {
+        'custom_field_cleanup': 'admin',
+        'opportunity_reporting': 'sales', 
+        'email_alerts': 'sales',
+        'case_assignment': 'customer_service',
+        'lead_followup': 'customer_service',
+        'data_cleanup': 'admin',
+        'system_config': 'admin'
+    }
+    
+    # Default task frequencies (fallbacks when org data unavailable)
+    DEFAULT_EMAIL_NOTIFY = {
+        'opportunity_update_min': 3,
+        'task_assignment_min': 1,
+        'followup_min': 0.5
+    }
+    
+    # Default reporting tasks
+    DEFAULT_REPORT_TASKS = [
+        {'role': 'sales', 'freq_per_month': 4, 'duration_min': 30, 'task': 'Pipeline reports'},
+        {'role': 'marketing', 'freq_per_month': 1, 'duration_min': 120, 'task': 'Campaign analysis'},
+        {'role': 'customer_service', 'freq_per_month': 1, 'duration_min': 60, 'task': 'Case reports'},
+        {'role': 'admin', 'freq_per_month': 1, 'duration_min': 15, 'task': 'User activity reports'}
+    ]
+    
+    # Default salaries for fallback
+    DEFAULT_SALARIES = {
+        'customer_service': 45000,
+        'sales': 65000, 
+        'marketing': 60000,
+        'engineering': 95000,
+        'executives': 150000,
+        'admin': 55000  # Added admin default
+    }
+    
+    # Get hourly rates for each department
+    def get_hourly_rate(dept):
+        salary = None
+        if department_salaries and dept in department_salaries:
+            salary = department_salaries[dept]
+        if not salary or salary <= 0:
+            salary = DEFAULT_SALARIES.get(dept, 50000)
+        return salary / HOURS_PER_YEAR
+    
+    # Determine confidence level
+    def get_confidence_level(has_custom_data=False, has_org_data=False):
+        if has_custom_data:
+            return 'High'
+        elif has_org_data:
+            return 'Medium'
+        else:
+            return 'Medium'  # Default to Medium as requested
+    
+    # Calculate based on finding type
+    finding_type = finding_data.get('type', 'unknown')
+    category = finding_data.get('category', '')
+    
+    result = {
+        'finding_type': finding_type,
+        'confidence': 'Medium',
+        'task_breakdown': [],
+        'role_attribution': {},
+        'one_time_costs': {},
+        'recurring_savings': {},
+        'total_one_time_cost': 0,
+        'total_monthly_savings': 0,
+        'total_annual_roi': 0,
+        'calculation_details': {},
+        'cleanup_cost': 0,  # For backward compatibility
+        'cleanup_hours': 0,
+        'monthly_user_savings': 0,
+        'annual_user_savings': 0,
+        'net_annual_roi': 0,
+        'avg_hourly_rate': 0,
+        'admin_hourly_rate': ADMIN_RATE,
+        'monthly_savings_hours': 0
+    }
+    
+    # Custom Fields Analysis
+    if 'custom fields' in finding_data.get('title', '').lower():
+        field_count = finding_data.get('field_count', 0)
+        
+        # One-time cleanup (Admin role)
+        cleanup_hours = field_count * CLEANUP_TIME_PER_FIELD
+        cleanup_cost = cleanup_hours * ADMIN_RATE
+        admin_rate = get_hourly_rate('admin')
+        
+        # Monthly recurring savings (All users - confusion elimination)
+        monthly_confusion_minutes = active_users * DEFAULT_CONFUSION_MIN * field_count  
+        monthly_confusion_hours = monthly_confusion_minutes / 60
+        
+        # Calculate savings per department (assume even distribution)
+        dept_rates = {dept: get_hourly_rate(dept) for dept in ['sales', 'customer_service', 'marketing']}
+        avg_hourly_rate = sum(dept_rates.values()) / len(dept_rates)
+        monthly_confusion_savings = monthly_confusion_hours * avg_hourly_rate
+        
+        # Task breakdown
+        result['task_breakdown'] = [
+            {
+                'task': 'Custom field cleanup',
+                'type': 'one_time',
+                'hours': cleanup_hours,
+                'cost': cleanup_cost,
+                'role': 'Admin',
+                'description': f'Remove {field_count} unused fields from page layouts'
+            },
+            {
+                'task': 'User confusion elimination', 
+                'type': 'recurring',
+                'hours_per_month': monthly_confusion_hours,
+                'cost_per_month': monthly_confusion_savings,
+                'role': 'All Users',
+                'description': f'{active_users} users × {DEFAULT_CONFUSION_MIN} min/field × {field_count} fields'
+            }
+        ]
+        
+        # Role attribution
+        result['role_attribution'] = {
+            'Admin': {
+                'one_time_hours': cleanup_hours,
+                'one_time_cost': cleanup_cost,
+                'monthly_hours': 0,
+                'monthly_savings': 0
+            },
+            'All Users': {
+                'one_time_hours': 0,
+                'one_time_cost': 0,
+                'monthly_hours': monthly_confusion_hours,
+                'monthly_savings': monthly_confusion_savings
+            }
+        }
+        
+        # Backward compatibility fields
+        result['cleanup_cost'] = cleanup_cost
+        result['cleanup_hours'] = cleanup_hours
+        result['monthly_user_savings'] = monthly_confusion_savings
+        result['monthly_savings_hours'] = monthly_confusion_hours
+        result['annual_user_savings'] = monthly_confusion_savings * 12
+        result['net_annual_roi'] = (monthly_confusion_savings * 12) - cleanup_cost
+        result['avg_hourly_rate'] = avg_hourly_rate
+        
+        result['one_time_costs'] = {'cleanup': cleanup_cost}
+        result['recurring_savings'] = {'confusion_elimination': monthly_confusion_savings}
+        result['total_one_time_cost'] = cleanup_cost
+        result['total_monthly_savings'] = monthly_confusion_savings
+        result['total_annual_roi'] = (monthly_confusion_savings * 12) - cleanup_cost
+        result['confidence'] = get_confidence_level(has_org_data=True)
+        
+    # Default fallback for other finding types - maintain backward compatibility
+    else:
+        # Use existing time_savings_hours if available
+        time_hours = finding_data.get('time_savings_hours', 2.0)
+        avg_hourly_rate = sum(get_hourly_rate(dept) for dept in ['sales', 'customer_service']) / 2
+        monthly_savings = time_hours * avg_hourly_rate
+        
+        result['task_breakdown'] = [{
+            'task': finding_data.get('title', 'Process improvement'),
+            'type': 'recurring',
+            'hours_per_month': time_hours,
+            'cost_per_month': monthly_savings,
+            'role': 'Various',
+            'description': 'Estimated time savings from process improvement'
+        }]
+        
+        # Backward compatibility
+        result['monthly_user_savings'] = monthly_savings
+        result['monthly_savings_hours'] = time_hours
+        result['annual_user_savings'] = monthly_savings * 12
+        result['net_annual_roi'] = monthly_savings * 12
+        result['avg_hourly_rate'] = avg_hourly_rate
+        
+        result['total_monthly_savings'] = monthly_savings
+        result['total_annual_roi'] = monthly_savings * 12
+        result['confidence'] = 'Medium'
+    
+    return result
 
 def get_org_context(sf_client):
     """Get org context for realistic ROI calculations"""
