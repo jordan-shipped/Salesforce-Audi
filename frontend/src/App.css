@@ -459,9 +459,9 @@ body {
   font-weight: 600;
 }
 
-/* Features Section */
+/* Features Section - Compact Above-the-Fold Layout */
 .features {
-  padding: 3rem 0;
+  padding: 2rem 0 3rem 0; /* Reduced padding for compact layout */
   background: var(--bg-page);
 }
 
@@ -470,7 +470,7 @@ body {
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem; /* Reduced gap */
   justify-content: center;
 }
 
@@ -478,8 +478,8 @@ body {
   background: var(--bg-page);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 2rem;
-  width: 280px;
+  padding: 1.5rem; /* Reduced padding */
+  width: 260px; /* Slightly smaller width */
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid var(--divider);
@@ -491,22 +491,22 @@ body {
 }
 
 .feature-card .icon {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 1.75rem; /* Slightly smaller icon */
+  margin-bottom: 0.75rem; /* Reduced margin */
   display: block;
 }
 
 .feature-card h3 {
-  font-size: 1.3rem;
+  font-size: 1.2rem; /* Slightly smaller heading */
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .feature-card p {
-  font-size: 1rem;
+  font-size: 0.95rem; /* Slightly smaller text */
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.4; /* Tighter line height */
   margin: 0;
 }
 
