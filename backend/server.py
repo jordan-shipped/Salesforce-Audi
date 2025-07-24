@@ -264,10 +264,23 @@ async def run_audit():
 @api_router.get("/audit/sessions")
 async def get_audit_sessions():
     """Get all audit sessions"""
-    sessions = await db.audit_sessions.find().sort("created_at", -1).to_list(50)
-    # Convert ObjectIds to strings
-    converted_sessions = [convert_objectid(session) for session in sessions]
-    return [AuditSession(**session) for session in converted_sessions]
+    try:
+        sessions = await db.audit_sessions.find().sort("created_at", -1).to_list(50)
+        # Convert ObjectIds to strings and ensure proper datetime handling
+        result = []
+        for session in sessions:
+            session_data = convert_objectid(session)
+            # Convert datetime string back if needed
+            if isinstance(session_data.get('created_at'), str):
+                try:
+                    session_data['created_at'] = datetime.fromisoformat(session_data['created_at'])
+                except:
+                    session_data['created_at'] = datetime.utcnow()
+            result.append(session_data)
+        return result
+    except Exception as e:
+        logger.error(f"Error in get_audit_sessions: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get sessions: {str(e)}")
 
 @api_router.get("/audit/{session_id}")
 async def get_audit_details(session_id: str):
