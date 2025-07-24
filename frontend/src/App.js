@@ -622,6 +622,24 @@ const OAuthCallback = () => {
     </div>
   );
 };
+
+// Simple Contact Page
+const Contact = () => (
+  <div className="min-h-screen bg-gray-50 py-12">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-white shadow rounded-lg p-6">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Contact Us</h1>
+        <p className="text-gray-600 mb-4">
+          Have questions about your Salesforce audit? We're here to help!
+        </p>
+        <p className="text-gray-600 mb-4">Email: support@salesauditpro.com</p>
+        <Link to="/" className="text-indigo-600 hover:text-indigo-500">← Back to Home</Link>
+      </div>
+    </div>
+  </div>
+);
+
+// Main App Component
 function App() {
   return (
     <div className="App">
