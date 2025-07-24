@@ -193,10 +193,20 @@ const LandingPage = () => {
 const Dashboard = () => {
   const [sessions, setSessions] = useState([]);
   const [running, setRunning] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     loadSessions();
+    
+    // Check for OAuth session from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const session = urlParams.get('session');
+    if (session) {
+      setSessionId(session);
+      // Clean up URL
+      window.history.replaceState({}, document.title, '/dashboard');
+    }
   }, []);
 
   const loadSessions = async () => {
@@ -209,12 +219,23 @@ const Dashboard = () => {
   };
 
   const runAudit = async () => {
+    if (!sessionId) {
+      alert('Please connect to Salesforce first');
+      navigate('/');
+      return;
+    }
+    
     setRunning(true);
     try {
-      const response = await axios.post(`${API}/audit/run`);
-      navigate(`/audit/${response.data.session_id}`);
+      const response = await axios.post(`${API}/audit/run?session_id=${sessionId}`);
+      if (response.data.session_id) {
+        navigate(`/audit/${response.data.session_id}`);
+      } else if (response.data.error) {
+        alert(`Audit failed: ${response.data.error}`);
+      }
     } catch (error) {
       console.error('Audit failed:', error);
+      alert('Audit failed. Please try connecting to Salesforce again.');
     } finally {
       setRunning(false);
     }
