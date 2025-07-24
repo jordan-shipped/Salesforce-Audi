@@ -935,6 +935,8 @@ const AuditResults = () => {
   const { sessionId } = useParams();
   const [auditData, setAuditData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showEditAssumptions, setShowEditAssumptions] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     loadAuditData();
@@ -948,6 +950,23 @@ const AuditResults = () => {
       console.error('Failed to load audit data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdateAssumptions = async (newAssumptions) => {
+    setUpdating(true);
+    try {
+      const response = await axios.post(`${API}/audit/${sessionId}/update-assumptions`, newAssumptions);
+      
+      // Update the local audit data with new results
+      setAuditData(response.data);
+      
+      alert('Assumptions updated successfully! Results have been recalculated.');
+    } catch (error) {
+      console.error('Failed to update assumptions:', error);
+      alert('Failed to update assumptions. Please try again.');
+    } finally {
+      setUpdating(false);
     }
   };
 
