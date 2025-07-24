@@ -225,13 +225,16 @@ async def run_audit():
         }
     )
     
-    # Store in database
-    await db.audit_sessions.insert_one(session.dict())
+    # Store in database (convert to dict and ensure string IDs)
+    session_dict = session.dict()
+    session_dict.pop('_id', None)  # Remove any _id field
+    result = await db.audit_sessions.insert_one(session_dict)
     
     # Store findings
     findings_dict = [f.dict() for f in findings]
     for finding_dict in findings_dict:
         finding_dict["session_id"] = session.id
+        finding_dict.pop('_id', None)  # Remove any _id field
     
     await db.audit_findings.insert_many(findings_dict)
     
