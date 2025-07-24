@@ -548,58 +548,121 @@ def analyze_automation_opportunities(sf_client, org_context):
         active_users = org_context.get('active_users', 10)
         complexity_multiplier = org_context.get('complexity_multiplier', 1.0)
         
+        logger.info("Starting automation analysis...")
+        
         # Check for manual case assignment (simplified)
-        case_count = sf_client.query("SELECT COUNT() FROM Case")['totalSize']
-        
-        if case_count > 10:  # If they have cases, likely need automation
-            # Scale time savings based on case volume and team size
-            weekly_case_volume = case_count / 52  # Approximate weekly cases
-            time_per_case = 0.1  # 6 minutes manual assignment time
-            weekly_time_saved = weekly_case_volume * time_per_case
-            monthly_time_saved = weekly_time_saved * 4.3 * complexity_multiplier
+        try:
+            case_count = sf_client.query("SELECT COUNT() FROM Case")['totalSize']
+            logger.info(f"Found {case_count} cases in system")
             
-            findings.append({
-                "id": str(uuid.uuid4()),
-                "category": "Automation Opportunities",
-                "title": "Case Assignment Automation Opportunity",
-                "description": f"With {case_count} cases in the system and {active_users} active users, automated case assignment rules could significantly improve response times and reduce manual effort.",
-                "impact": "High" if case_count > 100 else "Medium",
-                "time_savings_hours": round(monthly_time_saved, 1),
-                "recommendation": "Implement case assignment rules based on product, region, and expertise. Set up escalation workflows for better case management.",
-                "affected_objects": ["Case", "Queue"],
-                "salesforce_data": {
-                    "total_cases": case_count,
-                    "weekly_case_estimate": round(weekly_case_volume, 1),
-                    "users_affected": active_users,
-                    "automation_recommendation": "case_assignment_rules",
-                    "calculation_method": f"Weekly cases ({weekly_case_volume:.1f}) × 6 min manual time × 4.3 weeks × complexity ({complexity_multiplier:.1f}x)"
-                }
-            })
+            if case_count > 5:  # Lower threshold for smaller orgs
+                # Scale time savings based on case volume and team size
+                weekly_case_volume = case_count / 52  # Approximate weekly cases
+                time_per_case = 0.1  # 6 minutes manual assignment time
+                weekly_time_saved = weekly_case_volume * time_per_case
+                monthly_time_saved = weekly_time_saved * 4.3 * complexity_multiplier
+                
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Automation Opportunities",
+                    "title": "Case Assignment Automation Opportunity",
+                    "description": f"With {case_count} cases in the system and {active_users} active users, automated case assignment rules could significantly improve response times and reduce manual effort.",
+                    "impact": "High" if case_count > 100 else "Medium",
+                    "time_savings_hours": round(max(monthly_time_saved, 2.0), 1),  # Minimum 2 hours
+                    "recommendation": "Implement case assignment rules based on product, region, and expertise. Set up escalation workflows for better case management.",
+                    "affected_objects": ["Case", "Queue"],
+                    "salesforce_data": {
+                        "total_cases": case_count,
+                        "weekly_case_estimate": round(weekly_case_volume, 1),
+                        "users_affected": active_users,
+                        "automation_recommendation": "case_assignment_rules",
+                        "calculation_method": f"Weekly cases ({weekly_case_volume:.1f}) × 6 min manual time × 4.3 weeks × complexity ({complexity_multiplier:.1f}x)"
+                    }
+                })
+        except Exception as e:
+            logger.warning(f"Error checking cases: {e}")
         
-        # Check workflow rules vs Flow usage - always recommend this for orgs with data
-        if org_context.get('opportunity_count', 0) > 10:
-            # Base time for modernization effort, scaled by org complexity
-            base_modernization_time = 8  # Base hours for analysis and planning
-            implementation_time = active_users * 0.5  # 30 min per user for training
-            total_time = (base_modernization_time + implementation_time) * complexity_multiplier
+        # Check for email alerts and workflows
+        try:
+            # Always recommend this for any org with data
+            opportunities_count = org_context.get('opportunity_count', 0)
+            if opportunities_count > 0:
+                base_setup_time = 4  # Hours to set up email alerts
+                monthly_time_saved = active_users * 0.5  # 30 minutes per user per month
+                
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Automation Opportunities",
+                    "title": "Email Alert Automation Gap",
+                    "description": f"With {opportunities_count} opportunities and {active_users} users, automated email alerts for stage changes, task assignments, and follow-ups could reduce manual communication overhead.",
+                    "impact": "Medium",
+                    "time_savings_hours": round(monthly_time_saved, 1),
+                    "recommendation": "Set up email alerts for opportunity stage changes, task assignments, and follow-up reminders. Configure workflow rules for automated notifications.",
+                    "affected_objects": ["Opportunity", "Task", "Workflow"],
+                    "salesforce_data": {
+                        "opportunities_count": opportunities_count,
+                        "users_affected": active_users,
+                        "setup_time_hours": base_setup_time,
+                        "automation_recommendation": "email_alerts_workflows"
+                    }
+                })
+        except Exception as e:
+            logger.warning(f"Error analyzing email alerts: {e}")
+        
+        # Check for lead assignment automation
+        try:
+            lead_count = sf_client.query("SELECT COUNT() FROM Lead")['totalSize']
+            logger.info(f"Found {lead_count} leads in system")
             
-            findings.append({
-                "id": str(uuid.uuid4()),
-                "category": "Automation Opportunities",
-                "title": "Process Automation Modernization",
-                "description": f"With {active_users} users and {org_context.get('opportunity_count', 'multiple')} opportunities, migrating legacy automation to Flow can improve performance and maintainability.",
-                "impact": "Medium",
-                "time_savings_hours": round(total_time, 1),
-                "recommendation": "Audit existing workflow rules and process builders. Migrate to Flow for better performance, debugging capabilities, and future maintainability.",
-                "affected_objects": ["Workflow", "Process Builder", "Flow"],
-                "salesforce_data": {
-                    "modernization_target": "flows",
-                    "legacy_automation": "workflow_rules_process_builders",
-                    "users_affected": active_users,
-                    "opportunities_count": org_context.get('opportunity_count', 0),
-                    "calculation_method": f"Analysis time (8h) + user training ({active_users} × 30min) × complexity ({complexity_multiplier:.1f}x)"
-                }
-            })
+            if lead_count > 10:
+                # Estimate time saved from automated lead assignment
+                monthly_leads = lead_count / 12  # Rough estimate
+                time_per_lead_assignment = 0.05  # 3 minutes per manual assignment
+                monthly_time_saved = monthly_leads * time_per_lead_assignment
+                
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Automation Opportunities",
+                    "title": "Lead Assignment Automation Gap",
+                    "description": f"With {lead_count} leads in the system, automated lead assignment rules could improve response times and ensure proper distribution among {active_users} users.",
+                    "impact": "Medium",
+                    "time_savings_hours": round(max(monthly_time_saved, 2.0), 1),
+                    "recommendation": "Implement lead assignment rules based on territory, product interest, or lead source. Set up lead scoring for prioritization.",
+                    "affected_objects": ["Lead", "Queue", "Assignment Rules"],
+                    "salesforce_data": {
+                        "total_leads": lead_count,
+                        "estimated_monthly_leads": round(monthly_leads, 1),
+                        "users_affected": active_users,
+                        "automation_recommendation": "lead_assignment_rules"
+                    }
+                })
+        except Exception as e:
+            logger.warning(f"Error checking leads: {e}")
+        
+        # Report and dashboard optimization
+        try:
+            # This is always relevant for active orgs
+            if active_users > 1:
+                estimated_report_time = active_users * 2  # 2 hours per user per month on manual reporting
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Automation Opportunities",
+                    "title": "Manual Reporting Processes",
+                    "description": f"With {active_users} active users, there's likely significant time spent on manual report generation and data analysis that could be automated with scheduled reports and dashboards.",
+                    "impact": "Medium",
+                    "time_savings_hours": round(estimated_report_time * 0.5, 1),  # 50% of manual time could be saved
+                    "recommendation": "Set up scheduled report deliveries, dashboard subscriptions, and automated data exports. Create role-based dashboards for different user types.",
+                    "affected_objects": ["Reports", "Dashboards", "Scheduled Jobs"],
+                    "salesforce_data": {
+                        "users_affected": active_users,
+                        "estimated_manual_reporting_hours": estimated_report_time,
+                        "automation_recommendation": "scheduled_reports_dashboards"
+                    }
+                })
+        except Exception as e:
+            logger.warning(f"Error analyzing reporting: {e}")
+        
+        logger.info(f"Automation analysis completed: {len(findings)} findings")
     
     except Exception as e:
         logger.error(f"Error analyzing automation: {e}")
