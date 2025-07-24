@@ -111,7 +111,7 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
@@ -119,6 +119,9 @@ backend:
         - working: true
           agent: "main"
           comment: "Added /api/audit/{session_id}/update-assumptions endpoint that accepts AssumptionsUpdate model and recalculates audit results"
+        - working: true
+          agent: "testing"
+          comment: "TESTED: API endpoint is fully functional. POST /api/audit/{session_id}/update-assumptions accepts AssumptionsUpdate model with all 5 parameters (admin_rate, cleanup_time_per_field, confusion_time_per_field, reporting_efficiency, email_alert_time). Endpoint properly validates input, handles errors (404 for invalid sessions, 422 for invalid data), and successfully updates audit calculations. Tested with real session ID and confirmed assumptions are applied and stored correctly."
 
   - task: "Add ROI recalculation with custom constants"
     implemented: true
@@ -126,7 +129,7 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
@@ -134,6 +137,9 @@ backend:
         - working: true
           agent: "main"
           comment: "Modified calculate_enhanced_roi_with_tasks to accept custom_assumptions parameter and updated related functions"
+        - working: true
+          agent: "testing"
+          comment: "TESTED: ROI recalculation with custom assumptions is working correctly. The calculate_enhanced_roi_with_tasks function properly accepts custom_assumptions parameter and applies them to calculations. Default values (admin_rate=40, cleanup_time_per_field=0.25, confusion_time_per_field=2, reporting_efficiency=50, email_alert_time=3) are correctly overridden when custom values provided. Integration with run_salesforce_audit_with_salaries and analyze_custom_fields functions is functional."
 
 frontend:
   - task: "Create EditAssumptionsModal component"
