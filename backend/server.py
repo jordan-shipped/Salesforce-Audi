@@ -1077,7 +1077,7 @@ def run_salesforce_audit(access_token, instance_url):
         logger.error(f"Error running Salesforce audit: {e}")
         raise e
 
-def run_salesforce_audit_with_salaries(access_token, instance_url, department_salaries=None):
+def run_salesforce_audit_with_salaries(access_token, instance_url, department_salaries=None, custom_assumptions=None):
     """Run comprehensive Salesforce audit with department salary calculations"""
     findings = []
     
