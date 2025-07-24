@@ -574,6 +574,7 @@ body {
 .empty-title {
   font-size: 20px; /* 1.25rem */
   font-weight: 600;
+  color: var(--text-primary); /* Solid color instead of gradient */
   margin: 0 0 12px 0; /* 0.75rem bottom */
   line-height: 1.2;
 }
