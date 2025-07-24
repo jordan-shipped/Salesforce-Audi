@@ -515,6 +515,14 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Org Profile Modal */}
+      <OrgProfileModal 
+        isOpen={showOrgProfile}
+        onClose={() => setShowOrgProfile(false)}
+        onSubmit={runAuditWithProfile}
+        sessionId={sessionId}
+      />
     </div>
   );
 };
