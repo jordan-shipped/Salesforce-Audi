@@ -14,15 +14,16 @@ const LandingPage = () => {
   const handleConnectSalesforce = async () => {
     setConnecting(true);
     try {
-      const response = await axios.post(`${API}/oauth/connect`, {
-        org_name: "Demo Salesforce Org"
-      });
+      // Get OAuth authorization URL
+      const response = await axios.get(`${API}/oauth/authorize`);
       
-      if (response.data.success) {
-        navigate('/dashboard');
+      if (response.data.authorization_url) {
+        // Redirect to Salesforce OAuth
+        window.location.href = response.data.authorization_url;
       }
     } catch (error) {
-      console.error('Connection failed:', error);
+      console.error('OAuth setup failed:', error);
+      alert('Failed to connect to Salesforce. Please try again.');
     } finally {
       setConnecting(false);
     }
