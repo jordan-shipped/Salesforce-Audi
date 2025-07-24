@@ -1,0 +1,78 @@
+<analysis>
+The AI engineer successfully transitioned the Salesforce Audit application from a mock-data MVP to a fully functional version with real Salesforce OAuth integration. The journey involved iterative debugging, particularly around MongoDB serialization and Salesforce OAuth callback handling. A significant portion of the development focused on refining the ROI calculation logic, evolving from generic estimates to a sophisticated, transparent, and org-specific model with detailed breakdowns and role attribution. The current state is a robust MVP with enhanced ROI calculations, but the Edit Assumptions modal is pending, crucial for user customization of the ROI model.
+</analysis>
+
+<product_requirements>
+The overarching goal is to identify Salesforce org inefficiencies and deliver a clean, branded PDF report with optional Slack notifications. Initially, the user requested an MVP focusing on Salesforce OAuth, basic metadata analysis, simple findings display, and basic PDF export. This evolved to using mock data first due to user preference. Once the mock MVP was validated, the user explicitly requested to make the Connect to Salesforce button fully functional for a real audit. Subsequently, a major requirement emerged: making the time and money savings calculations non-generic, org-specific, and transparent. This led to a detailed roadmap for a hybrid calculation logic, separating one-time cleanup costs from recurring savings, using department salaries, incorporating role attribution, and providing a detailed breakdown with confidence levels.
+</product_requirements>
+
+<key_technical_concepts>
+- **Full-stack Development:** React (frontend), FastAPI (backend), MongoDB (database).
+- **Salesforce Integration:** OAuth 2.0 for secure connection,  Python library for API interaction,  for OAuth flow.
+- **Environment Management:** Docker, Kubernetes, Supervisorctl for process management,  for environment variables.
+- **UI/UX:** Tailwind CSS for styling, component-based React architecture.
+- **Data Persistence:** MongoDB for storing audit sessions and OAuth tokens.
+- **ROI Calculation Logic:** Sophisticated algorithms for estimating time/cost savings, involving user roles, org context, and activity metrics.
+</key_technical_concepts>
+
+<code_architecture>
+The application follows a standard full-stack architecture:
+
+
+- **/app/backend/server.py**:
+    - **Importance**: This is the core of the backend, housing the FastAPI application. It defines all API endpoints, handles Salesforce OAuth, performs audit analysis, interacts with MongoDB, and orchestrates the complex ROI calculations.
+    - **Changes**:
+        - Initial setup with mock audit logic and basic endpoints.
+        - Extensive modifications for real Salesforce OAuth integration, including  generation and  handling.
+        - Implementation of MongoDB operations (storing sessions, audit results).
+        - Multiple bug fixes related to MongoDB ObjectId serialization, initially using  and later refining the data handling.
+        - Introduction and iterative refinement of ROI calculation logic, including:
+            - : Fetches basic org info (users, type).
+            - : The central function for the new, sophisticated ROI logic incorporating department salaries, one-time vs. recurring costs, role attribution, and detailed time breakdowns.
+            - Enhanced analysis functions (e.g., , , , , ) to find more issues and feed into the new ROI model.
+            - Logic to handle blank salary fields by falling back to default national averages.
+        - Addition of environment variables for Salesforce Consumer Key/Secret.
+
+- **/app/frontend/src/App.js**:
+    - **Importance**: The main React component that defines the application's routes and renders different pages (Landing, Dashboard, AuditResults, OAuth Callback, etc.). It manages the overall UI flow and state.
+    - **Changes**:
+        - Initial setup of routes (, , , , etc.).
+        - Integration of the Connect with Salesforce button.
+        - Implementation of logic to receive and store the Salesforce session ID from the backend OAuth callback using .
+        - Display of connection status (connected/not connected) and disconnect functionality.
+        - Introduction of  to collect department salaries before running a Custom Audit.
+        - Updates to trigger the new enhanced audit API call with salary data.
+        - Integration of  component to display detailed findings.
+        - Bug fixes for form submission and  handling to correctly pass blank salary values as null/undefined.
+        - Addition of  and other utility functions for UI.
+
+- **/app/frontend/src/App.css** & **/app/frontend/src/index.css**:
+    - **Importance**: These files define the global and component-specific styling for the React application, primarily using Tailwind CSS.
+    - **Changes**:
+        - Initial setup for a minimalist, icon-driven, responsive design.
+        - Styles for the landing page, dashboard elements, audit results display, and modal components.
+        - Minor adjustments as new UI elements were introduced for the ROI refinement and modals.
+</code_architecture>
+
+<pending_tasks>
+- **Add Edit Assumptions Modal**: Implement the UI and backend logic to allow users to tweak default constants (e.g., ) and re-run ROI calculations.
+- **Complete End-to-End Integration Testing**: Perform a final comprehensive test of the entire application flow after the Edit Assumptions modal is implemented.
+</pending_tasks>
+
+<current_work>
+The application currently features a fully functional Salesforce Audit MVP. It began with mock data, then successfully transitioned to real Salesforce OAuth integration using provided credentials. The core value proposition is demonstrated through an audit process that connects to a live Salesforce org, analyzes its metadata, and identifies inefficiencies.
+
+The most recent significant work involved a comprehensive overhaul of the ROI calculation logic. This was driven by the user's feedback that previous savings figures were too high and generic. The current system now:
+1.  **Collects Department Salaries**: A Org Profile modal appears before running an audit, prompting for average annual salaries across Customer Service, Sales, Marketing, Engineering, and Executives. It gracefully handles blank inputs by falling back to sensible U.S. national averages.
+2.  **Splits Costs**: Differentiates between a one-time Admin Cleanup Cost (using a hard-coded 0/hr rate) and Ongoing User Savings (recurring monthly ROI).
+3.  **Refined Time Assumptions**: Uses more granular, constant-driven values like 15 minutes per custom field cleanup and 2 minutes per user per field per month for confusion.
+4.  **Hybrid Calculation Logic**: Integrates the collected salaries and constants to provide task-specific breakdowns. It leverages real Salesforce org data (like record counts) for frequency estimation where possible, falling back to defaults otherwise.
+5.  **Role Attribution**: Assigns time savings to specific roles (e.g., Admin for cleanup, Sales for reporting, Customer Service for case/follow-ups) to enhance credibility.
+6.  **Progressive Disclosure UI**: The results now show a summary first, with an anticipated See Details option to drill into per-task/role breakdowns and confidence badges.
+
+The backend has been refactored with new functions () and updated analysis modules. The frontend integrates the  and is prepared to display the enhanced results, though the detailed breakdown UI elements are still under development for display. The system successfully handles blank salary inputs and runs audits with the new, more realistic calculations, providing a net annual ROI with a Medium confidence level by default.
+</current_work>
+
+<optional_next_step>
+The next step is to add the Edit Assumptions modal to allow users to adjust the default constants for ROI calculation.
+</optional_next_step>
