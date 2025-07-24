@@ -566,6 +566,181 @@ const Dashboard = () => {
   );
 };
 
+// Edit Assumptions Modal Component
+const EditAssumptionsModal = ({ isOpen, onClose, onUpdate, assumptions }) => {
+  const [editedAssumptions, setEditedAssumptions] = useState({
+    admin_rate: 40,
+    cleanup_time_per_field: 0.25,
+    confusion_time_per_field: 2,
+    reporting_efficiency: 50,
+    email_alert_time: 3,
+    ...assumptions
+  });
+
+  useEffect(() => {
+    if (assumptions) {
+      setEditedAssumptions({
+        admin_rate: 40,
+        cleanup_time_per_field: 0.25,
+        confusion_time_per_field: 2,
+        reporting_efficiency: 50,
+        email_alert_time: 3,
+        ...assumptions
+      });
+    }
+  }, [assumptions]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onUpdate(editedAssumptions);
+    onClose();
+  };
+
+  const handleReset = () => {
+    setEditedAssumptions({
+      admin_rate: 40,
+      cleanup_time_per_field: 0.25,
+      confusion_time_per_field: 2,
+      reporting_efficiency: 50,
+      email_alert_time: 3
+    });
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">🔧 Edit Calculation Assumptions</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <span className="text-2xl">×</span>
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-6">
+            
+            {/* Admin & Cleanup Rates */}
+            <div className="bg-blue-50 rounded-lg p-4">
+              <h3 className="font-medium text-blue-900 mb-3">👨‍💼 Admin & Cleanup Rates</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="form-label">Admin Hourly Rate ($)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={editedAssumptions.admin_rate}
+                    onChange={(e) => setEditedAssumptions(prev => ({...prev, admin_rate: parseFloat(e.target.value)}))}
+                    className="form-input"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">U.S. average Salesforce admin rate</p>
+                </div>
+                <div>
+                  <label className="form-label">Cleanup Time per Field (hours)</label>
+                  <input
+                    type="number"
+                    step="0.05"
+                    min="0"
+                    value={editedAssumptions.cleanup_time_per_field}
+                    onChange={(e) => setEditedAssumptions(prev => ({...prev, cleanup_time_per_field: parseFloat(e.target.value)}))}
+                    className="form-input"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">0.25 hours = 15 minutes per field</p>
+                </div>
+              </div>
+            </div>
+
+            {/* User Experience */}
+            <div className="bg-green-50 rounded-lg p-4">
+              <h3 className="font-medium text-green-900 mb-3">👥 User Experience Impact</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="form-label">User Confusion Time per Field (min/month)</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min="0"
+                    value={editedAssumptions.confusion_time_per_field}
+                    onChange={(e) => setEditedAssumptions(prev => ({...prev, confusion_time_per_field: parseFloat(e.target.value)}))}
+                    className="form-input"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Time lost per user per unused field per month</p>
+                </div>
+                <div>
+                  <label className="form-label">Email Alert Time Saved (min per alert)</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min="0"
+                    value={editedAssumptions.email_alert_time}
+                    onChange={(e) => setEditedAssumptions(prev => ({...prev, email_alert_time: parseFloat(e.target.value)}))}
+                    className="form-input"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Time saved per automated notification</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Process Automation */}
+            <div className="bg-purple-50 rounded-lg p-4">
+              <h3 className="font-medium text-purple-900 mb-3">🤖 Process Automation</h3>
+              <div>
+                <label className="form-label">Reporting Automation Efficiency (%)</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={editedAssumptions.reporting_efficiency}
+                  onChange={(e) => setEditedAssumptions(prev => ({...prev, reporting_efficiency: parseInt(e.target.value)}))}
+                  className="form-input"
+                />
+                <p className="text-xs text-gray-500 mt-1">Percentage of manual reporting time that can be automated</p>
+              </div>
+            </div>
+
+            {/* Impact Preview */}
+            <div className="bg-yellow-50 rounded-lg p-4">
+              <h3 className="font-medium text-yellow-900 mb-3">📊 Impact Preview</h3>
+              <div className="text-sm text-yellow-800 space-y-1">
+                <p>• <strong>Custom Field Cleanup:</strong> ${editedAssumptions.admin_rate}/hr × {editedAssumptions.cleanup_time_per_field}h = ${(editedAssumptions.admin_rate * editedAssumptions.cleanup_time_per_field).toFixed(2)} per field</p>
+                <p>• <strong>User Confusion:</strong> {editedAssumptions.confusion_time_per_field} min/user/field/month</p>
+                <p>• <strong>Reporting Automation:</strong> {editedAssumptions.reporting_efficiency}% of manual time saved</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between space-x-4 mt-8">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              🔄 Reset to Defaults
+            </button>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              >
+                💾 Update Assumptions
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 // Enhanced Finding Card Component with Progressive Disclosure
 const EnhancedFindingCard = ({ finding, index }) => {
   const [showDetails, setShowDetails] = useState(false);
