@@ -502,15 +502,14 @@ body {
   background: var(--bg-page);
 }
 
-/* 1️⃣ Connection Status Strip */
+/* 1️⃣ Connection Status Strip - Fixed Layout */
 .connection-strip {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between; /* status left, button right */
   align-items: center;
   background: var(--bg-alt);
   padding: var(--space-md) var(--space-lg);
   border-bottom: 1px solid var(--divider);
-  gap: var(--space-md);
 }
 
 .connection-strip .status {
@@ -519,64 +518,55 @@ body {
   font-weight: 500;
 }
 
-.connection-strip .status.connected {
-  color: #30D158; /* success green */
-}
-
-/* 2️⃣ Sessions Summary */
-.sessions-summary {
-  padding: var(--space-lg);
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Sessions List Layout */
+/* 2️⃣ Sessions Area */
 .sessions-list {
-  padding: var(--space-lg);
-}
-
-/* Default: Empty state centered layout */
-.sessions-list.empty {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 300px;
+  min-height: calc(100vh - 80px); /* fill below strip */
+  padding: var(--space-lg);
+  background: var(--bg-page);
 }
 
 /* When sessions exist: Grid layout */
 .sessions-list.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-md);
+  align-items: start;
+  min-height: auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Empty State Card */
-.empty-card {
-  background: var(--bg-page);
-  border-radius: var(--radius-card);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: var(--space-lg);
+/* Premium Empty-State Card */
+.empty-card.premium {
   text-align: center;
-  max-width: 360px;
+  background: var(--bg-alt);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl) var(--space-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  max-width: 380px;
   border: 1px solid var(--divider);
 }
 
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.8;
+}
+
 .empty-title {
-  font-size: var(--fs-body);
+  font-size: 24px;
   font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 var(--space-sm) 0;
+  margin: var(--space-sm) 0;
 }
 
 .empty-sub {
-  font-size: var(--fs-small);
+  font-size: var(--fs-body);
   color: var(--text-secondary);
-  margin: 0 0 var(--space-md) 0;
-  line-height: 1.5;
-}
-
-.empty-card .btn-black {
-  margin-top: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  line-height: 1.4;
 }
 
 /* Session Cards */
@@ -589,7 +579,7 @@ body {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
   border: 1px solid var(--divider);
 }
 
@@ -600,7 +590,7 @@ body {
 
 .session-card:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.5);
 }
 
 .session-info {
@@ -613,7 +603,6 @@ body {
 .session-org {
   font-size: var(--fs-body);
   font-weight: 600;
-  color: var(--text-primary);
   margin: 0;
 }
 
@@ -631,40 +620,31 @@ body {
   margin-left: var(--space-md);
 }
 
-/* Gradient Text - Only for Key Data */
-.gradient-text {
-  background: var(--gradient-tech);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 600;
+/* Visually Hidden for Screen Readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-/* Loading and Empty States */
+/* Loading States */
 .loading-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-xl);
   gap: var(--space-md);
 }
 
 .loading-state p {
   color: var(--text-secondary);
   margin: 0;
-}
-
-.empty-state {
-  text-align: center;
-  padding: var(--space-xl);
-  color: var(--text-secondary);
-}
-
-.empty-state p {
-  margin: 0;
-  font-size: var(--fs-body);
-  line-height: 1.5;
 }
 
 .slide-in-up {
