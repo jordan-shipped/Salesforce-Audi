@@ -6,181 +6,94 @@ import './App.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Landing Page Component
+// Landing Page Component with Apple-style Premium Design
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [connecting, setConnecting] = useState(false);
-
-  const handleConnectSalesforce = async () => {
-    setConnecting(true);
-    try {
-      // Get OAuth authorization URL
-      const response = await axios.get(`${API}/oauth/authorize`);
-      
-      if (response.data.authorization_url) {
-        // Redirect to Salesforce OAuth
-        window.location.href = response.data.authorization_url;
-      }
-    } catch (error) {
-      console.error('OAuth setup failed:', error);
-      alert('Failed to connect to Salesforce. Please try again.');
-    } finally {
-      setConnecting(false);
-    }
-  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-indigo-600">SalesAudit Pro</h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/about" className="text-gray-500 hover:text-gray-700">About</Link>
-              <Link to="/contact" className="text-gray-500 hover:text-gray-700">Contact</Link>
-            </div>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+      {/* Premium Navigation */}
+      <nav className="premium-nav">
+        <div className="premium-nav-content">
+          <div className="premium-nav-brand">SalesAudit Pro</div>
+          <div className="premium-nav-actions">
+            <Link to="/about" className="text-small" style={{ color: 'var(--color-text-secondary)' }}>About</Link>
+            <Link to="/contact" className="text-small" style={{ color: 'var(--color-text-secondary)' }}>Contact</Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
-            <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-              <span className="block">Uncover Hidden</span>
-              <span className="block text-indigo-600">Salesforce Inefficiencies</span>
-            </h1>
-            <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-              Get a comprehensive audit of your Salesforce org in minutes. Identify automation gaps, 
-              unused fields, revenue leaks, and time-wasting processes with actionable recommendations.
-            </p>
-            
-            {/* Benefits */}
-            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-md bg-indigo-500 text-white text-sm font-medium">
-                    ⚡
-                  </div>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-900">5-Minute Analysis</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-md bg-green-500 text-white text-sm font-medium">
-                    💰
-                  </div>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-900">ROI Calculations</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-md bg-blue-500 text-white text-sm font-medium">
-                    📊
-                  </div>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-900">Detailed Reports</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-md bg-purple-500 text-white text-sm font-medium">
-                    🔒
-                  </div>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-900">Read-Only Access</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <button
-                onClick={handleConnectSalesforce}
-                disabled={connecting}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 sm:w-auto sm:inline-flex sm:items-center"
-              >
-                {connecting ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Connecting to Salesforce...
-                  </>
-                ) : (
-                  <>
-                    🚀 Connect with Salesforce
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
+      <div className="premium-container">
+        <div className="text-center" style={{ paddingTop: 'var(--spacing-2xl)', paddingBottom: 'var(--spacing-2xl)' }}>
+          <h1 
+            className="slide-in-up"
+            style={{ 
+              fontSize: '48px', 
+              fontWeight: 700, 
+              color: 'var(--color-text-primary)',
+              marginBottom: 'var(--spacing-lg)',
+              lineHeight: 1.1
+            }}
+          >
+            Optimize Your Salesforce
+            <br />
+            <span style={{ color: 'var(--color-accent-blue)' }}>Like Never Before</span>
+          </h1>
           
-          <div className="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
-            <div className="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
-              <img
-                className="w-full rounded-lg"
-                src="https://images.unsplash.com/photo-1666875753105-c63a6f3bdc86?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwxfHxkYXRhJTIwYW5hbHlzaXN8ZW58MHx8fHwxNzUzMjg0MzE3fDA&ixlib=rb-4.1.0&q=85"
-                alt="Data Analysis Dashboard"
-              />
-            </div>
-          </div>
+          <p 
+            className="text-body slide-in-up"
+            style={{ 
+              color: 'var(--color-text-secondary)', 
+              marginBottom: 'var(--spacing-2xl)',
+              maxWidth: '600px',
+              margin: '0 auto var(--spacing-2xl) auto',
+              fontSize: '18px',
+              lineHeight: 1.6
+            }}
+          >
+            Discover hidden inefficiencies, automate manual processes, and unlock substantial cost savings 
+            with our AI-powered Salesforce audit tool.
+          </p>
+
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="btn-primary slide-in-up"
+            style={{ 
+              fontSize: 'var(--font-size-body)',
+              padding: 'var(--spacing-md) var(--spacing-xl)',
+              borderRadius: '12px'
+            }}
+          >
+            🚀 Start Free Audit
+          </button>
         </div>
-      </div>
 
-      {/* Features Section */}
-      <div className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">Features</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              Everything you need to optimize your Salesforce
-            </p>
-          </div>
+        {/* Features Section */}
+        <div className="premium-section">
+          <div className="summary-cards-container">
+            <div className="summary-card slide-in-up">
+              <span className="summary-card-icon">🔍</span>
+              <h3 className="text-section-heading" style={{ marginBottom: 'var(--spacing-xs)' }}>Deep Analysis</h3>
+              <p className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
+                Comprehensive audit of custom fields, data quality, and automation opportunities
+              </p>
+            </div>
 
-          <div className="mt-10">
-            <div className="space-y-10 md:space-y-0 md:grid md:grid-cols-3 md:gap-x-8 md:gap-y-10">
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white text-xl">
-                  ⏱️
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Time Savings Analysis</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Identify unused fields, duplicate processes, and inefficient workflows that waste your team's time.
-                </p>
-              </div>
+            <div className="summary-card slide-in-up">
+              <span className="summary-card-icon">💰</span>
+              <h3 className="text-section-heading" style={{ marginBottom: 'var(--spacing-xs)' }}>ROI Insights</h3>
+              <p className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
+                Transparent cost-benefit analysis with customizable assumptions and detailed breakdowns
+              </p>
+            </div>
 
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white text-xl">
-                  💸
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Revenue Leak Detection</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Find orphaned records, missing data, and broken processes that impact your bottom line.
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-purple-500 text-white text-xl">
-                  🤖
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Automation Opportunities</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Discover manual processes that can be automated to improve efficiency and reduce errors.
-                </p>
-              </div>
+            <div className="summary-card slide-in-up">
+              <span className="summary-card-icon">📊</span>
+              <h3 className="text-section-heading" style={{ marginBottom: 'var(--spacing-xs)' }}>Actionable Reports</h3>
+              <p className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
+                Professional PDF reports with prioritized recommendations and implementation guidance
+              </p>
             </div>
           </div>
         </div>
