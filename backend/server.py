@@ -774,10 +774,14 @@ async def salesforce_oauth_callback(request: Request, code: str = Query(...), st
         raise HTTPException(status_code=500, detail=f"OAuth callback failed: {str(e)}")
 
 @api_router.post("/audit/run")
-async def run_audit(session_id: str = Query(...)):
-    """Run audit analysis with real Salesforce data"""
+async def run_audit(audit_request: AuditRequest):
+    """Run audit analysis with new ROI calculation method"""
     try:
-        logger.info(f"Starting audit for session: {session_id}")
+        session_id = audit_request.session_id
+        department_salaries = audit_request.department_salaries
+        use_quick_estimate = audit_request.use_quick_estimate
+        
+        logger.info(f"Starting audit for session: {session_id} (Quick estimate: {use_quick_estimate})")
         
         # Get OAuth session
         oauth_session = await db.oauth_sessions.find_one({
@@ -793,11 +797,44 @@ async def run_audit(session_id: str = Query(...)):
         
         # Run Salesforce audit in thread pool to avoid blocking
         loop = asyncio.get_event_loop()
+        
+        # Convert department salaries to dict if provided
+        dept_salaries_dict = None
+        if department_salaries and not use_quick_estimate:
+            dept_salaries_dict = {
+                'customer_service': department_salaries.customer_service,
+                'sales': department_salaries.sales,
+                'marketing': department_salaries.marketing,
+                'engineering': department_salaries.engineering,
+                'executives': department_salaries.executives
+            }
+        
         findings_data, org_name, org_id = await loop.run_in_executor(
-            executor, run_salesforce_audit, access_token, instance_url
+            executor, run_salesforce_audit_with_salaries, access_token, instance_url, dept_salaries_dict
         )
         
-        summary = calculate_audit_summary(findings_data)
+        # Calculate summary
+        if dept_salaries_dict:
+            # New calculation method
+            total_cleanup_cost = sum(f.get('cleanup_cost', 0) for f in findings_data)
+            total_monthly_savings = sum(f.get('monthly_user_savings', 0) for f in findings_data)
+            total_annual_savings = sum(f.get('annual_user_savings', 0) for f in findings_data)
+            total_net_roi = sum(f.get('net_annual_roi', 0) for f in findings_data)
+            total_monthly_hours = sum(f.get('monthly_savings_hours', 0) for f in findings_data)
+            
+            summary = {
+                "total_findings": len(findings_data),
+                "total_time_savings_hours": round(total_monthly_hours, 1),
+                "total_annual_roi": round(total_net_roi, 0),
+                "total_cleanup_cost": round(total_cleanup_cost, 0),
+                "total_monthly_savings": round(total_monthly_savings, 0),
+                "total_annual_savings": round(total_annual_savings, 0),
+                "calculation_method": "department_salaries"
+            }
+        else:
+            # Fallback to old method
+            summary = calculate_audit_summary(findings_data)
+            summary["calculation_method"] = "quick_estimate"
         
         logger.info(f"Generated {len(findings_data)} findings for {org_name}")
         
@@ -811,8 +848,10 @@ async def run_audit(session_id: str = Query(...)):
             "status": "completed",
             "findings_count": len(findings_data),
             "estimated_savings": {
-                "monthly_hours": float(summary["total_time_savings_hours"]),
-                "annual_dollars": float(summary["total_annual_roi"])
+                "monthly_hours": float(summary.get("total_time_savings_hours", 0)),
+                "annual_dollars": float(summary.get("total_annual_roi", 0)),
+                "cleanup_cost": float(summary.get("total_cleanup_cost", 0)),
+                "calculation_method": summary.get("calculation_method", "quick_estimate")
             },
             "instance_url": instance_url
         }
@@ -833,19 +872,11 @@ async def run_audit(session_id: str = Query(...)):
         response_data = {
             "session_id": audit_session_id,
             "org_name": org_name,
-            "summary": {
-                "total_findings": int(summary["total_findings"]),
-                "total_time_savings_hours": float(summary["total_time_savings_hours"]),
-                "total_annual_roi": float(summary["total_annual_roi"]),
-                "category_breakdown": summary["category_breakdown"],
-                "high_impact_count": int(summary["high_impact_count"]),
-                "medium_impact_count": int(summary["medium_impact_count"]),
-                "low_impact_count": int(summary["low_impact_count"])
-            },
+            "summary": summary,
             "findings": findings_data
         }
         
-        logger.info("Real Salesforce audit completed successfully")
+        logger.info("Enhanced Salesforce audit completed successfully")
         return response_data
         
     except HTTPException:
