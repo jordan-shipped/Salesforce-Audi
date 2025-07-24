@@ -251,7 +251,9 @@ const Dashboard = () => {
               <Link to="/" className="text-2xl font-bold text-indigo-600">SalesAudit Pro</Link>
             </div>
             <div className="flex items-center">
-              <span className="text-sm text-gray-500">Connected: Demo Salesforce Org</span>
+              <span className="text-sm text-gray-500">
+                {sessionId ? '✅ Connected to Salesforce' : '⚠️ Not connected - please connect from home page'}
+              </span>
             </div>
           </div>
         </div>
