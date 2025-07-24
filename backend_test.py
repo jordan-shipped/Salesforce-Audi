@@ -337,6 +337,7 @@ def main():
         ("Run Audit Without Session", tester.test_run_audit_without_session),
         ("Get Audit Details Not Found", tester.test_get_audit_details_not_found),
         ("Generate PDF Mock", tester.test_generate_pdf_mock),
+        ("Audit Data Structure", tester.test_audit_data_structure),
     ]
     
     for test_name, test_func in tests:
@@ -344,6 +345,9 @@ def main():
     
     # Validate OAuth security implementation
     tester.validate_oauth_security()
+    
+    # Validate new ROI calculations
+    tester.validate_roi_calculations()
     
     # Print final results
     print("\n" + "=" * 50)
