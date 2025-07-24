@@ -277,10 +277,20 @@ const Dashboard = () => {
             <div className="flex items-center">
               <Link to="/" className="text-2xl font-bold text-indigo-600">SalesAudit Pro</Link>
             </div>
-            <div className="flex items-center">
-              <span className="text-sm text-gray-500">
-                {sessionId ? '✅ Connected to Salesforce' : '⚠️ Not connected - please connect from home page'}
-              </span>
+            <div className="flex items-center space-x-4">
+              {sessionId ? (
+                <>
+                  <span className="text-sm text-green-600">✅ Connected to Salesforce</span>
+                  <button
+                    onClick={disconnectSalesforce}
+                    className="text-sm text-gray-500 hover:text-gray-700 underline"
+                  >
+                    Disconnect
+                  </button>
+                </>
+              ) : (
+                <span className="text-sm text-orange-600">⚠️ Not connected</span>
+              )}
             </div>
           </div>
         </div>
