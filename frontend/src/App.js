@@ -566,6 +566,186 @@ const Dashboard = () => {
   );
 };
 
+// Enhanced Finding Card Component with Progressive Disclosure
+const EnhancedFindingCard = ({ finding, index }) => {
+  const [showDetails, setShowDetails] = useState(false);
+
+  const getConfidenceBadge = (confidence) => {
+    const badgeClasses = {
+      'High': 'bg-green-100 text-green-800',
+      'Medium': 'bg-yellow-100 text-yellow-800', 
+      'Low': 'bg-red-100 text-red-800'
+    };
+    
+    const badgeIcons = {
+      'High': '🟢',
+      'Medium': '🟡',
+      'Low': '🔴'
+    };
+
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeClasses[confidence] || badgeClasses['Medium']}`}>
+        {badgeIcons[confidence] || badgeIcons['Medium']} {confidence || 'Medium'} Confidence
+      </span>
+    );
+  };
+
+  const formatCurrency = (amount) => {
+    if (!amount) return '$0';
+    return `$${Math.round(amount).toLocaleString()}`;
+  };
+
+  const formatHours = (hours) => {
+    if (!hours) return '0h';
+    return `${hours.toFixed(1)}h`;
+  };
+
+  return (
+    <div className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} px-4 py-5 sm:px-6`}>
+      <div className="flex justify-between items-start">
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-lg font-medium text-gray-900">{finding.title}</h4>
+            <div className="flex space-x-2">
+              {getConfidenceBadge(finding.confidence)}
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getImpactColor(finding.impact)}`}>
+                {finding.impact} Impact
+              </span>
+            </div>
+          </div>
+
+          <p className="text-sm text-gray-600 mb-3">{finding.description}</p>
+
+          {/* Summary ROI Display */}
+          <div className="bg-white border rounded-lg p-4 mb-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {finding.cleanup_cost && (
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-red-600">{formatCurrency(finding.cleanup_cost)}</div>
+                  <div className="text-xs text-gray-500">One-time Cost</div>
+                </div>
+              )}
+              {finding.monthly_user_savings && (
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-green-600">{formatCurrency(finding.monthly_user_savings)}</div>
+                  <div className="text-xs text-gray-500">Monthly Savings</div>
+                </div>
+              )}
+              {finding.annual_user_savings && (
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-blue-600">{formatCurrency(finding.annual_user_savings)}</div>
+                  <div className="text-xs text-gray-500">Annual Savings</div>
+                </div>
+              )}
+              {finding.net_annual_roi && (
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-purple-600">{formatCurrency(finding.net_annual_roi)}</div>
+                  <div className="text-xs text-gray-500">Net Annual ROI</div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Progressive Disclosure Button */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-4 text-sm text-gray-500">
+              {finding.time_savings_hours && (
+                <span>⏱️ {formatHours(finding.time_savings_hours)}/month</span>
+              )}
+              <span>📊 {finding.affected_objects?.join(', ')}</span>
+            </div>
+            <button
+              onClick={() => setShowDetails(!showDetails)}
+              className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50"
+            >
+              {showDetails ? '👆 Hide Details' : '👇 See Details'}
+            </button>
+          </div>
+
+          {/* Detailed Breakdown - Progressive Disclosure */}
+          {showDetails && (
+            <div className="mt-4 space-y-4 border-t pt-4">
+              
+              {/* Task Breakdown */}
+              {finding.task_breakdown && finding.task_breakdown.length > 0 && (
+                <div>
+                  <h5 className="font-medium text-gray-900 mb-2">📋 Task Breakdown</h5>
+                  <div className="space-y-2">
+                    {finding.task_breakdown.map((task, idx) => (
+                      <div key={idx} className="bg-gray-50 rounded p-3">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="font-medium text-sm">{task.task}</div>
+                            <div className="text-xs text-gray-600">{task.description}</div>
+                            <div className="text-xs text-blue-600 mt-1">👤 {task.role}</div>
+                          </div>
+                          <div className="text-right ml-4">
+                            {task.type === 'one_time' ? (
+                              <div>
+                                <div className="font-medium text-sm text-red-600">{formatCurrency(task.cost)}</div>
+                                <div className="text-xs text-gray-500">{formatHours(task.hours)} one-time</div>
+                              </div>
+                            ) : (
+                              <div>
+                                <div className="font-medium text-sm text-green-600">{formatCurrency(task.cost_per_month)}</div>
+                                <div className="text-xs text-gray-500">{formatHours(task.hours_per_month)}/month</div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Role Attribution */}
+              {finding.role_attribution && Object.keys(finding.role_attribution).length > 0 && (
+                <div>
+                  <h5 className="font-medium text-gray-900 mb-2">👥 Role Attribution</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {Object.entries(finding.role_attribution).map(([role, attribution]) => (
+                      <div key={role} className="bg-blue-50 rounded p-3">
+                        <div className="font-medium text-sm text-blue-900">{role}</div>
+                        {attribution.one_time_cost > 0 && (
+                          <div className="text-xs text-gray-600">
+                            One-time: {formatHours(attribution.one_time_hours)} ({formatCurrency(attribution.one_time_cost)})
+                          </div>
+                        )}
+                        {attribution.monthly_savings > 0 && (
+                          <div className="text-xs text-gray-600">
+                            Monthly: {formatHours(attribution.monthly_hours)} ({formatCurrency(attribution.monthly_savings)})
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Calculation Method */}
+              {finding.salesforce_data?.calculation_method && (
+                <div>
+                  <h5 className="font-medium text-gray-900 mb-2">🧮 Calculation Method</h5>
+                  <div className="bg-yellow-50 rounded p-3">
+                    <div className="text-sm text-yellow-800">{finding.salesforce_data.calculation_method}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Recommendation */}
+          <div className="mt-3 p-3 bg-blue-50 rounded-md">
+            <h5 className="text-sm font-medium text-blue-900">💡 Recommendation:</h5>
+            <p className="mt-1 text-sm text-blue-800">{finding.recommendation}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Audit Results Component
 const AuditResults = () => {
   const { sessionId } = useParams();
