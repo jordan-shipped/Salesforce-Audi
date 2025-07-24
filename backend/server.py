@@ -419,59 +419,121 @@ def analyze_data_quality(sf_client, org_context):
         active_users = org_context.get('active_users', 10)
         complexity_multiplier = org_context.get('complexity_multiplier', 1.0)
         
+        logger.info("Starting data quality analysis...")
+        
         # Check for orphaned opportunities (no account)
-        orphaned_opps = sf_client.query("SELECT COUNT() FROM Opportunity WHERE AccountId = null")
-        orphaned_count = orphaned_opps['totalSize']
-        
-        if orphaned_count > 0:
-            # More realistic time calculation: 10 minutes per record + management overhead
-            base_cleanup_time = orphaned_count * 0.17  # 10 minutes per record
-            management_overhead = (orphaned_count / 20) * 0.5  # 30 min per 20 records for coordination
-            total_time = (base_cleanup_time + management_overhead) * complexity_multiplier
+        try:
+            orphaned_opps = sf_client.query("SELECT COUNT() FROM Opportunity WHERE AccountId = null")
+            orphaned_count = orphaned_opps['totalSize']
+            logger.info(f"Found {orphaned_count} orphaned opportunities")
             
-            findings.append({
-                "id": str(uuid.uuid4()),
-                "category": "Revenue Leaks",
-                "title": f"{orphaned_count} Orphaned Opportunity Records",
-                "description": f"Found {orphaned_count} opportunities without proper account associations, making pipeline reporting inaccurate. This affects {active_users} users who rely on accurate pipeline data.",
-                "impact": "High" if orphaned_count > 50 else "Medium",
-                "time_savings_hours": round(total_time, 1),
-                "recommendation": "Implement data quality rules and assign team to clean up orphaned records. Set up validation rules to prevent future occurrences.",
-                "affected_objects": ["Opportunity", "Account"],
-                "salesforce_data": {
-                    "orphaned_opportunities": orphaned_count,
-                    "query_used": "SELECT COUNT() FROM Opportunity WHERE AccountId = null",
-                    "users_affected": active_users,
-                    "calculation_method": f"Cleanup time (10 min/record) + management overhead, scaled by complexity ({complexity_multiplier:.1f}x)"
-                }
-            })
+            if orphaned_count > 0:
+                # More realistic time calculation: 10 minutes per record + management overhead
+                base_cleanup_time = orphaned_count * 0.17  # 10 minutes per record
+                management_overhead = (orphaned_count / 20) * 0.5  # 30 min per 20 records for coordination
+                total_time = (base_cleanup_time + management_overhead) * complexity_multiplier
+                
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Revenue Leaks",
+                    "title": f"{orphaned_count} Orphaned Opportunity Records",
+                    "description": f"Found {orphaned_count} opportunities without proper account associations, making pipeline reporting inaccurate. This affects {active_users} users who rely on accurate pipeline data.",
+                    "impact": "High" if orphaned_count > 50 else "Medium",
+                    "time_savings_hours": round(total_time, 1),
+                    "recommendation": "Implement data quality rules and assign team to clean up orphaned records. Set up validation rules to prevent future occurrences.",
+                    "affected_objects": ["Opportunity", "Account"],
+                    "salesforce_data": {
+                        "orphaned_opportunities": orphaned_count,
+                        "query_used": "SELECT COUNT() FROM Opportunity WHERE AccountId = null",
+                        "users_affected": active_users,
+                        "calculation_method": f"Cleanup time (10 min/record) + management overhead, scaled by complexity ({complexity_multiplier:.1f}x)"
+                    }
+                })
+        except Exception as e:
+            logger.warning(f"Error checking orphaned opportunities: {e}")
         
-        # Check for leads without activity
-        stale_leads = sf_client.query("SELECT COUNT() FROM Lead WHERE LastActivityDate < LAST_N_DAYS:180")
-        stale_count = stale_leads['totalSize']
-        
-        if stale_count > 0:
-            # Scale time based on actual volume and team size
-            base_review_time = min(stale_count * 0.05, 20)  # 3 min per lead, max 20 hours
-            process_improvement_time = 2  # Time to set up automation
-            total_time = (base_review_time + process_improvement_time) * complexity_multiplier
+        # Check for leads without activity (more aggressive timeframe)
+        try:
+            stale_leads = sf_client.query("SELECT COUNT() FROM Lead WHERE LastActivityDate < LAST_N_DAYS:90")
+            stale_count = stale_leads['totalSize']
+            logger.info(f"Found {stale_count} stale leads (90+ days)")
             
-            findings.append({
-                "id": str(uuid.uuid4()),
-                "category": "Revenue Leaks",
-                "title": f"{stale_count} Stale Lead Records",
-                "description": f"{stale_count} leads haven't had activity in 180+ days, representing potential lost revenue. With {active_users} users, this indicates process gaps in lead management.",
-                "impact": "High" if stale_count > 500 else "Medium",
-                "time_savings_hours": round(total_time, 1),
-                "recommendation": "Implement lead scoring and automated nurture campaigns. Archive truly cold leads and improve lead assignment processes.",
-                "affected_objects": ["Lead", "Campaign"],
-                "salesforce_data": {
-                    "stale_leads": stale_count,
-                    "query_used": "SELECT COUNT() FROM Lead WHERE LastActivityDate < LAST_N_DAYS:180",
-                    "users_affected": active_users,
-                    "calculation_method": f"Review time (3 min/lead, max 20h) + process setup (2h), scaled by complexity ({complexity_multiplier:.1f}x)"
-                }
-            })
+            if stale_count > 5:  # Lower threshold
+                # Scale time based on actual volume and team size
+                base_review_time = min(stale_count * 0.05, 20)  # 3 min per lead, max 20 hours
+                process_improvement_time = 2  # Time to set up automation
+                total_time = (base_review_time + process_improvement_time) * complexity_multiplier
+                
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Revenue Leaks",
+                    "title": f"{stale_count} Stale Lead Records",
+                    "description": f"{stale_count} leads haven't had activity in 90+ days, representing potential lost revenue. With {active_users} users, this indicates process gaps in lead management.",
+                    "impact": "High" if stale_count > 100 else "Medium",
+                    "time_savings_hours": round(total_time, 1),
+                    "recommendation": "Implement lead scoring and automated nurture campaigns. Archive truly cold leads and improve lead assignment processes.",
+                    "affected_objects": ["Lead", "Campaign"],
+                    "salesforce_data": {
+                        "stale_leads": stale_count,
+                        "query_used": "SELECT COUNT() FROM Lead WHERE LastActivityDate < LAST_N_DAYS:90",
+                        "users_affected": active_users,
+                        "calculation_method": f"Review time (3 min/lead, max 20h) + process setup (2h), scaled by complexity ({complexity_multiplier:.1f}x)"
+                    }
+                })
+        except Exception as e:
+            logger.warning(f"Error checking stale leads: {e}")
+        
+        # Check for opportunities without close dates
+        try:
+            opps_no_close_date = sf_client.query("SELECT COUNT() FROM Opportunity WHERE CloseDate = null")
+            no_close_count = opps_no_close_date['totalSize']
+            logger.info(f"Found {no_close_count} opportunities without close dates")
+            
+            if no_close_count > 0:
+                cleanup_time = no_close_count * 0.1  # 6 minutes per opportunity
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Revenue Leaks",
+                    "title": f"{no_close_count} Opportunities Missing Close Dates",
+                    "description": f"Found {no_close_count} opportunities without close dates, making forecasting impossible and pipeline reports unreliable.",
+                    "impact": "Medium",
+                    "time_savings_hours": round(cleanup_time, 1),
+                    "recommendation": "Require close dates on all opportunities and clean up existing records. Implement validation rules to prevent future occurrences.",
+                    "affected_objects": ["Opportunity"],
+                    "salesforce_data": {
+                        "opportunities_no_close_date": no_close_count,
+                        "query_used": "SELECT COUNT() FROM Opportunity WHERE CloseDate = null"
+                    }
+                })
+        except Exception as e:
+            logger.warning(f"Error checking opportunities without close dates: {e}")
+        
+        # Check for contacts without accounts
+        try:
+            orphaned_contacts = sf_client.query("SELECT COUNT() FROM Contact WHERE AccountId = null")
+            orphaned_contact_count = orphaned_contacts['totalSize']
+            logger.info(f"Found {orphaned_contact_count} orphaned contacts")
+            
+            if orphaned_contact_count > 0:
+                cleanup_time = orphaned_contact_count * 0.08  # 5 minutes per contact
+                findings.append({
+                    "id": str(uuid.uuid4()),
+                    "category": "Revenue Leaks",
+                    "title": f"{orphaned_contact_count} Orphaned Contact Records",
+                    "description": f"Found {orphaned_contact_count} contacts without account associations, making relationship mapping and account management difficult.",
+                    "impact": "Medium",
+                    "time_savings_hours": round(cleanup_time, 1),
+                    "recommendation": "Associate contacts with appropriate accounts or create new accounts as needed. Implement data quality rules.",
+                    "affected_objects": ["Contact", "Account"],
+                    "salesforce_data": {
+                        "orphaned_contacts": orphaned_contact_count,
+                        "query_used": "SELECT COUNT() FROM Contact WHERE AccountId = null"
+                    }
+                })
+        except Exception as e:
+            logger.warning(f"Error checking orphaned contacts: {e}")
+        
+        logger.info(f"Data quality analysis completed: {len(findings)} findings")
     
     except Exception as e:
         logger.error(f"Error analyzing data quality: {e}")
