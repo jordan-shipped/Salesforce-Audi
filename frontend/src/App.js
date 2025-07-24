@@ -254,9 +254,12 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Org Profile</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <span className="text-2xl">×</span>
-          </button>
+          <div className="text-right">
+            <div className="text-xs text-gray-500">Session: {sessionId ? sessionId.substring(0, 8) + '...' : 'None'}</div>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+              <span className="text-2xl">×</span>
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit}>
