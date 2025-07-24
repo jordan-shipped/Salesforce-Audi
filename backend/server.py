@@ -176,27 +176,28 @@ def generate_mock_audit_data():
     
     return findings
 
-def calculate_audit_summary(findings: List[AuditFinding]) -> Dict[str, Any]:
+def calculate_audit_summary(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Calculate overall audit metrics"""
-    total_time_savings = sum(f.time_savings_hours for f in findings)
-    total_roi = sum(f.roi_estimate for f in findings)
+    total_time_savings = sum(f.get("time_savings_hours", 0) for f in findings)
+    total_roi = sum(f.get("roi_estimate", 0) for f in findings)
     
     category_breakdown = {}
     for finding in findings:
-        if finding.category not in category_breakdown:
-            category_breakdown[finding.category] = {"count": 0, "savings": 0, "roi": 0}
-        category_breakdown[finding.category]["count"] += 1
-        category_breakdown[finding.category]["savings"] += finding.time_savings_hours
-        category_breakdown[finding.category]["roi"] += finding.roi_estimate
+        category = finding.get("category", "Unknown")
+        if category not in category_breakdown:
+            category_breakdown[category] = {"count": 0, "savings": 0, "roi": 0}
+        category_breakdown[category]["count"] += 1
+        category_breakdown[category]["savings"] += finding.get("time_savings_hours", 0)
+        category_breakdown[category]["roi"] += finding.get("roi_estimate", 0)
     
     return {
         "total_findings": len(findings),
         "total_time_savings_hours": round(total_time_savings, 1),
         "total_annual_roi": round(total_roi, 0),
         "category_breakdown": category_breakdown,
-        "high_impact_count": len([f for f in findings if f.impact == "High"]),
-        "medium_impact_count": len([f for f in findings if f.impact == "Medium"]),
-        "low_impact_count": len([f for f in findings if f.impact == "Low"])
+        "high_impact_count": len([f for f in findings if f.get("impact") == "High"]),
+        "medium_impact_count": len([f for f in findings if f.get("impact") == "Medium"]),
+        "low_impact_count": len([f for f in findings if f.get("impact") == "Low"])
     }
 
 # API Routes
