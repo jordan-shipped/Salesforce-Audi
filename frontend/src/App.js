@@ -323,6 +323,9 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
     </div>
   );
 };
+
+// Dashboard Component
+const Dashboard = () => {
   const [sessions, setSessions] = useState([]);
   const [running, setRunning] = useState(false);
   const [sessionId, setSessionId] = useState(null);
