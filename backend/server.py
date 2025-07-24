@@ -1505,6 +1505,109 @@ async def get_audit_details(session_id: str):
         logger.error(f"Error in get_audit_details: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to get audit details: {str(e)}")
 
+@api_router.post("/audit/{session_id}/update-assumptions")
+async def update_audit_assumptions(session_id: str, assumptions: AssumptionsUpdate):
+    """Update audit assumptions and recalculate ROI"""
+    try:
+        logger.info(f"Updating assumptions for session: {session_id}")
+        
+        # Get the existing audit session 
+        session = await db.audit_sessions.find_one({"id": session_id})
+        if not session:
+            raise HTTPException(status_code=404, detail="Audit session not found")
+        
+        # Find the corresponding OAuth session to get access tokens
+        oauth_sessions = await db.oauth_sessions.find({
+            "expires_at": {"$gt": datetime.utcnow()}
+        }).to_list(10)
+        
+        if not oauth_sessions:
+            raise HTTPException(status_code=401, detail="No valid OAuth session found. Please reconnect to Salesforce.")
+        
+        # Use the most recent OAuth session (assumes same user)
+        oauth_session = oauth_sessions[0]
+        access_token = oauth_session['access_token']
+        instance_url = oauth_session['instance_url']
+        
+        # Convert assumptions to dict, filtering out None values
+        custom_assumptions = {}
+        assumption_dict = assumptions.dict()
+        for key, value in assumption_dict.items():
+            if value is not None:
+                custom_assumptions[key] = value
+        
+        logger.info(f"Custom assumptions: {custom_assumptions}")
+        
+        # Re-run the audit with custom assumptions
+        loop = asyncio.get_event_loop()
+        
+        # Note: We'll use empty department salaries as we're only updating assumptions
+        # In a full implementation, you might want to store original department salaries
+        findings_data, org_name, org_id = await loop.run_in_executor(
+            executor, run_salesforce_audit_with_salaries, access_token, instance_url, None, custom_assumptions
+        )
+        
+        # Calculate new summary
+        total_cleanup_cost = sum(f.get('cleanup_cost', 0) for f in findings_data)
+        total_monthly_savings = sum(f.get('monthly_user_savings', 0) for f in findings_data)
+        total_annual_savings = sum(f.get('annual_user_savings', 0) for f in findings_data)
+        total_net_roi = sum(f.get('net_annual_roi', 0) for f in findings_data)
+        total_monthly_hours = sum(f.get('monthly_savings_hours', 0) for f in findings_data)
+        
+        summary = {
+            "total_findings": len(findings_data),
+            "total_time_savings_hours": round(total_monthly_hours, 1),
+            "total_annual_roi": round(total_net_roi, 0),
+            "total_cleanup_cost": round(total_cleanup_cost, 0),
+            "total_monthly_savings": round(total_monthly_savings, 0),
+            "total_annual_savings": round(total_annual_savings, 0),
+            "calculation_method": "custom_assumptions",
+            "assumptions_used": custom_assumptions
+        }
+        
+        # Update the stored session data
+        await db.audit_sessions.update_one(
+            {"id": session_id},
+            {
+                "$set": {
+                    "estimated_savings": {
+                        "monthly_hours": float(summary.get("total_time_savings_hours", 0)),
+                        "annual_dollars": float(summary.get("total_annual_roi", 0)),
+                        "cleanup_cost": float(summary.get("total_cleanup_cost", 0)),
+                        "calculation_method": summary.get("calculation_method", "custom_assumptions")
+                    },
+                    "updated_at": datetime.utcnow().isoformat(),
+                    "custom_assumptions": custom_assumptions
+                }
+            }
+        )
+        
+        # Update stored findings
+        await db.audit_findings.delete_many({"session_id": session_id})
+        
+        findings_to_store = []
+        for finding in findings_data:
+            finding_copy = finding.copy()
+            finding_copy["session_id"] = session_id
+            findings_to_store.append(finding_copy)
+        
+        await db.audit_findings.insert_many(findings_to_store)
+        
+        logger.info(f"Updated audit with custom assumptions: {len(findings_data)} findings")
+        
+        return {
+            "session_id": session_id,
+            "summary": summary,
+            "findings": findings_data,
+            "message": "Audit assumptions updated successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating assumptions: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update assumptions: {str(e)}")
+
 @api_router.get("/audit/{session_id}/pdf")
 async def generate_pdf_report(session_id: str):
     """Generate PDF report (mock endpoint)"""
