@@ -6,13 +6,13 @@ import './App.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Landing Page Component - Ultra-Clean, Header-less Design
+// Landing Page Component - Above the Fold, No Scrolling
 const LandingPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="App">
-      {/* Hero Section - No Header, Immediate Impact */}
+    <div className="App landing-page">
+      {/* Hero Section - Compact Above the Fold */}
       <section className="hero">
         <div className="container">
           <h1 className="slide-in-up">
@@ -32,7 +32,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Features Section - Simply Scale Style */}
+      {/* Features Section - Compact Cards */}
       <section className="features">
         <div className="container">
           <div className="feature-card slide-in-up">
