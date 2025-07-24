@@ -331,7 +331,7 @@ const Dashboard = () => {
             <p>Loading your audit sessions...</p>
           </div>
         ) : (
-          <div className="sessions-list" role="list">
+          <div className={`sessions-list ${sessions.length === 0 ? 'empty' : 'grid'}`} role="list">
             {sessions.length === 0 ? (
               <div className="empty-card">
                 <p className="empty-title">No Audit Sessions Yet</p>
