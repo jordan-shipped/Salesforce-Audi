@@ -316,7 +316,7 @@ const Dashboard = () => {
         ) : (
           <>
             <div className="status">⚠️ Not connected</div>
-            <button onClick={handleConnect} className="btn-primary">
+            <button onClick={handleConnect} className="btn-black">
               Connect to Salesforce
             </button>
           </>
