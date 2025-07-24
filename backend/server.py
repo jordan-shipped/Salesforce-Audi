@@ -82,6 +82,154 @@ class SalesforceOAuthState(BaseModel):
     state: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+def calculate_roi_with_department_salaries(finding_data, department_salaries, active_users):
+    """
+    Calculate ROI using department-specific salaries and separating one-time vs recurring costs
+    
+    Args:
+        finding_data: Dict with finding details
+        department_salaries: Dict with department annual salaries
+        active_users: Number of active users
+    """
+    
+    # Constants
+    ADMIN_HOURLY_RATE = 40  # Fixed U.S. average Salesforce admin rate
+    HOURS_PER_YEAR = 2080
+    
+    # Default U.S. national averages (fallbacks)
+    DEFAULT_SALARIES = {
+        'customer_service': 45000,
+        'sales': 65000, 
+        'marketing': 60000,
+        'engineering': 95000,
+        'executives': 150000
+    }
+    
+    # Convert department salaries to hourly rates
+    dept_hourly_rates = {}
+    for dept, salary in department_salaries.items():
+        if salary and salary > 0:
+            dept_hourly_rates[dept] = salary / HOURS_PER_YEAR
+        else:
+            dept_hourly_rates[dept] = DEFAULT_SALARIES.get(dept, 50000) / HOURS_PER_YEAR
+    
+    # Calculate weighted average hourly rate across all users
+    # Assume even distribution across departments for now
+    avg_hourly_rate = sum(dept_hourly_rates.values()) / len(dept_hourly_rates)
+    
+    # Time assumptions
+    ADMIN_CLEANUP_TIME_PER_FIELD = 0.25  # 15 minutes per field
+    USER_CONFUSION_TIME_PER_FIELD_PER_MONTH = 2  # 2 minutes per user per field per month
+    
+    # Calculate based on finding type
+    if finding_data['category'] == 'Time Savings' and 'custom fields' in finding_data['title'].lower():
+        # Custom fields calculation
+        field_count = finding_data.get('field_count', 0)
+        
+        # One-time cleanup cost
+        cleanup_hours = field_count * ADMIN_CLEANUP_TIME_PER_FIELD
+        cleanup_cost = cleanup_hours * ADMIN_HOURLY_RATE
+        
+        # Monthly recurring savings (user confusion elimination)
+        monthly_confusion_minutes = active_users * USER_CONFUSION_TIME_PER_FIELD_PER_MONTH * field_count
+        monthly_confusion_hours = monthly_confusion_minutes / 60
+        monthly_user_savings = monthly_confusion_hours * avg_hourly_rate
+        
+        # Annual savings
+        annual_user_savings = monthly_user_savings * 12
+        
+        # Net ROI (annual savings minus one-time cost)
+        net_annual_roi = annual_user_savings - cleanup_cost
+        
+        return {
+            'cleanup_cost': round(cleanup_cost, 0),
+            'cleanup_hours': round(cleanup_hours, 1),
+            'monthly_user_savings': round(monthly_user_savings, 0),
+            'monthly_savings_hours': round(monthly_confusion_hours, 1),
+            'annual_user_savings': round(annual_user_savings, 0),
+            'net_annual_roi': round(net_annual_roi, 0),
+            'avg_hourly_rate': round(avg_hourly_rate, 2),
+            'admin_hourly_rate': ADMIN_HOURLY_RATE,
+            'calculation_details': {
+                'field_count': field_count,
+                'active_users': active_users,
+                'cleanup_time_per_field_minutes': ADMIN_CLEANUP_TIME_PER_FIELD * 60,
+                'confusion_time_per_user_per_field_minutes': USER_CONFUSION_TIME_PER_FIELD_PER_MONTH,
+                'department_hourly_rates': {k: round(v, 2) for k, v in dept_hourly_rates.items()}
+            }
+        }
+    
+    elif finding_data['category'] == 'Revenue Leaks':
+        # Data quality issues - mostly one-time cleanup
+        record_count = finding_data.get('record_count', 0)
+        cleanup_time_per_record = 0.17  # 10 minutes per record
+        
+        cleanup_hours = record_count * cleanup_time_per_record
+        cleanup_cost = cleanup_hours * ADMIN_HOURLY_RATE
+        
+        # Ongoing efficiency gains (reduced confusion, better reporting)
+        monthly_efficiency_hours = min(active_users * 0.5, 10)  # Cap at 10 hours
+        monthly_efficiency_savings = monthly_efficiency_hours * avg_hourly_rate
+        annual_efficiency_savings = monthly_efficiency_savings * 12
+        
+        net_annual_roi = annual_efficiency_savings - cleanup_cost
+        
+        return {
+            'cleanup_cost': round(cleanup_cost, 0),
+            'cleanup_hours': round(cleanup_hours, 1),
+            'monthly_user_savings': round(monthly_efficiency_savings, 0),
+            'monthly_savings_hours': round(monthly_efficiency_hours, 1),
+            'annual_user_savings': round(annual_efficiency_savings, 0),
+            'net_annual_roi': round(net_annual_roi, 0),
+            'avg_hourly_rate': round(avg_hourly_rate, 2),
+            'admin_hourly_rate': ADMIN_HOURLY_RATE,
+            'calculation_details': {
+                'record_count': record_count,
+                'cleanup_time_per_record_minutes': cleanup_time_per_record * 60,
+                'monthly_efficiency_hours': monthly_efficiency_hours
+            }
+        }
+    
+    elif finding_data['category'] == 'Automation Opportunities':
+        # Process automation - mostly recurring savings
+        process_setup_hours = 4  # Time to set up automation
+        setup_cost = process_setup_hours * ADMIN_HOURLY_RATE
+        
+        # Monthly time savings from automation
+        monthly_automation_hours = finding_data.get('estimated_monthly_hours', 10)
+        monthly_automation_savings = monthly_automation_hours * avg_hourly_rate
+        annual_automation_savings = monthly_automation_savings * 12
+        
+        net_annual_roi = annual_automation_savings - setup_cost
+        
+        return {
+            'cleanup_cost': round(setup_cost, 0),
+            'cleanup_hours': round(process_setup_hours, 1),
+            'monthly_user_savings': round(monthly_automation_savings, 0),
+            'monthly_savings_hours': round(monthly_automation_hours, 1),
+            'annual_user_savings': round(annual_automation_savings, 0),
+            'net_annual_roi': round(net_annual_roi, 0),
+            'avg_hourly_rate': round(avg_hourly_rate, 2),
+            'admin_hourly_rate': ADMIN_HOURLY_RATE,
+            'calculation_details': {
+                'setup_hours': process_setup_hours,
+                'monthly_automation_hours': monthly_automation_hours
+            }
+        }
+    
+    # Default fallback
+    return {
+        'cleanup_cost': 0,
+        'cleanup_hours': 0,
+        'monthly_user_savings': 0,
+        'monthly_savings_hours': 0,
+        'annual_user_savings': 0,
+        'net_annual_roi': 0,
+        'avg_hourly_rate': round(avg_hourly_rate, 2),
+        'admin_hourly_rate': ADMIN_HOURLY_RATE,
+        'calculation_details': {}
+    }
+
 def get_org_context(sf_client):
     """Get org context for realistic ROI calculations"""
     try:
