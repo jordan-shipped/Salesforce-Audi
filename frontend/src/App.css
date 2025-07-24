@@ -13,8 +13,12 @@
   --text-secondary: #3A3A3C;
   --divider: #E5E5EA;
   
-  /* Tech Gradient - Only accent in the entire design */
+  /* Tech Gradient - Only for Landing Page CTA */
   --gradient-tech: linear-gradient(90deg, #0066FF, #00CCFF);
+  
+  /* Accent colors for Dashboard buttons & links */
+  --color-accent: #0A84FF; /* SF Blue */
+  --color-accent-hover: #006EDC; /* slightly darker for hover */
   
   /* Typography */
   --font-family-base: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
