@@ -350,9 +350,11 @@ async def salesforce_oauth_authorize():
         raise HTTPException(status_code=500, detail=f"OAuth setup failed: {str(e)}")
 
 @api_router.get("/oauth/callback")
-async def salesforce_oauth_callback(code: str = Query(...), state: str = Query(...)):
+async def salesforce_oauth_callback(request: Request, code: str = Query(...), state: str = Query(...)):
     """Handle Salesforce OAuth callback"""
     try:
+        logger.info(f"OAuth callback received with state: {state}")
+        
         # Verify state parameter
         stored_state = await db.oauth_states.find_one({
             "state": state,
@@ -360,7 +362,10 @@ async def salesforce_oauth_callback(code: str = Query(...), state: str = Query(.
         })
         
         if not stored_state:
+            logger.error(f"Invalid or expired state parameter: {state}")
             raise HTTPException(status_code=400, detail="Invalid or expired state parameter")
+        
+        logger.info("State parameter validated successfully")
         
         # Exchange code for access token
         token_data = {
@@ -371,6 +376,7 @@ async def salesforce_oauth_callback(code: str = Query(...), state: str = Query(.
             'code': code
         }
         
+        logger.info("Exchanging authorization code for access token")
         token_response = requests.post(
             f"{SALESFORCE_LOGIN_URL}/services/oauth2/token",
             data=token_data,
@@ -378,30 +384,63 @@ async def salesforce_oauth_callback(code: str = Query(...), state: str = Query(.
         )
         
         if token_response.status_code != 200:
+            logger.error(f"Token exchange failed: {token_response.status_code} - {token_response.text}")
             raise HTTPException(status_code=400, detail="Failed to exchange code for token")
         
         token_info = token_response.json()
+        logger.info(f"Token exchange successful. Instance URL: {token_info['instance_url']}")
         
         # Clean up state
         await db.oauth_states.delete_one({"state": state})
         
         # Store session info temporarily (in production, use secure session storage)
         session_id = str(uuid.uuid4())
-        await db.oauth_sessions.insert_one({
+        session_data = {
             "session_id": session_id,
             "access_token": token_info['access_token'],
             "instance_url": token_info['instance_url'],
             "created_at": datetime.utcnow(),
             "expires_at": datetime.utcnow() + timedelta(hours=2)
-        })
+        }
         
-        # Redirect to dashboard with session
-        return RedirectResponse(url=f"/dashboard?session={session_id}")
+        await db.oauth_sessions.insert_one(session_data)
+        logger.info(f"OAuth session created: {session_id}")
+        
+        # Instead of redirect, return HTML that will handle the redirect with JavaScript
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Salesforce Connected Successfully</title>
+            <style>
+                body {{ font-family: Arial, sans-serif; text-align: center; padding: 50px; }}
+                .success {{ color: #10b981; font-size: 24px; margin-bottom: 20px; }}
+                .message {{ color: #6b7280; font-size: 16px; }}
+            </style>
+        </head>
+        <body>
+            <div class="success">✅ Successfully Connected to Salesforce!</div>
+            <div class="message">Redirecting to dashboard...</div>
+            <script>
+                // Store session in localStorage and redirect
+                localStorage.setItem('salesforce_session_id', '{session_id}');
+                setTimeout(function() {{
+                    window.location.href = '/dashboard';
+                }}, 2000);
+            </script>
+        </body>
+        </html>
+        """
+        
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=html_content)
         
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"OAuth callback error: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"OAuth callback failed: {str(e)}")
 
 @api_router.post("/audit/run")
