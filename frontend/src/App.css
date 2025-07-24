@@ -520,21 +520,24 @@ body {
   margin: 0 auto;
 }
 
+/* Sessions List Layout */
 .sessions-list {
+  padding: var(--space-lg);
+}
+
+/* Default: Empty state centered layout */
+.sessions-list.empty {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 300px;
-  padding: var(--space-lg);
 }
 
-/* When sessions exist, switch to grid layout */
-.sessions-list:has(.session-card) {
+/* When sessions exist: Grid layout */
+.sessions-list.grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-md);
-  align-items: stretch;
-  min-height: auto;
 }
 
 /* Empty State Card */
