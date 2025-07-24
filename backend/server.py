@@ -67,6 +67,13 @@ class AuditRequest(BaseModel):
     department_salaries: Optional[DepartmentSalaries] = None
     use_quick_estimate: bool = True
 
+class AssumptionsUpdate(BaseModel):
+    admin_rate: Optional[float] = 40
+    cleanup_time_per_field: Optional[float] = 0.25
+    confusion_time_per_field: Optional[float] = 2
+    reporting_efficiency: Optional[int] = 50
+    email_alert_time: Optional[float] = 3
+
 class AuditSession(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     org_name: str
