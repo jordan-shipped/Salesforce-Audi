@@ -605,82 +605,60 @@ body {
   box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
 }
 
-/* Session Cards - Enhanced Premium Style */
+/* Session Cards - Tightened Premium Style */
 .session-card {
   background: var(--bg-page);
-  border-radius: 16px; /* More generous radius */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); /* Softer shadow */
-  padding: var(--space-lg); /* More generous padding */
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  padding: var(--space-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   transition: all 0.3s ease;
   border: 1px solid rgba(0, 0, 0, 0.04);
-  min-height: 80px; /* Better proportions */
+  min-height: 70px; /* Slightly more compact */
 }
 
 .session-card:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  transform: translateY(-3px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
   border-color: rgba(0, 0, 0, 0.08);
 }
 
 .session-card:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
 }
 
 .session-info {
   display: flex;
   flex-direction: column;
-  gap: 6px; /* Slightly more space between elements */
+  gap: 6px;
   flex: 1;
 }
 
 .session-org {
-  font-size: 18px; /* Slightly larger for better hierarchy */
+  font-size: 16px; /* More reasonable size */
   font-weight: 600;
   margin: 0;
   line-height: 1.3;
 }
 
 .session-meta {
-  font-size: 15px; /* Slightly larger for readability */
+  font-size: 14px;
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.4;
 }
 
 .session-date {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
   white-space: nowrap;
   margin: 0;
-  margin-left: var(--space-lg); /* More generous spacing */
+  margin-left: var(--space-md);
   font-weight: 500;
-}
-
-/* Enhanced Button Styles */
-.btn-primary {
-  background: var(--gradient-tech);
-  color: #ffffff;
-  border: none;
-  padding: 0.875rem 1.75rem; /* More generous button padding */
-  border-radius: 10px; /* More rounded */
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.2);
-}
-
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 102, 255, 0.3);
 }
 
 .btn-outline {
