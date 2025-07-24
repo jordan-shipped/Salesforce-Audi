@@ -54,8 +54,18 @@ def convert_objectid(obj):
         return str(obj)
     return obj
 
-# Models
-class AuditSession(BaseModel):
+# New models for department salary collection
+class DepartmentSalaries(BaseModel):
+    customer_service: Optional[int] = None
+    sales: Optional[int] = None  
+    marketing: Optional[int] = None
+    engineering: Optional[int] = None
+    executives: Optional[int] = None
+
+class AuditRequest(BaseModel):
+    session_id: str
+    department_salaries: Optional[DepartmentSalaries] = None
+    use_quick_estimate: bool = True
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     org_name: str
     org_id: str
