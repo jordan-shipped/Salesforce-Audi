@@ -959,13 +959,14 @@ const EnhancedFindingCard = ({ finding, index }) => {
   );
 };
 
-// Audit Results Component
+// Ultra-Clean Audit Results Component - Apple Inspired
 const AuditResults = () => {
   const { sessionId } = useParams();
   const [auditData, setAuditData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showEditAssumptions, setShowEditAssumptions] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [openFindings, setOpenFindings] = useState(new Set());
 
   useEffect(() => {
     loadAuditData();
@@ -986,10 +987,7 @@ const AuditResults = () => {
     setUpdating(true);
     try {
       const response = await axios.post(`${API}/audit/${sessionId}/update-assumptions`, newAssumptions);
-      
-      // Update the local audit data with new results
       setAuditData(response.data);
-      
       alert('Assumptions updated successfully! Results have been recalculated.');
     } catch (error) {
       console.error('Failed to update assumptions:', error);
@@ -1008,139 +1006,157 @@ const AuditResults = () => {
     }
   };
 
+  const toggleFinding = (findingId) => {
+    const newOpenFindings = new Set(openFindings);
+    if (newOpenFindings.has(findingId)) {
+      newOpenFindings.delete(findingId);
+    } else {
+      newOpenFindings.add(findingId);
+    }
+    setOpenFindings(newOpenFindings);
+  };
+
+  const formatCurrency = (amount) => {
+    if (!amount) return '$0';
+    return `$${Math.round(amount).toLocaleString()}`;
+  };
+
+  const formatHours = (hours) => {
+    if (!hours) return '0h';
+    return `${hours.toFixed(1)}h`;
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <svg className="animate-spin h-12 w-12 text-indigo-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <p className="mt-2 text-sm text-gray-500">Loading audit results...</p>
+      <div className="audit-results">
+        <header className="header">
+          <Link to="/" className="logo gradient">SalesAudit Pro</Link>
+        </header>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          height: '60vh',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}>
+          <div className="loading-spinner-premium"></div>
+          <p style={{ color: 'var(--text-secondary)' }}>Loading audit results...</p>
         </div>
       </div>
     );
-  };
+  }
 
   if (!auditData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Audit not found</h2>
-          <Link to="/dashboard" className="mt-4 text-indigo-600 hover:text-indigo-500">← Back to Dashboard</Link>
+      <div className="audit-results">
+        <header className="header">
+          <Link to="/" className="logo gradient">SalesAudit Pro</Link>
+        </header>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          height: '60vh',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}>
+          <h2>Audit not found</h2>
+          <Link to="/dashboard" className="btn-outline">← Back to Dashboard</Link>
         </div>
       </div>
     );
-  };
+  }
 
   const { summary, findings } = auditData;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
-      {/* Simply Scale Header */}
+    <main className="audit-results">
+      {/* Ultra-Clean Header */}
       <header className="header">
-        <Link to="/" className="logo">SalesAudit Pro</Link>
+        <Link to="/" className="logo gradient">SalesAudit Pro</Link>
         <nav>
-          <Link to="/dashboard" style={{ color: 'var(--color-text-secondary)' }}>
-            ← Back to Dashboard
-          </Link>
+          <Link to="/dashboard">← Back to Dashboard</Link>
         </nav>
       </header>
 
-      <div className="premium-container">
-        {/* Header with Edit Assumptions */}
-        <div className="action-bar" style={{ paddingTop: 'var(--space-xl)' }}>
-          <h1 style={{ 
-            fontSize: 'var(--fs-hero-lg)', 
-            fontWeight: 'var(--fw-bold)', 
-            color: 'var(--color-text-primary)',
-            margin: 0
-          }}>
-            Enhanced Audit Results
-          </h1>
-          <div className="action-buttons">
-            <button
-              onClick={() => setShowEditAssumptions(true)}
-              disabled={updating}
-              className="btn-secondary"
+      {/* 1️⃣ Hero Summary Strip */}
+      <section className="summary-strip">
+        <div className="stat">
+          <h2 className="gradient">{summary.total_time_savings_hours}h</h2>
+          <p>Time Savings/mo</p>
+        </div>
+        <div className="stat">
+          <h2 className="gradient">{formatCurrency(summary.total_annual_roi)}</h2>
+          <p>Annual ROI</p>
+        </div>
+        <div className="stat">
+          <h2 className="gradient">Medium</h2>
+          <p>Avg Confidence</p>
+        </div>
+        <button className="btn-primary" onClick={generatePDF}>
+          📄 Download PDF
+        </button>
+        <button 
+          className="btn-outline" 
+          onClick={() => setShowEditAssumptions(true)}
+          disabled={updating}
+        >
+          🔧 Edit Assumptions
+        </button>
+      </section>
+
+      {/* 2️⃣ Clean Findings List */}
+      <section className="findings-list">
+        {findings.map((finding) => (
+          <div 
+            key={finding.id} 
+            className={`finding ${openFindings.has(finding.id) ? 'open' : ''}`}
+          >
+            <button 
+              className="finding-toggle"
+              onClick={() => toggleFinding(finding.id)}
             >
-              🔧 Edit Assumptions
+              <span className="finding-title gradient">
+                {finding.title}
+              </span>
+              <span className="finding-meta">
+                {finding.cleanup_cost ? `${formatCurrency(finding.cleanup_cost)} one-time • ` : ''}
+                {finding.monthly_user_savings ? `${formatCurrency(finding.monthly_user_savings)}/mo • ` : ''}
+                {finding.net_annual_roi ? `${formatCurrency(finding.net_annual_roi)}/yr` : ''}
+              </span>
+              <span className="chevron">⌄</span>
             </button>
-            <button
-              onClick={generatePDF}
-              className="btn-primary"
-            >
-              📄 Download PDF
-            </button>
-          </div>
-        </div>
-        
-        {/* Premium 3-Card Summary */}
-        <div style={{ marginBottom: 'var(--space-xl)' }}>
-          <div className="summary-cards-container">
-            <div className="summary-card slide-in-up">
-              <span style={{ fontSize: '24px', marginBottom: 'var(--space-sm)', display: 'block' }}>⏱️</span>
-              <span className="text-card-number" style={{ color: 'var(--color-accent)', display: 'block', marginBottom: 'var(--space-xs)' }}>
-                {summary.total_time_savings_hours}h
-              </span>
-              <span className="text-card-label">Time Savings /mo</span>
-            </div>
-
-            <div className="summary-card slide-in-up">
-              <span style={{ fontSize: '24px', marginBottom: 'var(--space-sm)', display: 'block' }}>💰</span>
-              <span className="text-card-number text-positive" style={{ display: 'block', marginBottom: 'var(--space-xs)' }}>
-                ${summary.total_annual_roi?.toLocaleString()}
-              </span>
-              <span className="text-card-label">Annual ROI</span>
-            </div>
-
-            <div className="summary-card slide-in-up">
-              <span style={{ fontSize: '24px', marginBottom: 'var(--space-sm)', display: 'block' }}>🎯</span>
-              <span className="text-card-number" style={{ color: 'var(--color-accent)', display: 'block', marginBottom: 'var(--space-xs)' }}>
-                🟡 Medium
-              </span>
-              <span className="text-card-label">Avg Confidence</span>
+            <div className="finding-body">
+              <p>{finding.recommendation}</p>
+              
+              {/* Mini ROI Breakdown */}
+              {(finding.cleanup_cost || finding.monthly_user_savings || finding.annual_user_savings) && (
+                <div className="roi-mini">
+                  {finding.cleanup_cost && (
+                    <div className="mini-stat">
+                      <div className="number">{formatCurrency(finding.cleanup_cost)}</div>
+                      <div className="label">One-time Cost</div>
+                    </div>
+                  )}
+                  {finding.monthly_user_savings && (
+                    <div className="mini-stat">
+                      <div className="number">{formatCurrency(finding.monthly_user_savings)}</div>
+                      <div className="label">Monthly Savings</div>
+                    </div>
+                  )}
+                  {finding.annual_user_savings && (
+                    <div className="mini-stat">
+                      <div className="number">{formatCurrency(finding.annual_user_savings)}</div>
+                      <div className="label">Annual Savings</div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-        </div>
-
-        {/* Premium Findings Display */}
-        <div style={{ marginBottom: 'var(--space-xl)' }}>
-          <div style={{ 
-            background: 'var(--color-bg)', 
-            borderRadius: 'var(--radius-card)', 
-            overflow: 'hidden', 
-            boxShadow: '0 2px 8px var(--color-card-shadow)' 
-          }}>
-            <div style={{ 
-              padding: 'var(--space-lg)', 
-              borderBottom: '1px solid var(--color-border)',
-              background: 'var(--color-bg-alt)'
-            }}>
-              <h3 style={{ 
-                fontSize: 'var(--fs-h2)', 
-                fontWeight: 'var(--fw-semibold)', 
-                color: 'var(--color-text-primary)',
-                marginBottom: 'var(--space-xs)'
-              }}>
-                Detailed Findings ({summary.total_findings})
-              </h3>
-              <p style={{ 
-                fontSize: 'var(--fs-body)', 
-                color: 'var(--color-text-secondary)', 
-                margin: 0
-              }}>
-                Click on any finding to view detailed breakdown and recommendations
-              </p>
-            </div>
-            <div>
-              {findings.map((finding, index) => (
-                <EnhancedFindingCard key={finding.id} finding={finding} index={index} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+        ))}
+      </section>
 
       {/* Edit Assumptions Modal */}
       <EditAssumptionsModal
@@ -1155,14 +1171,13 @@ const AuditResults = () => {
         <div className="loading-overlay-premium">
           <div className="loading-content-premium">
             <div className="loading-spinner-premium"></div>
-            <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-text-primary)' }}>
-              Recalculating with new assumptions...
-            </span>
+            <span>Recalculating with new assumptions...</span>
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
+};
 };
 
 // Simple About Page
