@@ -24,7 +24,7 @@ const LandingPage = () => {
             substantial cost savings with our AI-powered Salesforce audit tool.
           </p>
           <button 
-            className="btn-primary size-lg slide-in-up"
+            className="btn-primary btn-gradient slide-in-up"
             onClick={() => navigate('/dashboard')}
           >
             Start Free Audit
