@@ -324,11 +324,12 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   );
 };
 
-// Dashboard Component
+{/* Dashboard Component */}
 const Dashboard = () => {
   const [sessions, setSessions] = useState([]);
   const [running, setRunning] = useState(false);
   const [sessionId, setSessionId] = useState(null);
+  const [showOrgProfile, setShowOrgProfile] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -361,17 +362,22 @@ const Dashboard = () => {
     }
   };
 
-  const runAudit = async () => {
+  const handleRunAudit = () => {
     if (!sessionId) {
       alert('Please connect to Salesforce first by going to the home page and clicking "Connect with Salesforce"');
       navigate('/');
       return;
     }
-    
+    setShowOrgProfile(true);
+  };
+
+  const runAuditWithProfile = async (auditRequest) => {
     setRunning(true);
+    setShowOrgProfile(false);
+    
     try {
-      console.log('Running audit with session ID:', sessionId);
-      const response = await axios.post(`${API}/audit/run?session_id=${sessionId}`);
+      console.log('Running audit with profile:', auditRequest);
+      const response = await axios.post(`${API}/audit/run`, auditRequest);
       if (response.data.session_id) {
         navigate(`/audit/${response.data.session_id}`);
       } else if (response.data.error) {
