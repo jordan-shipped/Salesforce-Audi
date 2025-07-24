@@ -484,12 +484,13 @@ def main():
     
     tester = SalesforceAuditAPITester()
     
-    # Test sequence - focusing on real implemented endpoints
+    # Test sequence - focusing on enhanced ROI implementation
     tests = [
         ("Root Endpoint", tester.test_root_endpoint),
         ("OAuth Authorize", tester.test_oauth_authorize),
         ("OAuth Callback Invalid State", tester.test_oauth_callback_invalid_state),
         ("Get Audit Sessions", tester.test_get_audit_sessions),
+        ("Enhanced Audit Request Structure", tester.test_enhanced_audit_request_structure),
         ("Run Audit Without Session", tester.test_run_audit_without_session),
         ("Get Audit Details Not Found", tester.test_get_audit_details_not_found),
         ("Generate PDF Mock", tester.test_generate_pdf_mock),
@@ -502,8 +503,9 @@ def main():
     # Validate OAuth security implementation
     tester.validate_oauth_security()
     
-    # Validate new ROI calculations
-    tester.validate_roi_calculations()
+    # Validate enhanced ROI calculations
+    tester.validate_enhanced_roi_structure()
+    tester.test_department_salary_calculations()
     
     # Print final results
     print("\n" + "=" * 50)
