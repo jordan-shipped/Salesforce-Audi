@@ -387,7 +387,16 @@ const Dashboard = () => {
     
     try {
       console.log('Running audit with profile:', auditRequest);
-      const response = await axios.post(`${API}/audit/run`, auditRequest);
+      console.log('API URL:', `${API}/audit/run`);
+      
+      const response = await axios.post(`${API}/audit/run`, auditRequest, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('Audit response:', response.data);
+      
       if (response.data.session_id) {
         navigate(`/audit/${response.data.session_id}`);
       } else if (response.data.error) {
@@ -399,14 +408,19 @@ const Dashboard = () => {
         }
       }
     } catch (error) {
-      console.error('Audit failed:', error);
+      console.error('Audit failed with error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      
       if (error.response && error.response.status === 401) {
         alert('Session expired. Please connect to Salesforce again.');
         localStorage.removeItem('salesforce_session_id');
         setSessionId(null);
         navigate('/');
+      } else if (error.response && error.response.data) {
+        alert(`Audit failed: ${JSON.stringify(error.response.data)}`);
       } else {
-        alert('Audit failed. Please try again.');
+        alert(`Audit failed: ${error.message}. Please check console for details.`);
       }
     } finally {
       setRunning(false);
