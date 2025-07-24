@@ -581,7 +581,7 @@ def analyze_custom_fields(sf_client, org_context, department_salaries=None, cust
                     'field_count': unused_field_count,
                     'type': 'custom_fields'
                 }
-                roi_calc = calculate_enhanced_roi_with_tasks(finding_data, department_salaries, active_users, org_data)
+                roi_calc = calculate_enhanced_roi_with_tasks(finding_data, department_salaries, active_users, org_data, custom_assumptions)
                 
                 findings.append({
                     "id": str(uuid.uuid4()),
