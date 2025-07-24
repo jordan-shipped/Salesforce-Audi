@@ -1178,7 +1178,6 @@ const AuditResults = () => {
     </main>
   );
 };
-};
 
 // Simple About Page
 const About = () => (
