@@ -1096,7 +1096,7 @@ def run_salesforce_audit_with_salaries(access_token, instance_url, department_sa
         logger.info(f"Starting enhanced audit for org: {org_name} (Type: {org_context['org_type']}, Users: {org_context['active_users']}, Rate: ${hourly_rate}/hr)")
         
         # Run analysis modules with org context and department salaries
-        custom_fields_findings = analyze_custom_fields(sf, org_context, department_salaries)
+        custom_fields_findings = analyze_custom_fields(sf, org_context, department_salaries, custom_assumptions)
         data_quality_findings = analyze_data_quality(sf, org_context)
         automation_findings = analyze_automation_opportunities(sf, org_context)
         system_config_findings = analyze_system_configuration(sf, org_context)
