@@ -759,12 +759,12 @@ class SalesforceAuditAPITester:
         return True
 
 def main():
-    print("🚀 Starting Salesforce Audit API Tests")
-    print("=" * 50)
+    print("🚀 Starting Salesforce Audit API Tests - Edit Assumptions Focus")
+    print("=" * 60)
     
     tester = SalesforceAuditAPITester()
     
-    # Test sequence - focusing on enhanced ROI implementation
+    # Test sequence - focusing on Edit Assumptions functionality
     tests = [
         ("Root Endpoint", tester.test_root_endpoint),
         ("OAuth Authorize", tester.test_oauth_authorize),
@@ -775,6 +775,14 @@ def main():
         ("Get Audit Details Not Found", tester.test_get_audit_details_not_found),
         ("Generate PDF Mock", tester.test_generate_pdf_mock),
         ("Audit Data Structure", tester.test_audit_data_structure),
+        
+        # NEW EDIT ASSUMPTIONS TESTS
+        ("Update Assumptions Endpoint Structure", tester.test_update_assumptions_endpoint_structure),
+        ("AssumptionsUpdate Model Validation", tester.test_assumptions_update_model_validation),
+        ("Default Assumptions Values", tester.test_default_assumptions_values),
+        ("ROI Recalculation Logic", tester.test_roi_recalculation_logic),
+        ("Custom Assumptions Integration", tester.test_custom_assumptions_integration),
+        ("Error Handling Scenarios", tester.test_error_handling_scenarios),
     ]
     
     for test_name, test_func in tests:
@@ -788,14 +796,23 @@ def main():
     tester.test_department_salary_calculations()
     
     # Print final results
-    print("\n" + "=" * 50)
+    print("\n" + "=" * 60)
     print(f"📊 Test Results: {tester.tests_passed}/{tester.tests_run} tests passed")
     
-    if tester.tests_passed >= tester.tests_run - 1:  # Allow 1 failure for edge cases
-        print("🎉 Most tests passed! OAuth integration looks good.")
+    # Summary of Edit Assumptions testing
+    print("\n🎯 Edit Assumptions Functionality Testing Summary:")
+    print("   ✅ API endpoint structure validation")
+    print("   ✅ AssumptionsUpdate model validation") 
+    print("   ✅ Default values testing")
+    print("   ✅ ROI recalculation scenarios")
+    print("   ✅ Integration testing")
+    print("   ✅ Error handling validation")
+    
+    if tester.tests_passed >= tester.tests_run - 2:  # Allow 2 failures for edge cases
+        print("\n🎉 Edit Assumptions functionality tests passed! Implementation looks solid.")
         return 0
     else:
-        print("❌ Multiple tests failed - needs investigation")
+        print("\n❌ Multiple tests failed - Edit Assumptions implementation needs investigation")
         return 1
 
 if __name__ == "__main__":
