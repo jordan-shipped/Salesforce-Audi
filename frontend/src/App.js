@@ -1007,129 +1007,84 @@ const AuditResults = () => {
   const { summary, findings } = auditData;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-indigo-600">SalesAudit Pro</Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/dashboard" className="text-sm text-gray-500 hover:text-gray-700">← Back to Dashboard</Link>
-              <button
-                onClick={() => setShowEditAssumptions(true)}
-                disabled={updating}
-                className={`inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                  updating ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                🔧 Edit Assumptions
-              </button>
-              <button
-                onClick={generatePDF}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                📄 Download PDF
-              </button>
-            </div>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+      {/* Premium Navigation */}
+      <nav className="premium-nav">
+        <div className="premium-nav-content">
+          <Link to="/" className="premium-nav-brand">SalesAudit Pro</Link>
+          <div className="premium-nav-actions">
+            <Link to="/dashboard" className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
+              ← Back to Dashboard
+            </Link>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Enhanced Summary Cards */}
-        <div className="px-4 py-6 sm:px-0">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Enhanced Audit Results</h1>
-          
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="text-2xl">🔍</div>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Total Findings</dt>
-                      <dd className="text-3xl font-bold text-gray-900">{summary.total_findings}</dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
+      <div className="premium-container">
+        {/* Header with Edit Assumptions */}
+        <div className="action-bar">
+          <h1 className="text-page-title">Enhanced Audit Results</h1>
+          <div className="action-buttons">
+            <button
+              onClick={() => setShowEditAssumptions(true)}
+              disabled={updating}
+              className="btn-secondary"
+            >
+              🔧 Edit Assumptions
+            </button>
+            <button
+              onClick={generatePDF}
+              className="btn-primary"
+            >
+              📄 Download PDF
+            </button>
+          </div>
+        </div>
+        
+        {/* Premium 3-Card Summary */}
+        <div className="premium-section">
+          <div className="summary-cards-container">
+            <div className="summary-card slide-in-up">
+              <span className="summary-card-icon">⏱️</span>
+              <span className="summary-card-number text-card-number neutral">
+                {summary.total_time_savings_hours}h
+              </span>
+              <span className="text-card-label">Time Savings /mo</span>
             </div>
 
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="text-2xl">⏱️</div>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Time Savings</dt>
-                      <dd className="text-3xl font-bold text-gray-900">{summary.total_time_savings_hours}h</dd>
-                      <dd className="text-xs text-gray-500">per month</dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
+            <div className="summary-card slide-in-up">
+              <span className="summary-card-icon">💰</span>
+              <span className="summary-card-number text-card-number positive">
+                ${summary.total_annual_roi?.toLocaleString()}
+              </span>
+              <span className="text-card-label">Annual ROI</span>
             </div>
 
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="text-2xl">💰</div>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Annual ROI</dt>
-                      <dd className="text-3xl font-bold text-green-600">${summary.total_annual_roi.toLocaleString()}</dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="text-2xl">🎯</div>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Avg Confidence</dt>
-                      <dd className="text-3xl font-bold text-yellow-600">🟡 Medium</dd>
-                      <dd className="text-xs text-gray-500">data quality</dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
+            <div className="summary-card slide-in-up">
+              <span className="summary-card-icon">🎯</span>
+              <span className="summary-card-number text-card-number neutral">
+                🟡 Medium
+              </span>
+              <span className="text-card-label">Avg Confidence</span>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Findings Display */}
-        <div className="px-4 sm:px-0">
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div className="px-4 py-5 sm:px-6 bg-gray-50">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Detailed Findings with Task Breakdown</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                    Click "See Details" on any finding to view task-specific breakdowns, role attribution, and calculation methods.
-                  </p>
-                </div>
-              </div>
+        {/* Premium Findings Display */}
+        <div className="premium-section">
+          <div className="findings-container">
+            <div className="findings-header">
+              <h3 className="text-section-heading" style={{ marginBottom: 0 }}>
+                Detailed Findings ({summary.total_findings})
+              </h3>
+              <p className="text-small" style={{ color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-xs)' }}>
+                Click on any finding to view detailed breakdown and recommendations
+              </p>
             </div>
-            <div className="border-t border-gray-200">
-              <dl>
-                {findings.map((finding, index) => (
-                  <EnhancedFindingCard key={finding.id} finding={finding} index={index} />
-                ))}
-              </dl>
+            <div>
+              {findings.map((finding, index) => (
+                <EnhancedFindingCard key={finding.id} finding={finding} index={index} />
+              ))}
             </div>
           </div>
         </div>
@@ -1143,15 +1098,14 @@ const AuditResults = () => {
         assumptions={auditData?.session?.custom_assumptions || {}}
       />
       
-      {/* Loading Overlay */}
+      {/* Premium Loading Overlay */}
       {updating && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 flex items-center space-x-4">
-            <svg className="animate-spin h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span className="text-gray-700">Recalculating with new assumptions...</span>
+        <div className="loading-overlay-premium">
+          <div className="loading-content-premium">
+            <div className="loading-spinner-premium"></div>
+            <span className="text-body" style={{ color: 'var(--color-text-primary)' }}>
+              Recalculating with new assumptions...
+            </span>
           </div>
         </div>
       )}
