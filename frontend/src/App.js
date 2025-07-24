@@ -1036,23 +1036,28 @@ const AuditResults = () => {
   const { summary, findings } = auditData;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
-      {/* Premium Navigation */}
-      <nav className="premium-nav">
-        <div className="premium-nav-content">
-          <Link to="/" className="premium-nav-brand">SalesAudit Pro</Link>
-          <div className="premium-nav-actions">
-            <Link to="/dashboard" className="text-small" style={{ color: 'var(--color-text-secondary)' }}>
-              ← Back to Dashboard
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
+      {/* Simply Scale Header */}
+      <header className="header">
+        <Link to="/" className="logo">SalesAudit Pro</Link>
+        <nav>
+          <Link to="/dashboard" style={{ color: 'var(--color-text-secondary)' }}>
+            ← Back to Dashboard
+          </Link>
+        </nav>
+      </header>
 
       <div className="premium-container">
         {/* Header with Edit Assumptions */}
-        <div className="action-bar">
-          <h1 className="text-page-title">Enhanced Audit Results</h1>
+        <div className="action-bar" style={{ paddingTop: 'var(--space-xl)' }}>
+          <h1 style={{ 
+            fontSize: 'var(--fs-hero-lg)', 
+            fontWeight: 'var(--fw-bold)', 
+            color: 'var(--color-text-primary)',
+            margin: 0
+          }}>
+            Enhanced Audit Results
+          </h1>
           <div className="action-buttons">
             <button
               onClick={() => setShowEditAssumptions(true)}
@@ -1071,27 +1076,27 @@ const AuditResults = () => {
         </div>
         
         {/* Premium 3-Card Summary */}
-        <div className="premium-section">
+        <div style={{ marginBottom: 'var(--space-xl)' }}>
           <div className="summary-cards-container">
             <div className="summary-card slide-in-up">
-              <span className="summary-card-icon">⏱️</span>
-              <span className="summary-card-number text-card-number neutral">
+              <span style={{ fontSize: '24px', marginBottom: 'var(--space-sm)', display: 'block' }}>⏱️</span>
+              <span className="text-card-number" style={{ color: 'var(--color-accent)', display: 'block', marginBottom: 'var(--space-xs)' }}>
                 {summary.total_time_savings_hours}h
               </span>
               <span className="text-card-label">Time Savings /mo</span>
             </div>
 
             <div className="summary-card slide-in-up">
-              <span className="summary-card-icon">💰</span>
-              <span className="summary-card-number text-card-number positive">
+              <span style={{ fontSize: '24px', marginBottom: 'var(--space-sm)', display: 'block' }}>💰</span>
+              <span className="text-card-number text-positive" style={{ display: 'block', marginBottom: 'var(--space-xs)' }}>
                 ${summary.total_annual_roi?.toLocaleString()}
               </span>
               <span className="text-card-label">Annual ROI</span>
             </div>
 
             <div className="summary-card slide-in-up">
-              <span className="summary-card-icon">🎯</span>
-              <span className="summary-card-number text-card-number neutral">
+              <span style={{ fontSize: '24px', marginBottom: 'var(--space-sm)', display: 'block' }}>🎯</span>
+              <span className="text-card-number" style={{ color: 'var(--color-accent)', display: 'block', marginBottom: 'var(--space-xs)' }}>
                 🟡 Medium
               </span>
               <span className="text-card-label">Avg Confidence</span>
@@ -1100,13 +1105,31 @@ const AuditResults = () => {
         </div>
 
         {/* Premium Findings Display */}
-        <div className="premium-section">
-          <div className="findings-container">
-            <div className="findings-header">
-              <h3 className="text-section-heading" style={{ marginBottom: 0 }}>
+        <div style={{ marginBottom: 'var(--space-xl)' }}>
+          <div style={{ 
+            background: 'var(--color-bg)', 
+            borderRadius: 'var(--radius-card)', 
+            overflow: 'hidden', 
+            boxShadow: '0 2px 8px var(--color-card-shadow)' 
+          }}>
+            <div style={{ 
+              padding: 'var(--space-lg)', 
+              borderBottom: '1px solid var(--color-border)',
+              background: 'var(--color-bg-alt)'
+            }}>
+              <h3 style={{ 
+                fontSize: 'var(--fs-h2)', 
+                fontWeight: 'var(--fw-semibold)', 
+                color: 'var(--color-text-primary)',
+                marginBottom: 'var(--space-xs)'
+              }}>
                 Detailed Findings ({summary.total_findings})
               </h3>
-              <p className="text-small" style={{ color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-xs)' }}>
+              <p style={{ 
+                fontSize: 'var(--fs-body)', 
+                color: 'var(--color-text-secondary)', 
+                margin: 0
+              }}>
                 Click on any finding to view detailed breakdown and recommendations
               </p>
             </div>
@@ -1132,7 +1155,7 @@ const AuditResults = () => {
         <div className="loading-overlay-premium">
           <div className="loading-content-premium">
             <div className="loading-spinner-premium"></div>
-            <span className="text-body" style={{ color: 'var(--color-text-primary)' }}>
+            <span style={{ fontSize: 'var(--fs-body)', color: 'var(--color-text-primary)' }}>
               Recalculating with new assumptions...
             </span>
           </div>
