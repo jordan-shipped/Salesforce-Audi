@@ -297,11 +297,13 @@ const Dashboard = () => {
 
   return (
     <main className="dashboard">
-      {/* 1️⃣ Connection Status Strip */}
+      {/* 1️⃣ Connection Status Strip - Fixed Layout */}
       <section className="connection-strip">
+        <div className="status">
+          {sessionId ? '✅ Connected to Salesforce' : '⚠️ Not connected'}
+        </div>
         {sessionId ? (
-          <>
-            <div className="status connected">✅ Connected to Salesforce</div>
+          <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
             <button onClick={handleDisconnect} className="btn-outline">
               Disconnect
             </button>
@@ -312,31 +314,34 @@ const Dashboard = () => {
             >
               {running ? 'Running Audit...' : 'Run New Audit'}
             </button>
-          </>
+          </div>
         ) : (
-          <>
-            <div className="status">⚠️ Not connected</div>
-            <button onClick={handleConnect} className="btn-black">
-              Connect to Salesforce
-            </button>
-          </>
+          <button onClick={handleConnect} className="btn-primary">
+            Connect to Salesforce
+          </button>
         )}
       </section>
 
-      {/* 2️⃣ Sessions Summary */}
-      <section className="sessions-summary" aria-labelledby="sessions-heading">
+      {/* 2️⃣ Sessions Area */}
+      <section aria-labelledby="sessions-heading">
+        <h2 id="sessions-heading" className="visually-hidden">Your Audit Sessions</h2>
         {loading ? (
-          <div className="loading-state">
-            <div className="loading-spinner-premium"></div>
-            <p>Loading your audit sessions...</p>
+          <div className="sessions-list">
+            <div className="loading-state">
+              <div className="loading-spinner-premium"></div>
+              <p>Loading your audit sessions...</p>
+            </div>
           </div>
         ) : (
-          <div className={`sessions-list ${sessions.length === 0 ? 'empty' : 'grid'}`} role="list">
+          <div className={sessions.length === 0 ? "sessions-list" : "sessions-list grid"} role="list">
             {sessions.length === 0 ? (
-              <div className="empty-card">
-                <p className="empty-title">No Audit Sessions Yet</p>
-                <p className="empty-sub">Connect to Salesforce and run your first audit to get started.</p>
-                <button onClick={handleConnect} className="btn-black">
+              <div className="empty-card premium">
+                <div className="empty-icon">📊</div>
+                <h3 className="empty-title gradient-text">No Audit Sessions Yet</h3>
+                <p className="empty-sub">
+                  Connect your Salesforce org to run your first audit and unlock insights.
+                </p>
+                <button onClick={handleConnect} className="btn-primary">
                   Connect to Salesforce
                 </button>
               </div>
