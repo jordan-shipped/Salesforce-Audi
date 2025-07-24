@@ -785,24 +785,6 @@ const AuditResults = () => {
     }
   };
 
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case 'Time Savings': return 'bg-blue-100 text-blue-800';
-      case 'Revenue Leaks': return 'bg-red-100 text-red-800';
-      case 'Automation Opportunities': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getImpactColor = (impact) => {
-    switch (impact) {
-      case 'High': return 'bg-red-100 text-red-800';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800';
-      case 'Low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -815,7 +797,7 @@ const AuditResults = () => {
         </div>
       </div>
     );
-  }
+  };
 
   if (!auditData) {
     return (
@@ -826,7 +808,7 @@ const AuditResults = () => {
         </div>
       </div>
     );
-  }
+  };
 
   const { summary, findings } = auditData;
 
@@ -853,9 +835,9 @@ const AuditResults = () => {
       </nav>
 
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Summary Cards */}
+        {/* Enhanced Summary Cards */}
         <div className="px-4 py-6 sm:px-0">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Audit Results</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">Enhanced Audit Results</h1>
           
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <div className="bg-white overflow-hidden shadow rounded-lg">
@@ -911,13 +893,13 @@ const AuditResults = () => {
               <div className="p-5">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <div className="text-2xl">🚨</div>
+                    <div className="text-2xl">🎯</div>
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">High Impact</dt>
-                      <dd className="text-3xl font-bold text-red-600">{summary.high_impact_count}</dd>
-                      <dd className="text-xs text-gray-500">critical issues</dd>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Avg Confidence</dt>
+                      <dd className="text-3xl font-bold text-yellow-600">🟡 Medium</dd>
+                      <dd className="text-xs text-gray-500">data quality</dd>
                     </dl>
                   </div>
                 </div>
@@ -926,61 +908,27 @@ const AuditResults = () => {
           </div>
         </div>
 
-        {/* Findings by Category */}
+        {/* Enhanced Findings Display */}
         <div className="px-4 sm:px-0">
-          {Object.entries(summary.category_breakdown).map(([category, stats]) => {
-            const categoryFindings = findings.filter(f => f.category === category);
-            
-            return (
-              <div key={category} className="mb-8">
-                <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                  <div className="px-4 py-5 sm:px-6 bg-gray-50">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">{category}</h3>
-                        <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                          {stats.count} findings • {stats.savings.toFixed(1)} hours saved • ${stats.roi.toLocaleString()} annual value
-                        </p>
-                      </div>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(category)}`}>
-                        {stats.count} issues
-                      </span>
-                    </div>
-                  </div>
-                  <div className="border-t border-gray-200">
-                    <dl>
-                      {categoryFindings.map((finding, index) => (
-                        <div key={finding.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} px-4 py-5 sm:px-6`}>
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between">
-                                <h4 className="text-lg font-medium text-gray-900">{finding.title}</h4>
-                                <div className="flex space-x-2">
-                                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getImpactColor(finding.impact)}`}>
-                                    {finding.impact} Impact
-                                  </span>
-                                </div>
-                              </div>
-                              <p className="mt-2 text-sm text-gray-600">{finding.description}</p>
-                              <div className="mt-3 flex items-center space-x-4 text-sm text-gray-500">
-                                <span>💰 ${finding.roi_estimate.toLocaleString()}/year</span>
-                                <span>⏱️ {finding.time_savings_hours}h saved/month</span>
-                                <span>📊 {finding.affected_objects.join(', ')}</span>
-                              </div>
-                              <div className="mt-3 p-3 bg-blue-50 rounded-md">
-                                <h5 className="text-sm font-medium text-blue-900">💡 Recommendation:</h5>
-                                <p className="mt-1 text-sm text-blue-800">{finding.recommendation}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="px-4 py-5 sm:px-6 bg-gray-50">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">Detailed Findings with Task Breakdown</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    Click "See Details" on any finding to view task-specific breakdowns, role attribution, and calculation methods.
+                  </p>
                 </div>
               </div>
-            );
-          })}
+            </div>
+            <div className="border-t border-gray-200">
+              <dl>
+                {findings.map((finding, index) => (
+                  <EnhancedFindingCard key={finding.id} finding={finding} index={index} />
+                ))}
+              </dl>
+            </div>
+          </div>
         </div>
       </div>
     </div>
