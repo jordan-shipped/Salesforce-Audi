@@ -218,7 +218,7 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   );
 };
 
-{/* Dashboard Component */}
+// Dashboard Component
 const Dashboard = () => {
   const [sessions, setSessions] = useState([]);
   const [running, setRunning] = useState(false);
