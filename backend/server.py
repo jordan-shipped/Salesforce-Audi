@@ -28,6 +28,17 @@ app = FastAPI()
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Helper function to convert ObjectId to string
+def convert_objectid(obj):
+    """Convert MongoDB ObjectId to string for JSON serialization"""
+    if isinstance(obj, dict):
+        return {k: convert_objectid(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_objectid(item) for item in obj]
+    elif isinstance(obj, ObjectId):
+        return str(obj)
+    return obj
+
 # Models
 class AuditSession(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
