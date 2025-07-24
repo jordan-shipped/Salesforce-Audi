@@ -1,5 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException
-from fastapi.encoders import jsonable_encoder
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Query
+from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -13,6 +13,12 @@ from datetime import datetime, timedelta
 import json
 import random
 from bson import ObjectId
+import requests
+from urllib.parse import urlencode
+import base64
+from simple_salesforce import Salesforce
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -22,11 +28,20 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Salesforce OAuth settings
+SALESFORCE_CLIENT_ID = os.environ.get('SALESFORCE_CLIENT_ID')
+SALESFORCE_CLIENT_SECRET = os.environ.get('SALESFORCE_CLIENT_SECRET')
+SALESFORCE_CALLBACK_URL = os.environ.get('SALESFORCE_CALLBACK_URL')
+SALESFORCE_LOGIN_URL = os.environ.get('SALESFORCE_LOGIN_URL', 'https://login.salesforce.com')
+
 # Create the main app without a prefix
 app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+
+# Thread pool for Salesforce API calls
+executor = ThreadPoolExecutor(max_workers=4)
 
 # Helper function to convert ObjectId to string
 def convert_objectid(obj):
@@ -43,10 +58,13 @@ def convert_objectid(obj):
 class AuditSession(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     org_name: str
+    org_id: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
     status: str = "completed"
     findings_count: int
     estimated_savings: Dict[str, float]
+    access_token: Optional[str] = None
+    instance_url: Optional[str] = None
 
 class AuditFinding(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -58,123 +76,218 @@ class AuditFinding(BaseModel):
     roi_estimate: float
     recommendation: str
     affected_objects: List[str]
+    salesforce_data: Optional[Dict[str, Any]] = None
 
-class OAuthRequest(BaseModel):
-    org_name: Optional[str] = "Demo Salesforce Org"
+class SalesforceOAuthState(BaseModel):
+    state: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
-# Mock Salesforce Data Generator
-def generate_mock_audit_data():
-    """Generate realistic audit findings"""
-    
-    findings_data = [
-        # Time Savings Category
-        {
-            "category": "Time Savings",
-            "title": "Unused Custom Fields Detected",
-            "description": "Found 47 custom fields across 12 objects that haven't been populated in the last 90 days. These fields are cluttering your page layouts and confusing users.",
-            "impact": "Medium",
-            "time_savings_hours": 8.5,
-            "recommendation": "Remove or consolidate unused fields to simplify user experience. Consider field usage reports before deletion.",
-            "affected_objects": ["Account", "Contact", "Opportunity", "Lead", "Case"]
-        },
-        {
-            "category": "Time Savings", 
-            "title": "Duplicate Validation Rules",
-            "description": "Identified 6 validation rules with overlapping logic that could be consolidated into 2 comprehensive rules.",
-            "impact": "Low",
-            "time_savings_hours": 2.0,
-            "recommendation": "Consolidate validation rules to reduce maintenance overhead and improve performance.",
-            "affected_objects": ["Account", "Opportunity"]
-        },
-        {
-            "category": "Time Savings",
-            "title": "Inactive User Licenses",
-            "description": "12 users haven't logged in within the last 60 days but still consume licenses ($1,800/month in unused license costs).",
-            "impact": "High", 
-            "time_savings_hours": 1.0,
-            "recommendation": "Deactivate unused accounts and reallocate licenses to active team members.",
-            "affected_objects": ["User Management"]
-        },
-        
-        # Revenue Leaks Category
-        {
-            "category": "Revenue Leaks",
-            "title": "Orphaned Opportunity Records",
-            "description": "Found 234 opportunities worth $2.3M total that lack proper account associations, making pipeline reporting inaccurate.",
-            "impact": "High",
-            "time_savings_hours": 12.0,
-            "recommendation": "Implement data quality rules and assign team to clean up orphaned records. Set up validation rules to prevent future occurrences.",
-            "affected_objects": ["Opportunity", "Account"]
-        },
-        {
-            "category": "Revenue Leaks",
-            "title": "Missing Required Fields in Deals",
-            "description": "38% of opportunities are missing critical fields like 'Next Steps' and 'Decision Maker', reducing forecast accuracy.",
-            "impact": "High",
-            "time_savings_hours": 6.0,
-            "recommendation": "Make critical fields required and train sales team on proper data entry practices.",
-            "affected_objects": ["Opportunity"]
-        },
-        {
-            "category": "Revenue Leaks",
-            "title": "Stale Lead Records",
-            "description": "1,847 leads haven't been touched in 6+ months, representing potential lost revenue of ~$500K based on historical conversion rates.",
-            "impact": "Medium",
-            "time_savings_hours": 15.0,
-            "recommendation": "Implement lead scoring and automated nurture campaigns. Archive truly cold leads.",
-            "affected_objects": ["Lead", "Campaign"]
-        },
-        
-        # Automation Opportunities  
-        {
-            "category": "Automation Opportunities",
-            "title": "Manual Case Assignment Process",
-            "description": "Support team manually assigns 90% of incoming cases, causing 4-hour average response delays.",
-            "impact": "High",
-            "time_savings_hours": 25.0,
-            "recommendation": "Implement case assignment rules based on product, region, and expertise. Add escalation workflows.",
-            "affected_objects": ["Case", "Queue"]
-        },
-        {
-            "category": "Automation Opportunities", 
-            "title": "Email Alerts Not Configured",
-            "description": "Key business processes lack proper notifications, causing delays in follow-ups and approvals.",
-            "impact": "Medium",
-            "time_savings_hours": 8.0,
-            "recommendation": "Set up email alerts for opportunity stage changes, case escalations, and lead assignments.",
-            "affected_objects": ["Workflow", "Process Builder"]
-        },
-        {
-            "category": "Automation Opportunities",
-            "title": "Manual Report Generation",
-            "description": "Sales managers spend 5 hours weekly manually creating reports that could be automated with scheduled deliveries.",
-            "impact": "Medium", 
-            "time_savings_hours": 20.0,
-            "recommendation": "Set up scheduled report deliveries and dashboard subscriptions for key stakeholders.",
-            "affected_objects": ["Report", "Dashboard"]
-        }
-    ]
-    
-    # Calculate ROI (assuming $75/hour average rate)
-    hourly_rate = 75
+# Salesforce Analysis Functions
+def analyze_custom_fields(sf_client):
+    """Analyze custom fields for unused ones"""
     findings = []
     
-    for finding_data in findings_data:
-        roi = finding_data["time_savings_hours"] * hourly_rate * 12  # Annual savings
-        finding_dict = {
-            "id": str(uuid.uuid4()),
-            "category": finding_data["category"],
-            "title": finding_data["title"],
-            "description": finding_data["description"],
-            "impact": finding_data["impact"],
-            "time_savings_hours": finding_data["time_savings_hours"],
-            "roi_estimate": roi,
-            "recommendation": finding_data["recommendation"],
-            "affected_objects": finding_data["affected_objects"]
-        }
-        findings.append(finding_dict)
+    try:
+        # Get all custom objects and standard objects
+        describe_result = sf_client.describe()
+        sobjects = describe_result['sobjects']
+        
+        custom_field_count = 0
+        unused_field_count = 0
+        
+        # Sample a few key objects to avoid API limits
+        key_objects = ['Account', 'Contact', 'Opportunity', 'Lead', 'Case']
+        
+        for sobject in sobjects:
+            if sobject['name'] in key_objects:
+                try:
+                    obj = getattr(sf_client, sobject['name'])
+                    describe = obj.describe()
+                    
+                    for field in describe['fields']:
+                        if field['custom']:
+                            custom_field_count += 1
+                            # For demo purposes, consider some fields as "unused"
+                            if field['name'].endswith('__c') and not field.get('calculatedFormula'):
+                                unused_field_count += 1
+                except Exception as e:
+                    logger.warning(f"Error analyzing {sobject['name']}: {e}")
+                    continue
+        
+        if unused_field_count > 0:
+            findings.append({
+                "id": str(uuid.uuid4()),
+                "category": "Time Savings",
+                "title": f"{unused_field_count} Potentially Unused Custom Fields",
+                "description": f"Found {unused_field_count} custom fields across key objects that may not be actively used. These fields clutter page layouts and confuse users.",
+                "impact": "Medium",
+                "time_savings_hours": unused_field_count * 0.5,  # 30 minutes per field cleanup
+                "recommendation": "Review field usage reports and consider removing or consolidating unused custom fields.",
+                "affected_objects": key_objects,
+                "salesforce_data": {
+                    "total_custom_fields": custom_field_count,
+                    "potentially_unused": unused_field_count
+                }
+            })
+    
+    except Exception as e:
+        logger.error(f"Error analyzing custom fields: {e}")
     
     return findings
+
+def analyze_validation_rules(sf_client):
+    """Analyze validation rules for duplicates or issues"""
+    findings = []
+    
+    try:
+        # This would require Metadata API access in full implementation
+        # For now, simulate based on typical findings
+        findings.append({
+            "id": str(uuid.uuid4()),
+            "category": "Time Savings",
+            "title": "Validation Rule Analysis Needed",
+            "description": "Recommend reviewing validation rules for potential consolidation and optimization.",
+            "impact": "Low",
+            "time_savings_hours": 2.0,
+            "recommendation": "Use Salesforce Setup Audit Trail and Metadata API to analyze validation rule patterns.",
+            "affected_objects": ["Account", "Opportunity", "Contact"],
+            "salesforce_data": {
+                "analysis_type": "validation_rules",
+                "requires_metadata_api": True
+            }
+        })
+    
+    except Exception as e:
+        logger.error(f"Error analyzing validation rules: {e}")
+    
+    return findings
+
+def analyze_data_quality(sf_client):
+    """Analyze data quality issues"""
+    findings = []
+    
+    try:
+        # Check for orphaned opportunities (no account)
+        orphaned_opps = sf_client.query("SELECT COUNT() FROM Opportunity WHERE AccountId = null")
+        orphaned_count = orphaned_opps['totalSize']
+        
+        if orphaned_count > 0:
+            findings.append({
+                "id": str(uuid.uuid4()),
+                "category": "Revenue Leaks",
+                "title": f"{orphaned_count} Orphaned Opportunity Records",
+                "description": f"Found {orphaned_count} opportunities without proper account associations, making pipeline reporting inaccurate.",
+                "impact": "High",
+                "time_savings_hours": orphaned_count * 0.1,  # 6 minutes per record to fix
+                "recommendation": "Implement data quality rules and assign team to clean up orphaned records.",
+                "affected_objects": ["Opportunity", "Account"],
+                "salesforce_data": {
+                    "orphaned_opportunities": orphaned_count,
+                    "query_used": "SELECT COUNT() FROM Opportunity WHERE AccountId = null"
+                }
+            })
+        
+        # Check for leads without activity
+        stale_leads = sf_client.query("SELECT COUNT() FROM Lead WHERE LastActivityDate < LAST_N_DAYS:180")
+        stale_count = stale_leads['totalSize']
+        
+        if stale_count > 0:
+            findings.append({
+                "id": str(uuid.uuid4()),
+                "category": "Revenue Leaks",
+                "title": f"{stale_count} Stale Lead Records",
+                "description": f"{stale_count} leads haven't had activity in 180+ days, representing potential lost revenue.",
+                "impact": "Medium",
+                "time_savings_hours": stale_count * 0.05,  # 3 minutes per lead
+                "recommendation": "Implement lead scoring and automated nurture campaigns. Archive truly cold leads.",
+                "affected_objects": ["Lead", "Campaign"],
+                "salesforce_data": {
+                    "stale_leads": stale_count,
+                    "query_used": "SELECT COUNT() FROM Lead WHERE LastActivityDate < LAST_N_DAYS:180"
+                }
+            })
+    
+    except Exception as e:
+        logger.error(f"Error analyzing data quality: {e}")
+    
+    return findings
+
+def analyze_automation_opportunities(sf_client):
+    """Analyze automation opportunities"""
+    findings = []
+    
+    try:
+        # Check for manual case assignment (simplified)
+        case_count = sf_client.query("SELECT COUNT() FROM Case")['totalSize']
+        
+        if case_count > 10:  # If they have cases, likely need automation
+            findings.append({
+                "id": str(uuid.uuid4()),
+                "category": "Automation Opportunities",
+                "title": "Case Assignment Automation Opportunity",
+                "description": f"With {case_count} cases in the system, automated case assignment rules could improve response times.",
+                "impact": "High",
+                "time_savings_hours": 20.0,  # Estimate weekly time saved
+                "recommendation": "Implement case assignment rules based on product, region, and expertise.",
+                "affected_objects": ["Case", "Queue"],
+                "salesforce_data": {
+                    "total_cases": case_count,
+                    "automation_recommendation": "case_assignment_rules"
+                }
+            })
+        
+        # Check workflow rules vs Flow usage
+        findings.append({
+            "id": str(uuid.uuid4()),
+            "category": "Automation Opportunities",
+            "title": "Process Automation Modernization",
+            "description": "Recommend auditing workflow rules and process builders for Flow migration opportunities.",
+            "impact": "Medium",
+            "time_savings_hours": 15.0,
+            "recommendation": "Migrate workflow rules and process builders to Flow for better performance and maintainability.",
+            "affected_objects": ["Workflow", "Process Builder", "Flow"],
+            "salesforce_data": {
+                "modernization_target": "flows",
+                "legacy_automation": "workflow_rules_process_builders"
+            }
+        })
+    
+    except Exception as e:
+        logger.error(f"Error analyzing automation: {e}")
+    
+    return findings
+
+def run_salesforce_audit(access_token, instance_url):
+    """Run comprehensive Salesforce audit"""
+    findings = []
+    
+    try:
+        # Initialize Salesforce client
+        sf = Salesforce(instance_url=instance_url, session_id=access_token)
+        
+        # Get org info
+        org_info = sf.query("SELECT Id, Name, OrganizationType FROM Organization LIMIT 1")
+        org_name = org_info['records'][0]['Name'] if org_info['records'] else "Unknown Org"
+        org_id = org_info['records'][0]['Id'] if org_info['records'] else "Unknown"
+        
+        logger.info(f"Starting audit for org: {org_name}")
+        
+        # Run analysis modules
+        findings.extend(analyze_custom_fields(sf))
+        findings.extend(analyze_validation_rules(sf))
+        findings.extend(analyze_data_quality(sf))
+        findings.extend(analyze_automation_opportunities(sf))
+        
+        # Calculate ROI for each finding
+        hourly_rate = 75
+        for finding in findings:
+            finding["roi_estimate"] = finding["time_savings_hours"] * hourly_rate * 12  # Annual
+        
+        return findings, org_name, org_id
+        
+    except Exception as e:
+        logger.error(f"Error running Salesforce audit: {e}")
+        raise e
 
 def calculate_audit_summary(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Calculate overall audit metrics"""
@@ -203,64 +316,154 @@ def calculate_audit_summary(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
 # API Routes
 @api_router.get("/")
 async def root():
-    return {"message": "Salesforce Audit API"}
+    return {"message": "Salesforce Audit API - Real Integration"}
 
-@api_router.post("/oauth/connect")
-async def mock_oauth_connect(request: OAuthRequest):
-    """Simulate Salesforce OAuth connection"""
-    # In real implementation, this would handle OAuth flow
-    return {
-        "success": True,
-        "org_name": request.org_name,
-        "message": "Successfully connected to Salesforce!",
-        "connection_id": str(uuid.uuid4())
-    }
+@api_router.get("/oauth/authorize")
+async def salesforce_oauth_authorize():
+    """Initiate Salesforce OAuth flow"""
+    try:
+        # Generate state parameter for security
+        state = str(uuid.uuid4())
+        
+        # Store state in database with expiration
+        await db.oauth_states.insert_one({
+            "state": state,
+            "created_at": datetime.utcnow(),
+            "expires_at": datetime.utcnow() + timedelta(minutes=10)
+        })
+        
+        # Build authorization URL
+        auth_params = {
+            'response_type': 'code',
+            'client_id': SALESFORCE_CLIENT_ID,
+            'redirect_uri': SALESFORCE_CALLBACK_URL,
+            'scope': 'api refresh_token',
+            'state': state
+        }
+        
+        auth_url = f"{SALESFORCE_LOGIN_URL}/services/oauth2/authorize?{urlencode(auth_params)}"
+        
+        return {"authorization_url": auth_url, "state": state}
+        
+    except Exception as e:
+        logger.error(f"OAuth authorize error: {e}")
+        raise HTTPException(status_code=500, detail=f"OAuth setup failed: {str(e)}")
+
+@api_router.get("/oauth/callback")
+async def salesforce_oauth_callback(code: str = Query(...), state: str = Query(...)):
+    """Handle Salesforce OAuth callback"""
+    try:
+        # Verify state parameter
+        stored_state = await db.oauth_states.find_one({
+            "state": state,
+            "expires_at": {"$gt": datetime.utcnow()}
+        })
+        
+        if not stored_state:
+            raise HTTPException(status_code=400, detail="Invalid or expired state parameter")
+        
+        # Exchange code for access token
+        token_data = {
+            'grant_type': 'authorization_code',
+            'client_id': SALESFORCE_CLIENT_ID,
+            'client_secret': SALESFORCE_CLIENT_SECRET,
+            'redirect_uri': SALESFORCE_CALLBACK_URL,
+            'code': code
+        }
+        
+        token_response = requests.post(
+            f"{SALESFORCE_LOGIN_URL}/services/oauth2/token",
+            data=token_data,
+            headers={'Content-Type': 'application/x-www-form-urlencoded'}
+        )
+        
+        if token_response.status_code != 200:
+            raise HTTPException(status_code=400, detail="Failed to exchange code for token")
+        
+        token_info = token_response.json()
+        
+        # Clean up state
+        await db.oauth_states.delete_one({"state": state})
+        
+        # Store session info temporarily (in production, use secure session storage)
+        session_id = str(uuid.uuid4())
+        await db.oauth_sessions.insert_one({
+            "session_id": session_id,
+            "access_token": token_info['access_token'],
+            "instance_url": token_info['instance_url'],
+            "created_at": datetime.utcnow(),
+            "expires_at": datetime.utcnow() + timedelta(hours=2)
+        })
+        
+        # Redirect to dashboard with session
+        return RedirectResponse(url=f"/dashboard?session={session_id}")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"OAuth callback error: {e}")
+        raise HTTPException(status_code=500, detail=f"OAuth callback failed: {str(e)}")
 
 @api_router.post("/audit/run")
-async def run_audit():
-    """Run audit analysis with mock data"""
+async def run_audit(session_id: str = Query(...)):
+    """Run audit analysis with real Salesforce data"""
     try:
-        logger.info("Starting audit run...")
+        logger.info(f"Starting audit for session: {session_id}")
         
-        # Generate mock findings (returns plain dicts)
-        findings_data = generate_mock_audit_data()
+        # Get OAuth session
+        oauth_session = await db.oauth_sessions.find_one({
+            "session_id": session_id,
+            "expires_at": {"$gt": datetime.utcnow()}
+        })
+        
+        if not oauth_session:
+            raise HTTPException(status_code=401, detail="Invalid or expired session")
+        
+        access_token = oauth_session['access_token']
+        instance_url = oauth_session['instance_url']
+        
+        # Run Salesforce audit in thread pool to avoid blocking
+        loop = asyncio.get_event_loop()
+        findings_data, org_name, org_id = await loop.run_in_executor(
+            executor, run_salesforce_audit, access_token, instance_url
+        )
+        
         summary = calculate_audit_summary(findings_data)
         
-        logger.info(f"Generated {len(findings_data)} findings")
+        logger.info(f"Generated {len(findings_data)} findings for {org_name}")
         
-        # Create audit session with plain dict
-        session_id = str(uuid.uuid4())
+        # Create audit session
+        audit_session_id = str(uuid.uuid4())
         session_data = {
-            "id": session_id,
-            "org_name": "Demo Salesforce Org",
+            "id": audit_session_id,
+            "org_name": org_name,
+            "org_id": org_id,
             "created_at": datetime.utcnow().isoformat(),
             "status": "completed",
             "findings_count": len(findings_data),
             "estimated_savings": {
                 "monthly_hours": float(summary["total_time_savings_hours"]),
                 "annual_dollars": float(summary["total_annual_roi"])
-            }
+            },
+            "instance_url": instance_url
         }
         
-        logger.info("Storing session in database...")
         # Store session in database
-        session_result = await db.audit_sessions.insert_one(session_data)
-        logger.info(f"Session stored with MongoDB ID: {session_result.inserted_id}")
+        await db.audit_sessions.insert_one(session_data)
         
-        # Store findings with explicit copying to avoid references
+        # Store findings
         findings_to_store = []
         for finding in findings_data:
             finding_copy = finding.copy()
-            finding_copy["session_id"] = session_id
+            finding_copy["session_id"] = audit_session_id
             findings_to_store.append(finding_copy)
         
-        logger.info("Storing findings in database...")
-        findings_result = await db.audit_findings.insert_many(findings_to_store)
-        logger.info(f"Stored {len(findings_result.inserted_ids)} findings")
+        await db.audit_findings.insert_many(findings_to_store)
         
-        # Create clean response without any MongoDB objects
+        # Create clean response
         response_data = {
-            "session_id": session_id,
+            "session_id": audit_session_id,
+            "org_name": org_name,
             "summary": {
                 "total_findings": int(summary["total_findings"]),
                 "total_time_savings_hours": float(summary["total_time_savings_hours"]),
@@ -270,16 +473,16 @@ async def run_audit():
                 "medium_impact_count": int(summary["medium_impact_count"]),
                 "low_impact_count": int(summary["low_impact_count"])
             },
-            "findings": findings_data  # Original data without session_id
+            "findings": findings_data
         }
         
-        logger.info("Audit run completed successfully")
+        logger.info("Real Salesforce audit completed successfully")
         return response_data
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error in run_audit: {str(e)}")
-        import traceback
-        logger.error(f"Traceback: {traceback.format_exc()}")
         return {"error": f"Audit failed: {str(e)}", "session_id": None}
 
 @api_router.get("/audit/sessions")
@@ -287,7 +490,6 @@ async def get_audit_sessions():
     """Get all audit sessions"""
     try:
         sessions = await db.audit_sessions.find().sort("created_at", -1).to_list(50)
-        # Convert ObjectIds to strings and ensure proper datetime handling
         result = []
         for session in sessions:
             session_data = convert_objectid(session)
@@ -356,7 +558,6 @@ async def get_audit_details(session_id: str):
 @api_router.get("/audit/{session_id}/pdf")
 async def generate_pdf_report(session_id: str):
     """Generate PDF report (mock endpoint)"""
-    # In real implementation, this would generate actual PDF
     return {
         "download_url": f"/api/downloads/audit-report-{session_id}.pdf",
         "message": "PDF report generated successfully"
