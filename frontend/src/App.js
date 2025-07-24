@@ -334,56 +334,70 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-indigo-600">SalesAudit Pro</Link>
-            </div>
-            <div className="flex items-center space-x-4">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg-alt)' }}>
+      {/* Simply Scale Header */}
+      <header className="header">
+        <Link to="/" className="logo">SalesAudit Pro</Link>
+        <nav>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-lg)' }}>
+            <div style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--fs-body)' }}>
               {sessionId ? (
                 <>
-                  <span className="text-sm text-green-600">✅ Connected to Salesforce</span>
+                  <span style={{ color: 'var(--color-accent)' }}>✅ Connected</span>
                   <button
                     onClick={disconnectSalesforce}
-                    className="text-sm text-gray-500 hover:text-gray-700 underline"
+                    style={{ 
+                      marginLeft: 'var(--space-sm)', 
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--color-text-secondary)',
+                      fontSize: 'var(--fs-small)',
+                      cursor: 'pointer'
+                    }}
                   >
                     Disconnect
                   </button>
                 </>
               ) : (
-                <span className="text-sm text-orange-600">⚠️ Not connected</span>
+                <span style={{ color: '#FF9500' }}>⚠️ Not connected</span>
               )}
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="premium-container">
         {/* Header */}
-        <div className="px-4 py-6 sm:px-0">
+        <div style={{ paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-lg)' }}>
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Salesforce Audit Dashboard</h1>
-              <p className="mt-1 text-sm text-gray-500">Run comprehensive audits and view historical results</p>
+              <h1 style={{ 
+                fontSize: 'var(--fs-hero-lg)', 
+                fontWeight: 'var(--fw-bold)', 
+                color: 'var(--color-text-primary)',
+                marginBottom: 'var(--space-xs)'
+              }}>
+                Salesforce Audit Dashboard
+              </h1>
+              <p style={{ 
+                fontSize: 'var(--fs-body)', 
+                color: 'var(--color-text-secondary)' 
+              }}>
+                Run comprehensive audits and view historical results
+              </p>
             </div>
             <button
               onClick={handleRunAudit}
               disabled={running || !sessionId}
-              className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                sessionId 
-                  ? 'bg-indigo-600 hover:bg-indigo-700' 
-                  : 'bg-gray-400 cursor-not-allowed'
-              } disabled:opacity-50`}
+              className={sessionId ? 'btn-primary' : 'btn-secondary'}
+              style={{ 
+                opacity: (running || !sessionId) ? 0.5 : 1,
+                cursor: (running || !sessionId) ? 'not-allowed' : 'pointer'
+              }}
             >
               {running ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                  <svg className="loading-spinner-premium" style={{ width: '16px', height: '16px' }}></svg>
                   Running Enhanced Audit...
                 </>
               ) : sessionId ? (
@@ -400,35 +414,89 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Audits */}
-        <div className="px-4 sm:px-0">
-          <div className="bg-white shadow overflow-hidden sm:rounded-md">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Recent Audit Sessions</h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500">Click on any session to view detailed results</p>
+        <div style={{ paddingBottom: 'var(--space-xl)' }}>
+          <div className="bg-premium border-premium rounded-premium" style={{ overflow: 'hidden', boxShadow: '0 2px 8px var(--color-card-shadow)' }}>
+            <div style={{ 
+              padding: 'var(--space-lg)', 
+              borderBottom: '1px solid var(--color-border)',
+              background: 'var(--color-bg-alt)'
+            }}>
+              <h3 style={{ 
+                fontSize: 'var(--fs-h2)', 
+                fontWeight: 'var(--fw-semibold)', 
+                color: 'var(--color-text-primary)',
+                marginBottom: 'var(--space-xs)'
+              }}>
+                Recent Audit Sessions
+              </h3>
+              <p style={{ 
+                fontSize: 'var(--fs-body)', 
+                color: 'var(--color-text-secondary)',
+                margin: 0
+              }}>
+                Click on any session to view detailed results
+              </p>
             </div>
-            <ul className="divide-y divide-gray-200">
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {sessions.length === 0 ? (
-                <li className="px-4 py-4 sm:px-6">
-                  <p className="text-sm text-gray-500">No audit sessions yet. Run your first audit to get started!</p>
+                <li style={{ padding: 'var(--space-lg)' }}>
+                  <p style={{ 
+                    fontSize: 'var(--fs-body)', 
+                    color: 'var(--color-text-secondary)',
+                    margin: 0
+                  }}>
+                    No audit sessions yet. Run your first audit to get started!
+                  </p>
                 </li>
               ) : (
                 sessions.map((session) => (
-                  <li key={session.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/audit/${session.id}`)}>
+                  <li 
+                    key={session.id} 
+                    style={{ 
+                      padding: 'var(--space-lg)', 
+                      borderBottom: '1px solid var(--color-border)',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s ease'
+                    }}
+                    onClick={() => navigate(`/audit/${session.id}`)}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-alt)'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                            <span className="text-indigo-600 font-medium text-sm">📊</span>
-                          </div>
+                        <div style={{ 
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          background: 'var(--color-bg-alt)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginRight: 'var(--space-md)'
+                        }}>
+                          <span style={{ fontSize: '16px' }}>📊</span>
                         </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{session.org_name}</div>
-                          <div className="text-sm text-gray-500">
+                        <div>
+                          <div style={{ 
+                            fontSize: 'var(--fs-body)', 
+                            fontWeight: 'var(--fw-medium)', 
+                            color: 'var(--color-text-primary)',
+                            marginBottom: '2px'
+                          }}>
+                            {session.org_name}
+                          </div>
+                          <div style={{ 
+                            fontSize: 'var(--fs-small)', 
+                            color: 'var(--color-text-secondary)'
+                          }}>
                             {session.findings_count} findings • Potential savings: ${session.estimated_savings.annual_dollars?.toLocaleString()}/year
                           </div>
                         </div>
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div style={{ 
+                        fontSize: 'var(--fs-small)', 
+                        color: 'var(--color-text-secondary)'
+                      }}>
                         {new Date(session.created_at).toLocaleDateString()}
                       </div>
                     </div>
