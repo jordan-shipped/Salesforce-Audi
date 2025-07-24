@@ -245,16 +245,16 @@ async def run_audit():
         findings_data = []
         for finding in findings:
             finding_data = {
-                "id": finding.id,
+                "id": finding["id"],
                 "session_id": session_id,
-                "category": finding.category,
-                "title": finding.title,
-                "description": finding.description,
-                "impact": finding.impact,
-                "time_savings_hours": finding.time_savings_hours,
-                "roi_estimate": finding.roi_estimate,
-                "recommendation": finding.recommendation,
-                "affected_objects": finding.affected_objects
+                "category": finding["category"],
+                "title": finding["title"],
+                "description": finding["description"],
+                "impact": finding["impact"],
+                "time_savings_hours": finding["time_savings_hours"],
+                "roi_estimate": finding["roi_estimate"],
+                "recommendation": finding["recommendation"],
+                "affected_objects": finding["affected_objects"]
             }
             findings_data.append(finding_data)
         
