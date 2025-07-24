@@ -174,13 +174,15 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Add backend API endpoint for updating ROI assumptions"
-    - "Add ROI recalculation with custom constants"
-    - "Integrate EditAssumptionsModal with AuditResults page"
+    - "Test complete Edit Assumptions functionality"
+    - "Test backend API endpoint"
+    - "Test frontend integration"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
       message: "Starting implementation of Edit Assumptions modal. Identified existing modal component but needs backend integration and proper integration with audit results page. Current ROI calculation system uses constants in calculate_enhanced_roi_with_tasks function."
+    - agent: "main"
+      message: "IMPLEMENTATION COMPLETE: Successfully implemented complete Edit Assumptions functionality. Backend now has /api/audit/{session_id}/update-assumptions endpoint that accepts custom assumptions and recalculates ROI. Frontend has integrated EditAssumptionsModal with AuditResults page including state management and loading feedback. Ready for testing."
