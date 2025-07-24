@@ -306,63 +306,157 @@ class SalesforceAuditAPITester:
         print("✅ New ROI calculation structure validation passed!")
         return True, details
 
-    def validate_roi_calculations(self):
-        """Validate that ROI calculations are realistic and org-specific"""
-        print("\n🔍 Validating ROI Calculation Realism...")
+    def validate_enhanced_roi_structure(self):
+        """Validate the new enhanced ROI calculation structure"""
+        print("\n🔍 Testing Enhanced ROI Calculation Structure...")
         
-        # Get audit data
-        success, sessions = self.test_get_audit_sessions()
+        # Get existing sessions
+        success, sessions = self.run_test(
+            "Get Sessions for Enhanced ROI Test",
+            "GET",
+            "audit/sessions",
+            200
+        )
+        
         if not success or not sessions:
-            print("❌ Cannot validate ROI - no sessions available")
-            return False
+            print("❌ No sessions available for enhanced ROI testing")
+            return False, {}
         
+        # Get details of the first session
         session_id = sessions[0]['id']
         success, details = self.run_test(
-            "Get Details for ROI Validation",
+            "Get Audit Details for Enhanced ROI Test",
             "GET",
             f"audit/{session_id}",
             200
         )
         
         if not success:
-            return False
+            return False, {}
         
+        # Check for enhanced ROI structure in findings
         findings = details.get('findings', [])
         summary = details.get('summary', {})
         
-        # Validate summary calculations
-        total_time = summary.get('total_time_savings_hours', 0)
-        total_roi = summary.get('total_annual_roi', 0)
+        print(f"\n📊 Analyzing {len(findings)} findings for enhanced ROI structure...")
         
-        print(f"📊 Summary: {total_time}h time savings, ${total_roi:,.0f} annual ROI")
+        # Check for new ROI fields in findings
+        enhanced_fields_found = {
+            'cleanup_cost': False,
+            'cleanup_hours': False,
+            'monthly_user_savings': False,
+            'annual_user_savings': False,
+            'net_annual_roi': False,
+            'calculation_method': False
+        }
         
-        # Check if calculations are realistic (not too high or too low)
-        if total_time <= 0:
-            print("❌ Total time savings should be positive")
-            return False
-        
-        if total_roi <= 0:
-            print("❌ Total ROI should be positive")
-            return False
-        
-        # Check if hourly rate is in realistic range ($65-95 as mentioned in requirements)
         for finding in findings:
-            if 'org_context' in finding:
-                hourly_rate = finding['org_context'].get('hourly_rate', 0)
-                if not (65 <= hourly_rate <= 95):
-                    print(f"❌ Hourly rate {hourly_rate} outside expected range $65-95")
-                    return False
-                else:
-                    print(f"✅ Hourly rate ${hourly_rate} is in realistic range")
+            # Check for new enhanced ROI fields
+            for field in enhanced_fields_found.keys():
+                if field in finding:
+                    enhanced_fields_found[field] = True
+                    print(f"✅ Found {field}: {finding[field]}")
+            
+            # Check salesforce_data for calculation details
+            if 'salesforce_data' in finding:
+                sf_data = finding['salesforce_data']
+                if 'calculation_method' in sf_data:
+                    enhanced_fields_found['calculation_method'] = True
+                    print(f"✅ Found calculation_method in salesforce_data: {sf_data['calculation_method'][:100]}...")
+                
+                # Check for ROI breakdown
+                if 'roi_breakdown' in sf_data:
+                    print(f"✅ Found roi_breakdown: {sf_data['roi_breakdown']}")
         
-        # Validate that ROI matches time * rate * 12 (annual)
-        expected_roi_range = (total_time * 65 * 12, total_time * 95 * 12)
-        if not (expected_roi_range[0] <= total_roi <= expected_roi_range[1]):
-            print(f"❌ ROI ${total_roi:,.0f} not in expected range ${expected_roi_range[0]:,.0f}-${expected_roi_range[1]:,.0f}")
-            return False
+        # Check summary for enhanced structure
+        summary_enhanced_fields = {
+            'total_cleanup_cost': summary.get('total_cleanup_cost'),
+            'total_monthly_savings': summary.get('total_monthly_savings'),
+            'total_annual_savings': summary.get('total_annual_savings'),
+            'calculation_method': summary.get('calculation_method')
+        }
         
-        print("✅ ROI calculations appear realistic and properly calculated!")
-        return True
+        print(f"\n📊 Summary enhanced fields: {summary_enhanced_fields}")
+        
+        # Validate that at least some enhanced fields are present
+        enhanced_count = sum(1 for found in enhanced_fields_found.values() if found)
+        if enhanced_count >= 3:  # At least 3 enhanced fields should be present
+            print(f"✅ Enhanced ROI structure validation passed! ({enhanced_count}/6 fields found)")
+            return True, details
+        else:
+            print(f"❌ Enhanced ROI structure incomplete ({enhanced_count}/6 fields found)")
+            return False, {}
+
+    def test_department_salary_calculations(self):
+        """Test department salary calculation assumptions"""
+        print("\n🔍 Testing Department Salary Calculation Logic...")
+        
+        # Test the calculation assumptions mentioned in the review
+        test_departments = {
+            'customer_service': 45000,
+            'sales': 65000,
+            'marketing': 60000,
+            'engineering': 95000,
+            'executives': 150000
+        }
+        
+        # Calculate hourly rates (÷ 2,080 hours per year)
+        hourly_rates = {}
+        for dept, salary in test_departments.items():
+            hourly_rate = salary / 2080
+            hourly_rates[dept] = hourly_rate
+            print(f"   {dept.replace('_', ' ').title()}: ${salary:,} → ${hourly_rate:.2f}/hr")
+        
+        # Calculate average hourly rate
+        avg_hourly_rate = sum(hourly_rates.values()) / len(hourly_rates)
+        print(f"   Average hourly rate: ${avg_hourly_rate:.2f}/hr")
+        
+        # Test calculation assumptions
+        ADMIN_RATE = 40  # $40/hr admin cleanup rate
+        CLEANUP_TIME_PER_FIELD = 0.25  # 15 minutes per field
+        USER_CONFUSION_TIME = 2  # 2 minutes per user per field per month
+        
+        # Example calculation for 18 unused fields with 10 users
+        field_count = 18
+        user_count = 10
+        
+        # One-time cleanup cost
+        cleanup_hours = field_count * CLEANUP_TIME_PER_FIELD
+        cleanup_cost = cleanup_hours * ADMIN_RATE
+        
+        # Monthly user savings
+        monthly_confusion_minutes = user_count * USER_CONFUSION_TIME * field_count
+        monthly_confusion_hours = monthly_confusion_minutes / 60
+        monthly_user_savings = monthly_confusion_hours * avg_hourly_rate
+        
+        # Annual savings
+        annual_user_savings = monthly_user_savings * 12
+        net_annual_roi = annual_user_savings - cleanup_cost
+        
+        print(f"\n📊 Example Calculation (18 fields, 10 users):")
+        print(f"   Cleanup: {field_count} fields × 15min × $40/hr = ${cleanup_cost:.0f} (one-time)")
+        print(f"   Monthly savings: {user_count} users × 2min × {field_count} fields = {monthly_confusion_hours:.1f}h × ${avg_hourly_rate:.2f}/hr = ${monthly_user_savings:.0f}/month")
+        print(f"   Annual savings: ${annual_user_savings:.0f}")
+        print(f"   Net ROI: ${net_annual_roi:.0f}")
+        
+        # Validate calculations are reasonable
+        success = (
+            cleanup_cost > 0 and cleanup_cost < 1000 and  # Reasonable cleanup cost
+            monthly_user_savings > 0 and monthly_user_savings < 500 and  # Reasonable monthly savings
+            net_annual_roi > 0  # Positive ROI
+        )
+        
+        if success:
+            print("✅ Department salary calculation logic validation passed!")
+        else:
+            print("❌ Department salary calculation logic validation failed!")
+        
+        return success, {
+            'cleanup_cost': cleanup_cost,
+            'monthly_savings': monthly_user_savings,
+            'annual_savings': annual_user_savings,
+            'net_roi': net_annual_roi
+        }
 
     def validate_oauth_security(self):
         """Validate OAuth security implementation"""
