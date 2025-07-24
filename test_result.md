@@ -106,33 +106,39 @@ user_problem_statement: "Implement 'Edit Assumptions' modal to allow users to cu
 
 backend:
   - task: "Add backend API endpoint for updating ROI assumptions"
-    implemented: false
-    working: "NA"  
+    implemented: true
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Task identified. Need to add API endpoint to accept new assumptions and recalculate ROI"
+        - working: true
+          agent: "main"
+          comment: "Added /api/audit/{session_id}/update-assumptions endpoint that accepts AssumptionsUpdate model and recalculates audit results"
 
   - task: "Add ROI recalculation with custom constants"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Need to modify calculate_enhanced_roi_with_tasks function to accept custom constants"
+        - working: true
+          agent: "main"
+          comment: "Modified calculate_enhanced_roi_with_tasks to accept custom_assumptions parameter and updated related functions"
 
 frontend:
   - task: "Create EditAssumptionsModal component"
     implemented: true
-    working: false
+    working: true
     file: "frontend/src/App.js"
     stuck_count: 0
     priority: "high"
@@ -141,18 +147,24 @@ frontend:
         - working: false
           agent: "main"
           comment: "Modal component exists but not yet integrated with backend API. Need to add state management and API calls"
+        - working: true
+          agent: "main"
+          comment: "Modal component is complete and functional with all necessary form fields"
 
   - task: "Integrate EditAssumptionsModal with AuditResults page"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Need to add button and state management to show modal in AuditResults component"
+        - working: true
+          agent: "main"
+          comment: "Added state management, Edit Assumptions button, handleUpdateAssumptions function, and integrated modal with loading overlay"
 
 metadata:
   created_by: "main_agent"
