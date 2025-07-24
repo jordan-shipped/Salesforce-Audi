@@ -301,45 +301,66 @@ def analyze_data_quality(sf_client, org_context):
     
     return findings
 
-def analyze_automation_opportunities(sf_client):
+def analyze_automation_opportunities(sf_client, org_context):
     """Analyze automation opportunities"""
     findings = []
     
     try:
+        active_users = org_context.get('active_users', 10)
+        complexity_multiplier = org_context.get('complexity_multiplier', 1.0)
+        
         # Check for manual case assignment (simplified)
         case_count = sf_client.query("SELECT COUNT() FROM Case")['totalSize']
         
         if case_count > 10:  # If they have cases, likely need automation
+            # Scale time savings based on case volume and team size
+            weekly_case_volume = case_count / 52  # Approximate weekly cases
+            time_per_case = 0.1  # 6 minutes manual assignment time
+            weekly_time_saved = weekly_case_volume * time_per_case
+            monthly_time_saved = weekly_time_saved * 4.3 * complexity_multiplier
+            
             findings.append({
                 "id": str(uuid.uuid4()),
                 "category": "Automation Opportunities",
                 "title": "Case Assignment Automation Opportunity",
-                "description": f"With {case_count} cases in the system, automated case assignment rules could improve response times.",
-                "impact": "High",
-                "time_savings_hours": 20.0,  # Estimate weekly time saved
-                "recommendation": "Implement case assignment rules based on product, region, and expertise.",
+                "description": f"With {case_count} cases in the system and {active_users} active users, automated case assignment rules could significantly improve response times and reduce manual effort.",
+                "impact": "High" if case_count > 100 else "Medium",
+                "time_savings_hours": round(monthly_time_saved, 1),
+                "recommendation": "Implement case assignment rules based on product, region, and expertise. Set up escalation workflows for better case management.",
                 "affected_objects": ["Case", "Queue"],
                 "salesforce_data": {
                     "total_cases": case_count,
-                    "automation_recommendation": "case_assignment_rules"
+                    "weekly_case_estimate": round(weekly_case_volume, 1),
+                    "users_affected": active_users,
+                    "automation_recommendation": "case_assignment_rules",
+                    "calculation_method": f"Weekly cases ({weekly_case_volume:.1f}) × 6 min manual time × 4.3 weeks × complexity ({complexity_multiplier:.1f}x)"
                 }
             })
         
-        # Check workflow rules vs Flow usage
-        findings.append({
-            "id": str(uuid.uuid4()),
-            "category": "Automation Opportunities",
-            "title": "Process Automation Modernization",
-            "description": "Recommend auditing workflow rules and process builders for Flow migration opportunities.",
-            "impact": "Medium",
-            "time_savings_hours": 15.0,
-            "recommendation": "Migrate workflow rules and process builders to Flow for better performance and maintainability.",
-            "affected_objects": ["Workflow", "Process Builder", "Flow"],
-            "salesforce_data": {
-                "modernization_target": "flows",
-                "legacy_automation": "workflow_rules_process_builders"
-            }
-        })
+        # Check workflow rules vs Flow usage - always recommend this for orgs with data
+        if org_context.get('opportunity_count', 0) > 10:
+            # Base time for modernization effort, scaled by org complexity
+            base_modernization_time = 8  # Base hours for analysis and planning
+            implementation_time = active_users * 0.5  # 30 min per user for training
+            total_time = (base_modernization_time + implementation_time) * complexity_multiplier
+            
+            findings.append({
+                "id": str(uuid.uuid4()),
+                "category": "Automation Opportunities",
+                "title": "Process Automation Modernization",
+                "description": f"With {active_users} users and {org_context.get('opportunity_count', 'multiple')} opportunities, migrating legacy automation to Flow can improve performance and maintainability.",
+                "impact": "Medium",
+                "time_savings_hours": round(total_time, 1),
+                "recommendation": "Audit existing workflow rules and process builders. Migrate to Flow for better performance, debugging capabilities, and future maintainability.",
+                "affected_objects": ["Workflow", "Process Builder", "Flow"],
+                "salesforce_data": {
+                    "modernization_target": "flows",
+                    "legacy_automation": "workflow_rules_process_builders",
+                    "users_affected": active_users,
+                    "opportunities_count": org_context.get('opportunity_count', 0),
+                    "calculation_method": f"Analysis time (8h) + user training ({active_users} × 30min) × complexity ({complexity_multiplier:.1f}x)"
+                }
+            })
     
     except Exception as e:
         logger.error(f"Error analyzing automation: {e}")
