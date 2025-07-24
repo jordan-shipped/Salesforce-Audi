@@ -1018,6 +1018,15 @@ const AuditResults = () => {
             <div className="flex items-center space-x-4">
               <Link to="/dashboard" className="text-sm text-gray-500 hover:text-gray-700">← Back to Dashboard</Link>
               <button
+                onClick={() => setShowEditAssumptions(true)}
+                disabled={updating}
+                className={`inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                  updating ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                🔧 Edit Assumptions
+              </button>
+              <button
                 onClick={generatePDF}
                 className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
