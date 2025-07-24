@@ -681,18 +681,19 @@ body {
 }
 
 .btn-outline {
+  width: auto;
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 14px;
+  border-radius: 8px;
+  margin: 0;
   background: transparent;
   color: var(--text-primary);
   border: 1.5px solid var(--divider);
-  padding: 0.875rem 1.75rem;
-  border-radius: 10px;
   font-weight: 600;
-  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  text-decoration: none;
 }
 
 .btn-outline:hover {
