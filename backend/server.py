@@ -285,27 +285,52 @@ async def get_audit_sessions():
 @api_router.get("/audit/{session_id}")
 async def get_audit_details(session_id: str):
     """Get detailed audit results"""
-    # Get session
-    session = await db.audit_sessions.find_one({"id": session_id})
-    if not session:
-        raise HTTPException(status_code=404, detail="Audit session not found")
-    
-    # Get findings
-    findings = await db.audit_findings.find({"session_id": session_id}).to_list(100)
-    
-    # Convert ObjectIds to strings
-    session = convert_objectid(session)
-    findings = [convert_objectid(finding) for finding in findings]
-    
-    # Calculate summary
-    findings_objects = [AuditFinding(**f) for f in findings]
-    summary = calculate_audit_summary(findings_objects)
-    
-    return {
-        "session": AuditSession(**session),
-        "summary": summary,
-        "findings": findings
-    }
+    try:
+        # Get session
+        session = await db.audit_sessions.find_one({"id": session_id})
+        if not session:
+            raise HTTPException(status_code=404, detail="Audit session not found")
+        
+        # Get findings
+        findings = await db.audit_findings.find({"session_id": session_id}).to_list(100)
+        
+        # Convert ObjectIds to strings
+        session = convert_objectid(session)
+        findings = [convert_objectid(finding) for finding in findings]
+        
+        # Calculate summary from findings data
+        total_time_savings = sum(f.get("time_savings_hours", 0) for f in findings)
+        total_roi = sum(f.get("roi_estimate", 0) for f in findings)
+        
+        category_breakdown = {}
+        for finding in findings:
+            category = finding.get("category", "Unknown")
+            if category not in category_breakdown:
+                category_breakdown[category] = {"count": 0, "savings": 0, "roi": 0}
+            category_breakdown[category]["count"] += 1
+            category_breakdown[category]["savings"] += finding.get("time_savings_hours", 0)
+            category_breakdown[category]["roi"] += finding.get("roi_estimate", 0)
+        
+        summary = {
+            "total_findings": len(findings),
+            "total_time_savings_hours": round(total_time_savings, 1),
+            "total_annual_roi": round(total_roi, 0),
+            "category_breakdown": category_breakdown,
+            "high_impact_count": len([f for f in findings if f.get("impact") == "High"]),
+            "medium_impact_count": len([f for f in findings if f.get("impact") == "Medium"]),
+            "low_impact_count": len([f for f in findings if f.get("impact") == "Low"])
+        }
+        
+        return {
+            "session": session,
+            "summary": summary,
+            "findings": findings
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in get_audit_details: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get audit details: {str(e)}")
 
 @api_router.get("/audit/{session_id}/pdf")
 async def generate_pdf_report(session_id: str):
