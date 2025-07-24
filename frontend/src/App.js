@@ -210,21 +210,33 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Ensure department_salaries is properly structured even if using quick estimate
-    const auditRequest = {
-      session_id: sessionId,
-      use_quick_estimate: useQuickEstimate,
-      department_salaries: useQuickEstimate ? null : {
-        customer_service: departmentSalaries.customer_service,
-        sales: departmentSalaries.sales,
-        marketing: departmentSalaries.marketing,
-        engineering: departmentSalaries.engineering,
-        executives: departmentSalaries.executives
+    try {
+      // Ensure department_salaries is properly structured even if using quick estimate
+      const auditRequest = {
+        session_id: sessionId,
+        use_quick_estimate: useQuickEstimate,
+        department_salaries: useQuickEstimate ? null : {
+          customer_service: departmentSalaries.customer_service || null,
+          sales: departmentSalaries.sales || null,
+          marketing: departmentSalaries.marketing || null,
+          engineering: departmentSalaries.engineering || null,
+          executives: departmentSalaries.executives || null
+        }
+      };
+      
+      console.log('Form submitting audit request:', auditRequest);
+      
+      // Validate session_id exists
+      if (!sessionId) {
+        alert('No session ID found. Please reconnect to Salesforce.');
+        return;
       }
-    };
-    
-    console.log('Submitting audit request:', auditRequest);
-    onSubmit(auditRequest);
+      
+      onSubmit(auditRequest);
+    } catch (error) {
+      console.error('Error preparing audit request:', error);
+      alert(`Error preparing audit request: ${error.message}`);
+    }
   };
 
   const defaultSalaries = {
