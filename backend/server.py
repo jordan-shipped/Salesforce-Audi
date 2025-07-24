@@ -258,7 +258,7 @@ def calculate_roi_with_department_salaries(finding_data, department_salaries, ac
         'admin_hourly_rate': ADMIN_HOURLY_RATE,
         'calculation_details': {}
     }
-def calculate_enhanced_roi_with_tasks(finding_data, department_salaries, active_users, org_data):
+def calculate_enhanced_roi_with_tasks(finding_data, department_salaries, active_users, org_data, custom_assumptions=None):
     """
     Enhanced ROI calculation with task-specific breakdowns and role attribution
     
@@ -267,13 +267,33 @@ def calculate_enhanced_roi_with_tasks(finding_data, department_salaries, active_
         department_salaries: Dict with department annual salaries  
         active_users: Number of active users
         org_data: Real org data (record counts, etc.)
+        custom_assumptions: Dict with custom calculation constants
     """
     
-    # Constants
-    ADMIN_RATE = 40  # $/hr for all one-time cleanup
-    CLEANUP_TIME_PER_FIELD = 0.25  # hours per custom field cleanup
+    # Default constants (can be overridden by custom_assumptions)
+    defaults = {
+        'admin_rate': 40,  # $/hr for all one-time cleanup
+        'cleanup_time_per_field': 0.25,  # hours per custom field cleanup
+        'confusion_time_per_field': 2,  # min/user/field/month  
+        'reporting_efficiency': 50,  # % of manual reporting time that can be automated
+        'email_alert_time': 3  # minutes saved per automated notification
+    }
+    
+    # Override defaults with custom assumptions if provided
+    if custom_assumptions:
+        for key, value in custom_assumptions.items():
+            if key in defaults and value is not None:
+                defaults[key] = value
+                logger.info(f"Using custom assumption: {key} = {value}")
+    
+    # Use the values from defaults (which may have been overridden)
+    ADMIN_RATE = defaults['admin_rate']
+    CLEANUP_TIME_PER_FIELD = defaults['cleanup_time_per_field']
+    DEFAULT_CONFUSION_MIN = defaults['confusion_time_per_field']
+    REPORTING_EFFICIENCY = defaults['reporting_efficiency']
+    EMAIL_ALERT_TIME = defaults['email_alert_time']
+    
     DAILY_WORKDAYS = 22  # average workdays/month
-    DEFAULT_CONFUSION_MIN = 2  # min/user/field/month
     HOURS_PER_YEAR = 2080
     
     # Role mapping - simplified and intuitive
