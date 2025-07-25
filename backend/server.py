@@ -348,6 +348,9 @@ def determine_business_stage(revenue: int, headcount: int) -> dict:
         dict: Stage information with stage number, name, role, etc.
     """
     
+    # SMOKING GUN LOG - This will prove our patched code is running
+    logger.error("🔥 Entered determine_business_stage with inputs: revenue=%r, headcount=%r", revenue, headcount)
+    
     # Defensive input validation and logging
     logger.debug(f"determine_business_stage called with revenue={revenue!r}, headcount={headcount!r}")
     
