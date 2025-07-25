@@ -524,7 +524,7 @@ body {
   color: #FF9F0A; /* keep the warning orange */
 }
 
-/* 2️⃣ Sessions Area - Consistent Padding */
+/* 2️⃣ Sessions Area - Conditional Layout */
 .sessions-list {
   display: flex;
   justify-content: center;
@@ -535,16 +535,14 @@ body {
   background: var(--bg-page);
 }
 
-/* When sessions exist: Grid layout */
-.sessions-list.grid {
+/* Session Grid - When sessions exist */
+.session-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-lg);
-  align-items: start;
-  min-height: auto;
+  width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 32px;
 }
 
 /* Premium Empty-State Card - Tightened Apple Float */
