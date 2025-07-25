@@ -1842,8 +1842,13 @@ def run_salesforce_audit_with_stage_engine(access_token, instance_url, business_
                 finding['roi_estimate'] = enhanced_roi['total_annual_roi']
             
         
-        # Sort findings by priority score (descending)
-        all_findings.sort(key=lambda x: x.get('priority_score', 0), reverse=True)
+        # Sort findings by priority score (descending) with defensive None handling
+        def safe_priority_key(finding):
+            priority = finding.get('priority_score', 0)
+            # Guard against None priority scores
+            return priority if priority is not None else 0
+            
+        all_findings.sort(key=safe_priority_key, reverse=True)
         
         logger.info(f"Stage {business_stage['stage']} audit completed: {len(all_findings)} findings")
         logger.info(f"Priority distribution: {[f['priority_score'] for f in all_findings[:5]]}")
