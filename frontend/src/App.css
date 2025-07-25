@@ -642,11 +642,11 @@ body {
   line-height: 1.5;
 }
 
-/* Session Cards - Premium Airy Design with Animations */
+/* Session Cards - Premium Airy Design with Refined Shadows */
 .session-card {
   background: var(--bg-page);
   border-radius: var(--radius-card);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   padding: 24px; /* 1.5rem all around for breathing room */
   display: flex; /* flex layout for info and timestamp */
   justify-content: space-between; /* space between left and right content */
@@ -662,7 +662,7 @@ body {
 }
 
 .session-card:hover {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   transform: translateY(-2px);
 }
 
