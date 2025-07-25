@@ -762,8 +762,8 @@ body {
   line-height: 1;
 }
 
-/* Fade in, hold, fade out */
-@keyframes fadeInOut {
+/* Toast fade animation */
+@keyframes toast-fade {
   0%   { opacity: 0; }
   10%  { opacity: 1; }
   80%  { opacity: 1; }
