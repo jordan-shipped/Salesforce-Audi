@@ -1044,15 +1044,15 @@ body {
   }
 }
 
-/* Hero Section for Landing Page - Seamless Rhythm */
+/* Hero Section for Landing Page - Snug Apple Precision */
 .hero {
   background: linear-gradient(to bottom, #F7F8FA 0%, #FFFFFF 100%); /* subtle gradient depth */
-  padding: 4rem 0 1.5rem 0; /* 24px bottom padding */
+  padding: 4rem 0 1rem 0; /* tight 16px bottom padding */
   text-align: center;
 }
 
 .hero .container {
-  max-width: 1200px;
+  max-width: 1024px; /* match features container for perfect alignment */
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -1080,7 +1080,7 @@ body {
   line-height: 26px; /* Apple's typographic rhythm */
   color: var(--text-secondary);
   max-width: 600px;
-  margin: 0 auto 1.5rem; /* 24px bottom margin */
+  margin: 0 auto 1rem; /* tight 16px bottom margin */
 }
 
 .hero .btn-primary.size-lg {
@@ -1100,23 +1100,23 @@ body {
   box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3); /* gradient glow */
 }
 
-/* Features Section - Seamless Connection */
+/* Features Section - Snug Connection */
 .features {
-  margin-top: -0.5rem; /* -8px overlap - cards sit just under hero fold */
-  padding: 1.5rem 0 4rem 0; /* 24px top matches hero bottom */
+  margin-top: -0.5rem; /* -8px slight overlap for Apple-style layering */
+  padding: 1rem 0 4rem 0; /* 16px top padding */
   background: var(--bg-page);
 }
 
 .features .container {
-  max-width: 1024px; /* centered constraint for better balance */
+  max-width: 1024px; /* same as hero for perfect alignment */
   margin: 0 auto;
   padding: 0 2rem;
 }
 
 .features .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px; /* tight, consistent 24px gutters */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px; /* tight, consistent 20px gutters */
   justify-content: center;
 }
 
