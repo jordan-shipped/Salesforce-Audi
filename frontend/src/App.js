@@ -408,8 +408,8 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {/* 3️⃣ Sessions Area - Grid Layout */}
-      <section className="sessions-list" aria-labelledby="sessions-history">
+      {/* 3️⃣ Sessions Area - Dynamic Grid/List Layout */}
+      <section className={viewMode === 'grid' ? 'sessions-list sessions-list--grid' : 'sessions-list sessions-list--list'} aria-labelledby="sessions-history">
         {/* Loading State - Skeleton Grid */}
         {loading && (
           <>
