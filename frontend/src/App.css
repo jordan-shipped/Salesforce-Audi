@@ -689,15 +689,17 @@ body {
   transform: translateY(-1px);
 }
 
-/* Landing Page - Gradient CTA Button (Special Treatment) */
+/* Landing Page - Gradient CTA Button (Special Treatment Only) */
+.landing-page .btn-primary,
 .btn-gradient {
   background: var(--gradient-tech) !important; /* Override solid accent */
   padding: 0.875rem 1.75rem !important; /* Larger size for landing page */
   font-size: 16px !important;
   border-radius: 10px !important;
-  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.2) !important;
 }
 
+.landing-page .btn-primary:hover,
 .btn-gradient:hover {
   background: var(--gradient-tech) !important;
   transform: translateY(-1px);
