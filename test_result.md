@@ -264,15 +264,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Implement Stage 0-9 business mapping logic with Alex Hormozi stages"
-    - "Add BusinessInputs model and update AuditRequest to accept revenue/headcount"
-    - "Implement domain classification system for findings"
-    - "Implement stage-based priority scoring system"
-    - "Implement enhanced task-based ROI calculations"
-    - "Replace audit function with stage-based engine"
-    - "Add new API endpoints for stage information"
-    - "Update audit response to include business stage data"
-  stuck_tasks: []
+    - "Implement comprehensive picklist + stage engine integration"
+  stuck_tasks:
+    - "Implement comprehensive picklist + stage engine integration"
   test_all: false
   test_priority: "high_first"
 
@@ -283,6 +277,8 @@ agent_communication:
       message: "ALEX HORMOZI STAGE ENGINE COMPREHENSIVE TESTING COMPLETED! ✅ PHASE 1 IMPLEMENTATION FULLY VERIFIED: All 8 core stage engine tasks are working correctly. CRITICAL SUCCESS CRITERIA MET: ✅ Stage mapping works correctly for all test scenarios (Stage 0: $0/0 employees → Improvise, Stage 2: $300K/3 employees → Advertise, Stage 4: $3.5M/7 employees → Prioritize, Stage 9: $150M/300 employees → Capitalize), ✅ POST /api/business/stage endpoint maps revenue/headcount to appropriate stages with complete response structure, ✅ GET /api/business/stages returns all 10 stages with correct data and domain mappings, ✅ Enhanced audit flow accepts business_inputs parameter and processes stage-based logic, ✅ Domain classification assigns proper domains (Data Quality, Automation, Reporting, Security, Adoption) with keyword-based rules, ✅ Priority scoring factors in stage alignment with comprehensive multi-factor algorithm, ✅ Enhanced ROI includes task breakdowns, stage multipliers, and role attribution, ✅ All new endpoints return proper JSON structure with expected fields, ✅ Backward compatibility maintained (26/26 total tests passed). MINOR FIXES APPLIED: Fixed 0 values being treated as falsy in business inputs, Fixed JSON serialization of infinity in stage data. The Alex Hormozi Stage Engine Phase 1 implementation is fully functional and ready for production use!"
     - agent: "testing"
       message: "PHASE 2 APPLE-GRADE UI WITH STAGE ENGINE INTEGRATION TESTING COMPLETED! ✅ END-TO-END STAGE ENGINE FLOW VERIFIED: Comprehensive testing of 26 backend tests confirms the complete Stage Engine integration is working perfectly. CORE INTEGRATION TESTING RESULTS: ✅ Business Input Flow: POST /api/business/stage correctly maps revenue/headcount to Alex Hormozi stages (all 6 test scenarios passed), ✅ Stage Engine Data Flow: Enhanced POST /api/audit/run properly accepts business_inputs parameter and processes stage-based logic, ✅ Enhanced Response Structure: Audit responses include business_stage object, enhanced findings with domain/priority_score/stage_analysis/enhanced_roi, and metadata with audit_type='stage_based', ✅ Apple-Grade Components: All new API endpoints return proper JSON structure for frontend integration. NEW API ENDPOINTS VERIFIED: ✅ POST /api/business/stage maps business inputs to stages with complete response structure, ✅ GET /api/business/stages returns all 10 stages (0-9) with domain mappings, ✅ Enhanced POST /api/audit/run accepts business_inputs and maintains backward compatibility. SPECIFIC TEST SCENARIOS PASSED: ✅ Stage mapping: $3M revenue/7 headcount → Stage 4 (Prioritize), ✅ Enhanced ROI calculations include task_breakdown and stage_analysis with stage multipliers (Stage 0=0.7x, Stage 9=1.6x), ✅ Domain classification (Data Quality, Automation, Reporting, Security, Adoption) with keyword-based rules, ✅ Priority scoring integration with multi-factor algorithm (base + stage_bonus + impact + roi_boost). AUTHENTICATION & COMPATIBILITY: ✅ OAuth session handling working (302 redirect verified), ✅ Backward compatibility maintained (existing functionality preserved), ✅ All 32 existing audit sessions properly sorted and accessible. The complete Phase 2 Apple-grade UI with Stage Engine integration is fully functional and ready for production use!"
+    - agent: "testing"
+      message: "COMPREHENSIVE PICKLIST + STAGE ENGINE INTEGRATION TESTING COMPLETED! 🎯 CRITICAL ISSUE IDENTIFIED: Enterprise scenario mapping failure where '30M+' revenue picklist converts to $50M but maps to Stage 7 (Categorize) instead of expected Stage 9 (Capitalize). ROOT CAUSE: $50M falls into Stage 7 range (20M-50M) rather than Stage 9 range (≥100M). RECOMMENDATION: Adjust picklist conversion for '30M+' from $50M to $100M+ to properly reach Stage 9. ✅ SUCCESSFUL COMPONENTS: 1) Enhanced business_inputs parameter accepts both picklist strings (revenue_range, employee_range) and numeric values (annual_revenue, employee_headcount), 2) Apple-grade StageSummaryPanel data structure properly defined with all required fields, 3) Constraints and actions arrays properly structured and parseable, 4) Startup scenario: '<100k' → $50K + '0-some' → 1 correctly maps to Stage 1 (Monetize), 5) Growth scenario: '1M-3M' → $2M + '5-9' → 7 correctly maps to Stage 4 (Prioritize), 6) All existing stage engine functionality maintained (8/8 tests passed), 7) Backward compatibility preserved (42/42 total tests passed). OVERALL: Picklist integration is 80% functional with one critical mapping adjustment needed for enterprise scenarios."
 
 backend:
   - task: "Fix OAuth authorization endpoint to redirect instead of returning JSON"
