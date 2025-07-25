@@ -2347,98 +2347,60 @@ async def get_audit_sessions():
 
 @api_router.get("/audit/{session_id}")
 async def get_audit_details(session_id: str):
-    """Get detailed audit results with Stage Engine data"""
+    """Get detailed audit results with status handling"""
     try:
         # Get session
         session = await db.audit_sessions.find_one({"id": session_id})
         if not session:
             raise HTTPException(status_code=404, detail="Audit session not found")
         
-        # Get findings
-        findings = await db.audit_findings.find({"session_id": session_id}).to_list(100)
-        
         # Convert ObjectIds to strings
         session = convert_objectid(session)
+        
+        # Check audit status
+        status = session.get('status', 'unknown')
+        
+        if status == 'processing':
+            # Return processing status - frontend will poll
+            return {
+                "session": session,
+                "status": "processing",
+                "message": "Audit is still processing. Please wait...",
+                "metadata": {
+                    "audit_type": "stage_based",
+                    "confidence": "medium",
+                    "created_at": session.get('created_at', datetime.utcnow()).isoformat() if session.get('created_at') else datetime.utcnow().isoformat()
+                }
+            }
+        
+        elif status == 'error':
+            # Return error status
+            return {
+                "session": session,
+                "status": "error",
+                "message": session.get('error_message', 'An error occurred during processing'),
+                "metadata": {
+                    "audit_type": "stage_based",
+                    "confidence": "low",
+                    "created_at": session.get('created_at', datetime.utcnow()).isoformat() if session.get('created_at') else datetime.utcnow().isoformat()
+                }
+            }
+        
+        # Status is 'completed' - get findings and return full results
+        findings = await db.audit_findings.find({"session_id": session_id}).to_list(100)
         findings = [convert_objectid(finding) for finding in findings]
         
-        # Calculate summary from findings data (enhanced for Stage Engine)
-        total_time_savings = 0
-        total_roi = 0
-        
-        for finding in findings:
-            # Use enhanced ROI data if available, fallback to legacy
-            if finding.get('enhanced_roi'):
-                total_time_savings += finding['enhanced_roi'].get('total_monthly_savings', 0) / 40  # Convert dollars to hours roughly
-                total_roi += finding['enhanced_roi'].get('total_annual_roi', 0)
-            else:
-                total_time_savings += finding.get("time_savings_hours", 0)
-                total_roi += finding.get("roi_estimate", 0)
-        
-        # Domain breakdown (new for Stage Engine)
-        domain_breakdown = {}
-        priority_breakdown = {}
-        
-        for finding in findings:
-            # Domain breakdown
-            domain = finding.get("domain", "Data Quality")
-            if domain not in domain_breakdown:
-                domain_breakdown[domain] = {"count": 0, "roi": 0}
-            domain_breakdown[domain]["count"] += 1
-            domain_breakdown[domain]["roi"] += finding.get("total_annual_roi", finding.get("roi_estimate", 0))
-            
-            # Priority breakdown
-            priority = finding.get("priority_score", 1)
-            priority_label = "High" if priority >= 5 else "Medium" if priority >= 3 else "Low"
-            if priority_label not in priority_breakdown:
-                priority_breakdown[priority_label] = {"count": 0, "roi": 0}
-            priority_breakdown[priority_label]["count"] += 1
-            priority_breakdown[priority_label]["roi"] += finding.get("total_annual_roi", finding.get("roi_estimate", 0))
-        
-        # Legacy category breakdown for backward compatibility
-        category_breakdown = {}
-        for finding in findings:
-            category = finding.get("category", "Unknown")
-            if category not in category_breakdown:
-                category_breakdown[category] = {"count": 0, "savings": 0, "roi": 0}
-            category_breakdown[category]["count"] += 1
-            category_breakdown[category]["savings"] += finding.get("time_savings_hours", 0)
-            category_breakdown[category]["roi"] += finding.get("roi_estimate", 0)
-        
-        summary = {
+        # Get summary from session (calculated during background processing)
+        summary = session.get('summary', {
             "total_findings": len(findings),
-            "total_time_savings_hours": round(total_time_savings, 1),
-            "total_annual_roi": round(total_roi, 0),
-            "category_breakdown": category_breakdown,
-            "domain_breakdown": domain_breakdown,
-            "priority_breakdown": priority_breakdown,
-            "high_impact_count": len([f for f in findings if f.get("impact") == "High"]),
-            "medium_impact_count": len([f for f in findings if f.get("impact") == "Medium"]),
-            "low_impact_count": len([f for f in findings if f.get("impact") == "Low"])
-        }
+            "total_time_savings_hours": 0,
+            "total_annual_roi": 0
+        })
         
-        # Extract business stage from first finding with stage_analysis
-        business_stage = None
-        for finding in findings:
-            if finding.get('stage_analysis'):
-                stage_data = finding['stage_analysis']
-                business_stage = {
-                    "stage": stage_data.get('current_stage', 2),
-                    "name": stage_data.get('stage_name', 'Advertise'),
-                    "role": stage_data.get('stage_role', 'Doer'),
-                    "headcount_range": "1–4",  # Default for Stage 2
-                    "revenue_range": "100K–500K",  # Default for Stage 2
-                    "bottom_line": "Build consistent customer pipeline",  # Default for Stage 2
-                    "constraints_and_actions": [
-                        "Product: Foundation must be solid before scaling",
-                        "Marketing: Move from ad hoc to daily outreach",
-                        "Lead Gen: Qualify & follow up on leads promptly",
-                        "Reporting: Track pipeline stages in a simple CRM"
-                    ]
-                }
-                break
-        
-        # Fallback business stage if none found
+        # Get business stage from session
+        business_stage = session.get('business_stage')
         if not business_stage:
+            # Fallback business stage if missing
             business_stage = {
                 "stage": 2,
                 "name": "Advertise",
@@ -2453,26 +2415,19 @@ async def get_audit_details(session_id: str):
                 ]
             }
         
-        # Handle created_at field properly (could be string or datetime)
-        created_at = session.get('created_at')
-        if isinstance(created_at, str):
-            created_at_iso = created_at
-        elif isinstance(created_at, datetime):
-            created_at_iso = created_at.isoformat()
-        else:
-            created_at_iso = datetime.utcnow().isoformat()
-        
         return {
             "session": session,
+            "status": "completed",
             "summary": summary,
             "findings": findings,
-            "business_stage": business_stage,  # Add business stage for new UI
+            "business_stage": business_stage,
             "metadata": {
                 "audit_type": "stage_based",
-                "confidence": "medium",
-                "created_at": created_at_iso
+                "confidence": "high",
+                "created_at": session.get('created_at', datetime.utcnow()).isoformat() if session.get('created_at') else datetime.utcnow().isoformat()
             }
         }
+        
     except HTTPException:
         raise
     except Exception as e:
