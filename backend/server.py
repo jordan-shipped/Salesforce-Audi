@@ -1166,7 +1166,7 @@ def get_org_context(sf_client):
             'org_name': org_name,
             'org_type': org_type,
             'estimated_hourly_rate': hourly_rate,
-            'complexity_multiplier': min(2.0, 1.0 + (active_users / 50))  # Scale with team size
+            'complexity_multiplier': min(2.0, 1.0 + ((active_users or 10) / 50))  # Scale with team size, guard against None
         }
     except Exception as e:
         logger.error(f"Error getting org context: {e}")
