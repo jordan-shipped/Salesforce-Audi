@@ -1142,22 +1142,33 @@ body {
 }
 
 .feature-card .icon {
-  font-size: 1.75rem; /* Slightly smaller icon */
-  margin-bottom: 0.75rem; /* Reduced margin */
-  display: block;
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 48px; /* consistent icon container height */
+  color: rgba(0, 0, 0, 0.6); /* 60% tone neutral */
+  transition: color 0.2s ease;
+}
+
+.feature-card:hover .icon {
+  color: #007AFF; /* Apple blue accent on hover */
 }
 
 .feature-card h3 {
-  font-size: 1.2rem; /* Slightly smaller heading */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .feature-card p {
-  font-size: 0.95rem; /* Slightly smaller text */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-size: 15px; /* slightly larger for better readability */
   color: var(--text-secondary);
-  line-height: 1.4; /* Tighter line height */
+  line-height: 1.4;
   margin: 0;
 }
 
