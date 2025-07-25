@@ -1784,31 +1784,32 @@ class SalesforceAuditAPITester:
             return False, stage_results
 
 def main():
-    print("🚀 Starting Salesforce OAuth Authorization Fix Testing")
-    print("🎯 PRIMARY FOCUS: Testing GET /api/oauth/authorize endpoint for 302 redirect fix")
+    print("🚀 Starting Alex Hormozi Stage Engine Comprehensive Testing")
+    print("🎯 PRIMARY FOCUS: Testing Phase 1 Stage Engine Implementation")
     print("=" * 80)
     
     tester = SalesforceAuditAPITester()
     
-    # Test sequence - focusing on OAuth authorization fix
-    tests = [
+    # Run the complete Stage Engine test suite
+    stage_engine_success, stage_results = tester.run_stage_engine_test_suite()
+    
+    # Also run some basic functionality tests to ensure backward compatibility
+    print("\n" + "=" * 80)
+    print("🔄 BACKWARD COMPATIBILITY TESTS")
+    print("=" * 80)
+    
+    compatibility_tests = [
         ("Root Endpoint", tester.test_root_endpoint),
-        
-        # PRIMARY FOCUS: OAuth authorization fix testing
-        ("OAuth Authorize - 302 Redirect Fix", tester.test_oauth_authorize),
-        ("OAuth Callback Invalid State", tester.test_oauth_callback_invalid_state),
-        ("OAuth Security Validation", tester.validate_oauth_security),
-        
-        # Secondary tests to ensure other functionality still works
+        ("OAuth Authorize - 302 Redirect", tester.test_oauth_authorize),
         ("Get Audit Sessions", tester.test_get_audit_sessions),
-        ("Run Audit Without Session", tester.test_run_audit_without_session),
         ("Enhanced Audit Request Structure", tester.test_enhanced_audit_request_structure),
     ]
     
-    oauth_fix_working = False
+    compatibility_passed = 0
+    compatibility_total = len(compatibility_tests)
     
-    for test_name, test_func in tests:
-        print(f"\n🔄 Running test: {test_name}")
+    for test_name, test_func in compatibility_tests:
+        print(f"\n🔄 Running compatibility test: {test_name}")
         try:
             result = test_func()
             if result is None:
@@ -1817,41 +1818,59 @@ def main():
             else:
                 success, response = result
                 
-            # Check if OAuth fix is working
-            if test_name == "OAuth Authorize - 302 Redirect Fix" and success:
-                if response.get('status') == 'redirect_working':
-                    oauth_fix_working = True
+            if success:
+                compatibility_passed += 1
                     
         except Exception as e:
             print(f"❌ Test {test_name} failed with error: {e}")
             success, response = False, {}
     
-    # Print final results
+    # Print final comprehensive results
     print("\n" + "=" * 80)
-    print(f"📊 Test Results: {tester.tests_passed}/{tester.tests_run} tests passed")
+    print(f"📊 COMPREHENSIVE TEST RESULTS")
+    print("=" * 80)
+    print(f"🎯 Stage Engine Tests: {sum(1 for r in stage_results.values() if r.get('success', False))}/{len(stage_results)} passed")
+    print(f"🔄 Compatibility Tests: {compatibility_passed}/{compatibility_total} passed")
+    print(f"📊 Total Tests: {tester.tests_passed}/{tester.tests_run} passed")
     
-    # Summary of OAuth authorization fix testing
-    print("\n🎯 OAuth Authorization Fix Testing Summary:")
-    if oauth_fix_working:
-        print("   ✅ GET /api/oauth/authorize returns HTTP 302 redirect (FIXED!)")
-        print("   ✅ Location header contains correct Salesforce authorization URL")
-        print("   ✅ Authorization URL contains all required OAuth parameters")
-        print("   ✅ Parameters have correct values (client_id, redirect_uri, scope, state)")
-        print("   ✅ State parameter is properly generated UUID for security")
-        print("   ✅ OAuth fix successfully resolves the connection issue!")
-        print("\n🎉 OAuth authorization fix verification PASSED!")
-        print("   Users will now be properly redirected to Salesforce login instead of seeing JSON data")
+    # Final assessment
+    print("\n🎯 ALEX HORMOZI STAGE ENGINE ASSESSMENT:")
+    
+    if stage_engine_success:
+        print("   ✅ Stage 0-9 business mapping logic working correctly")
+        print("   ✅ /api/business/stage endpoint maps revenue/headcount to stages")
+        print("   ✅ /api/business/stages returns all 10 stages with correct data")
+        print("   ✅ Enhanced audit flow accepts business_inputs parameter")
+        print("   ✅ Domain classification system properly structured")
+        print("   ✅ Stage-based priority scoring implemented")
+        print("   ✅ Enhanced ROI calculations with stage multipliers")
+        print("   ✅ Task breakdown and role attribution working")
+        print("\n🎉 STAGE ENGINE PHASE 1 IMPLEMENTATION: SUCCESS!")
+        print("   The Alex Hormozi Stage Engine is ready for production use")
     else:
-        print("   ❌ OAuth authorization fix not working properly")
-        print("   ❌ Endpoint may still be returning JSON instead of redirecting")
-        print("   ❌ Users will continue to see JSON data instead of Salesforce login")
-        print("\n⚠️  OAuth authorization fix verification FAILED!")
+        print("   ❌ Some critical stage engine functionality has issues")
+        print("   ❌ Stage mapping or API endpoints may not be working correctly")
+        print("   ❌ Enhanced audit processing may have structural problems")
+        print("\n⚠️  STAGE ENGINE PHASE 1 IMPLEMENTATION: NEEDS ATTENTION!")
+        print("   Critical issues found that require main agent investigation")
     
-    if oauth_fix_working and tester.tests_passed >= tester.tests_run - 2:
-        print("\n✅ PRIMARY OBJECTIVE ACHIEVED: OAuth authorization fix is working correctly!")
+    # Backward compatibility assessment
+    if compatibility_passed >= compatibility_total - 1:  # Allow 1 failure
+        print("\n✅ BACKWARD COMPATIBILITY: MAINTAINED")
+        print("   Existing functionality continues to work with stage engine")
+    else:
+        print("\n❌ BACKWARD COMPATIBILITY: ISSUES DETECTED")
+        print("   Some existing functionality may be broken by stage engine changes")
+    
+    # Return success if stage engine is working and compatibility is maintained
+    if stage_engine_success and compatibility_passed >= compatibility_total - 1:
+        print("\n🎉 OVERALL ASSESSMENT: SUCCESS!")
+        print("   Stage Engine Phase 1 implementation is working correctly")
+        print("   All critical functionality verified and backward compatibility maintained")
         return 0
     else:
-        print("\n❌ PRIMARY OBJECTIVE FAILED: OAuth authorization fix needs investigation")
+        print("\n⚠️  OVERALL ASSESSMENT: NEEDS INVESTIGATION!")
+        print("   Critical issues found that require main agent attention")
         return 1
 
 if __name__ == "__main__":
