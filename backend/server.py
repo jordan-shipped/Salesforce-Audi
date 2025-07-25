@@ -1674,60 +1674,6 @@ def run_salesforce_audit_with_stage_engine(access_token, instance_url, business_
         logger.error(f"Error running stage-based audit: {e}")
         raise e
 
-def run_salesforce_audit_with_salaries(access_token, instance_url, department_salaries=None, custom_assumptions=None):
-    """Run comprehensive Salesforce audit with department salary calculations"""
-    findings = []
-    
-    try:
-        # Initialize Salesforce client
-        sf = Salesforce(instance_url=instance_url, session_id=access_token)
-        
-        # Get org context for realistic calculations
-        org_context = get_org_context(sf)
-        org_name = org_context['org_name']
-        hourly_rate = org_context['estimated_hourly_rate']
-        
-        # Get org ID from context
-        org_id = sf.query("SELECT Id FROM Organization LIMIT 1")['records'][0]['Id']
-        
-        logger.info(f"Starting enhanced audit for org: {org_name} (Type: {org_context['org_type']}, Users: {org_context['active_users']}, Rate: ${hourly_rate}/hr)")
-        
-        # Run analysis modules with org context and department salaries
-        custom_fields_findings = analyze_custom_fields(sf, org_context, department_salaries, custom_assumptions)
-        data_quality_findings = analyze_data_quality(sf, org_context)
-        automation_findings = analyze_automation_opportunities(sf, org_context)
-        system_config_findings = analyze_system_configuration(sf, org_context)
-        data_governance_findings = analyze_data_governance(sf, org_context)
-        
-        logger.info(f"Analysis results: Custom Fields={len(custom_fields_findings)}, Data Quality={len(data_quality_findings)}, Automation={len(automation_findings)}, System Config={len(system_config_findings)}, Data Governance={len(data_governance_findings)}")
-        
-        findings.extend(custom_fields_findings)
-        findings.extend(data_quality_findings)
-        findings.extend(automation_findings)
-        findings.extend(system_config_findings)
-        findings.extend(data_governance_findings)
-        
-        # Calculate ROI for each finding
-        for finding in findings:
-            if not department_salaries:
-                # Fallback to old calculation method
-                finding["roi_estimate"] = finding["time_savings_hours"] * hourly_rate * 12  # Annual
-                # Add org context to finding
-                finding["org_context"] = {
-                    "hourly_rate": hourly_rate,
-                    "active_users": org_context['active_users'],
-                    "org_type": org_context['org_type']
-                }
-            # If department salaries were used, ROI is already calculated in analyze functions
-        
-        logger.info(f"Enhanced audit completed: {len(findings)} findings")
-        
-        return findings, org_name, org_id
-        
-    except Exception as e:
-        logger.error(f"Error running enhanced Salesforce audit: {e}")
-        raise e
-
 def calculate_audit_summary(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Calculate overall audit metrics"""
     total_time_savings = sum(f.get("time_savings_hours", 0) for f in findings)
