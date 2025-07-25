@@ -776,21 +776,29 @@ const Dashboard = () => {
       
       console.log('✅ Audit response received:', response.data);
       
-      // Check if we got a valid session ID
-      if (response.data && response.data.session_id) {
-        console.log('🎯 Got audit session ID:', response.data.session_id);
+      // Check if we got a valid session ID - be more flexible with response structure
+      const auditId = response.data?.session_id;
+      
+      if (auditId) {
+        console.log('🎯 Got audit session ID:', auditId);
         
-        // Wait a moment for database to update, then refresh sessions
+        // Navigate to results IMMEDIATELY - don't wait for sessions refresh
+        console.log('🧭 Navigating to results page...');
+        navigate(`/audit/${auditId}`);
+        
+        // Refresh sessions list in background (no await needed)
         setTimeout(async () => {
           console.log('🔄 Refreshing sessions list...');
-          await loadSessions();
-        }, 2000);
+          try {
+            await loadSessions();
+          } catch (refreshError) {
+            console.warn('Failed to refresh sessions:', refreshError);
+          }
+        }, 1000);
         
-        // Navigate to results with new session ID
-        console.log('🧭 Navigating to results page...');
-        navigate(`/audit/${response.data.session_id}`);
       } else {
         console.error('❌ No session_id in response:', response.data);
+        console.error('❌ Full response structure:', JSON.stringify(response.data, null, 2));
         alert('Audit completed but no session ID returned. Please check the audit history.');
       }
       
