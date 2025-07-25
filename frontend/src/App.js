@@ -83,6 +83,284 @@ const LandingPage = () => {
   );
 };
 
+// Stage Summary Panel Component
+const StageSummaryPanel = ({ businessStage, summary }) => {
+  if (!businessStage) return null;
+
+  return (
+    <div className="stage-summary-panel fade-in">
+      <div className="stage-header">
+        <div>
+          <h2 className="stage-title">
+            Stage {businessStage.stage}: {businessStage.name}
+          </h2>
+          <p className="stage-role">Your Role: {businessStage.role}</p>
+        </div>
+        <div className="priority-indicator">
+          <span className="priority-score">Priority Focus</span>
+        </div>
+      </div>
+      
+      <div className="stage-bottom-line">
+        "{businessStage.bottom_line}"
+      </div>
+      
+      <div className="metrics-grid">
+        <div className="metric-card accent">
+          <span className="metric-value">{summary?.total_time_savings_hours || 0} h/mo</span>
+          <span className="metric-label">Time Saved</span>
+        </div>
+        <div className="metric-card accent">
+          <span className="metric-value">${(summary?.total_annual_roi || 0).toLocaleString()}/yr</span>
+          <span className="metric-label">ROI</span>
+        </div>
+        <div className="metric-card">
+          <span className="metric-value">{summary?.total_findings || 0}</span>
+          <span className="metric-label">Findings</span>
+        </div>
+      </div>
+      
+      {businessStage.constraints_and_actions && (
+        <div className="stage-constraints">
+          <h3 className="task-breakdown-title">Current Stage Focus:</h3>
+          <div className="task-list">
+            {businessStage.constraints_and_actions.map((action, index) => (
+              <div key={index} className="task-item">
+                <div className="task-info">
+                  <div className="task-name">{action}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Priority Filter Bar Component  
+const PriorityFilterBar = ({ selectedDomain, onDomainChange, selectedPriority, onPriorityChange, domains, findings }) => {
+  const priorities = ['All', 'High', 'Medium', 'Low'];
+  
+  return (
+    <div className="priority-filter-bar">
+      <div className="filter-group">
+        <span className="filter-label">Domain:</span>
+        <div className="filter-chips">
+          <button 
+            className={`filter-chip ${selectedDomain === 'All' ? 'active' : ''}`}
+            onClick={() => onDomainChange('All')}
+          >
+            All
+          </button>
+          {domains.map(domain => (
+            <button
+              key={domain}
+              className={`filter-chip ${selectedDomain === domain ? 'active' : ''}`}
+              onClick={() => onDomainChange(domain)}
+            >
+              {domain}
+            </button>
+          ))}
+        </div>
+      </div>
+      
+      <div className="filter-group">
+        <span className="filter-label">Priority:</span>
+        <div className="filter-chips">
+          {priorities.map(priority => (
+            <button
+              key={priority}
+              className={`filter-chip ${selectedPriority === priority ? 'active' : ''}`}
+              onClick={() => onPriorityChange(priority)}
+            >
+              {priority}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced Finding Accordion Component
+const FindingAccordion = ({ finding, isExpanded, onToggle }) => {
+  const getDomainClass = (domain) => {
+    return domain?.toLowerCase().replace(/\s+/g, '-') || 'data-quality';
+  };
+  
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount || 0);
+  };
+
+  return (
+    <div className={`finding-accordion ${isExpanded ? 'expanded' : ''}`}>
+      <div className="accordion-header" onClick={onToggle}>
+        <div className="finding-header-left">
+          <span className={`domain-badge ${getDomainClass(finding.domain)}`}>
+            {finding.domain || 'Data Quality'}
+          </span>
+          <h3 className="finding-title">{finding.title}</h3>
+        </div>
+        
+        <div className="finding-header-right">
+          <div className="priority-indicator">
+            <span className="priority-score">{finding.priority_score || 1}</span>
+            <span className="mini-stat">
+              {formatCurrency(finding.total_annual_roi || finding.roi_estimate || 0)}/yr
+            </span>
+          </div>
+          <svg className="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
+      </div>
+      
+      <div className="accordion-body">
+        <div className="accordion-content">
+          <p className="finding-description">{finding.description}</p>
+          
+          {finding.stage_analysis && (
+            <div className="stage-analysis">
+              <p className="text-caption">
+                <strong>Stage Relevance:</strong> This finding is particularly important for 
+                Stage {finding.stage_analysis.current_stage} ({finding.stage_analysis.stage_name}) 
+                organizations in the {finding.stage_analysis.stage_role} role.
+              </p>
+            </div>
+          )}
+          
+          {finding.task_breakdown && finding.task_breakdown.length > 0 && (
+            <div className="task-breakdown">
+              <h4 className="task-breakdown-title">Task Breakdown:</h4>
+              <div className="task-list">
+                {finding.task_breakdown.map((task, index) => (
+                  <div key={index} className="task-item">
+                    <div className="task-info">
+                      <div className="task-name">{task.task}</div>
+                      <div className="task-description">{task.description}</div>
+                    </div>
+                    <div className="task-stats">
+                      <div className="task-cost">
+                        {task.type === 'one_time' 
+                          ? formatCurrency(task.cost)
+                          : `${formatCurrency(task.savings_per_month || task.cost_per_month)}/mo`
+                        }
+                      </div>
+                      <div className="task-time">
+                        {task.type === 'one_time' 
+                          ? `${task.hours}h total`
+                          : `${task.hours_per_month}h/mo`
+                        }
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="finding-actions">
+            <button className="btn-link">Edit Assumptions</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Business Input Form Component
+const BusinessInputForm = ({ onSubmit, initialData }) => {
+  const [revenue, setRevenue] = useState(initialData?.annual_revenue || '');
+  const [headcount, setHeadcount] = useState(initialData?.employee_headcount || '');
+  const [stagePreview, setStagePreview] = useState(null);
+
+  useEffect(() => {
+    const updateStagePreview = async () => {
+      if (revenue || headcount) {
+        try {
+          const response = await axios.post(`${API}/business/stage`, {
+            annual_revenue: revenue ? parseInt(revenue) : null,
+            employee_headcount: headcount ? parseInt(headcount) : null
+          });
+          setStagePreview(response.data);
+        } catch (error) {
+          console.error('Error getting stage preview:', error);
+        }
+      }
+    };
+
+    const timeoutId = setTimeout(updateStagePreview, 300);
+    return () => clearTimeout(timeoutId);
+  }, [revenue, headcount]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({
+      annual_revenue: revenue ? parseInt(revenue) : null,
+      employee_headcount: headcount ? parseInt(headcount) : null
+    });
+  };
+
+  return (
+    <form className="business-input-form" onSubmit={handleSubmit}>
+      <div>
+        <h3 className="business-input-title">Tell us about your business</h3>
+        <p className="business-input-description">
+          Help us provide stage-specific insights by sharing some basic information about your organization.
+        </p>
+      </div>
+      
+      <div className="input-row">
+        <div className="input-group">
+          <label className="input-label" htmlFor="revenue">Annual Revenue (USD)</label>
+          <input
+            id="revenue"
+            type="number"
+            className="input-field"
+            placeholder="e.g., 5000000"
+            value={revenue}
+            onChange={(e) => setRevenue(e.target.value)}
+          />
+        </div>
+        
+        <div className="input-group">
+          <label className="input-label" htmlFor="headcount">Total Employees</label>
+          <input
+            id="headcount"
+            type="number"
+            className="input-field"
+            placeholder="e.g., 50"
+            value={headcount}
+            onChange={(e) => setHeadcount(e.target.value)}
+          />
+        </div>
+      </div>
+      
+      {stagePreview && (
+        <div className="stage-preview">
+          <p className="stage-preview-text">
+            Based on your inputs, you're at <span className="stage-preview-stage">
+              Stage {stagePreview.stage}: {stagePreview.name}
+            </span> ({stagePreview.role})
+          </p>
+        </div>
+      )}
+      
+      <div>
+        <button type="submit" className="btn-primary">
+          Start Stage-Based Audit
+        </button>
+      </div>
+    </form>
+  );
+};
+
 // Org Profile Modal Component
 const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   const [useQuickEstimate, setUseQuickEstimate] = useState(true);
