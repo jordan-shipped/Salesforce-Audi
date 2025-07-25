@@ -556,12 +556,11 @@ body {
   background: rgba(0,0,0,0.07);
 }
 
-/* 2.5️⃣ Apple-Style Segmented Control */
-.view-toggle {
+/* 2.5️⃣ Apple-Style Segmented Control with Sliding Indicator */
+.segmented {
+  position: relative;
   display: inline-flex;
-  background: #F2F2F7;
-  border-radius: 8px;
-  overflow: hidden;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
   margin: 16px 32px;
 }
 
@@ -572,13 +571,23 @@ body {
   background: none;
   cursor: pointer;
   color: var(--text-secondary);
-  transition: background 0.2s, color 0.2s;
+  position: relative;
+  transition: color 0.15s ease;
 }
 
-.segment.active,
-.segment:hover {
-  background: #fff;
+.segment.active {
   color: var(--text-primary);
+}
+
+.segmented::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0; /* will update via JS on toggle */
+  width: 50%; /* width of one segment */
+  height: 2px;
+  background: var(--color-accent);
+  transition: left 0.15s ease;
 }
 
 /* 3️⃣ Sessions Area - Premium Grid Layout */
