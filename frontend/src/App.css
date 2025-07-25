@@ -597,7 +597,7 @@ body {
   line-height: 1.5;
 }
 
-/* Session Cards - Premium Airy Design with Timestamp */
+/* Session Cards - Premium Airy Design with Animations */
 .session-card {
   background: var(--bg-page);
   border-radius: var(--radius-card);
@@ -607,17 +607,30 @@ body {
   justify-content: space-between; /* space between left and right content */
   align-items: flex-start; /* timestamp sits at top right */
   cursor: pointer;
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
   border: 1px solid rgba(0, 0, 0, 0.04);
+  
+  /* Fade-in animation */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 0.3s ease forwards;
 }
 
 .session-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
 }
 
 .session-card:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
+}
+
+@keyframes fadeInUp {
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
 }
 
 .session-info {
