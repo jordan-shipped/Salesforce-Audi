@@ -219,6 +219,49 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
 };
 
 // Dashboard Component
+// SessionCard Component
+const SessionCard = ({ id, orgName, findingsCount, annualSavings, date, onClick }) => {
+  const formatCurrency = (amount) => {
+    if (!amount) return '$0';
+    return `$${Math.round(amount).toLocaleString()}`;
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
+  return (
+    <div 
+      className="session-card"
+      role="listitem"
+      tabIndex="0"
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+    >
+      <div className="session-info">
+        <p className="session-org gradient-text">{orgName}</p>
+        <p className="session-meta">
+          {findingsCount} findings • <span className="gradient-text">
+            {formatCurrency(annualSavings)}/yr
+          </span>
+        </p>
+      </div>
+      <p className="session-date">{formatDate(date)}</p>
+    </div>
+  );
+};
+
 // Ultra-Clean Dashboard Component - Properly Wired Logic
 const Dashboard = () => {
   const [sessionId, setSessionId] = useState(localStorage.getItem('salesforce_session_id'));
