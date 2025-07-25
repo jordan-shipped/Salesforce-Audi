@@ -2242,101 +2242,38 @@ async def run_audit(audit_request: AuditRequest):
                     'executives': None
                 }
         
-        logger.info("Starting Salesforce audit with stage engine...")
-        
-        # Run the stage-based audit
-        try:
-            findings_data, org_name, org_id, business_stage = await loop.run_in_executor(
-                executor, run_salesforce_audit_with_stage_engine, access_token, instance_url, audit_request.business_inputs, dept_salaries_dict, None
-            )
-            logger.info(f"Audit completed successfully. Found {len(findings_data)} findings for {org_name}")
-        except Exception as audit_error:
-            # CAPTURE FULL TRACEBACK FOR DEBUGGING
-            tb = traceback.format_exc()
-            logger.error("🔥 Full audit exception traceback:\n" + tb)
-            logger.error(f"Salesforce audit failed: {audit_error}")
-            raise HTTPException(status_code=500, detail="An unexpected error occurred during audit processing. Our team has been notified.")
-        
-        # Calculate summary
-        if dept_salaries_dict:
-            # New calculation method
-            total_cleanup_cost = sum(f.get('cleanup_cost', 0) for f in findings_data)
-            total_monthly_savings = sum(f.get('monthly_user_savings', 0) for f in findings_data)
-            total_annual_savings = sum(f.get('annual_user_savings', 0) for f in findings_data)
-            total_net_roi = sum(f.get('net_annual_roi', 0) for f in findings_data)
-            total_monthly_hours = sum(f.get('monthly_savings_hours', 0) for f in findings_data)
-            
-            summary = {
-                "total_findings": len(findings_data),
-                "total_time_savings_hours": round(total_monthly_hours, 1),
-                "total_annual_roi": round(total_net_roi, 0),
-                "total_cleanup_cost": round(total_cleanup_cost, 0),
-                "total_monthly_savings": round(total_monthly_savings, 0),
-                "total_annual_savings": round(total_annual_savings, 0),
-                "calculation_method": "department_salaries"
-            }
-        else:
-            # Fallback to old method
-            summary = calculate_audit_summary(findings_data)
-            summary["calculation_method"] = "quick_estimate"
-        
-        logger.info(f"Generated {len(findings_data)} findings for {org_name}")
-        
-        # Create audit session
+        # Create audit session immediately with "processing" status
         audit_session_id = str(uuid.uuid4())
         session_data = {
             "id": audit_session_id,
-            "org_name": org_name,
-            "org_id": org_id,
+            "oauth_session_id": session_id,
+            "org_name": "Processing...",  # Will update when complete
+            "org_id": "",
+            "status": "processing",  # Track audit status
             "created_at": datetime.utcnow(),
-            "status": "completed",
-            "findings_count": len(findings_data),
-            "estimated_savings": {
-                "monthly_hours": float(summary.get("total_time_savings_hours", 0)),
-                "annual_dollars": float(summary.get("total_annual_roi", 0)),
-                "cleanup_cost": float(summary.get("total_cleanup_cost", 0)),
-                "calculation_method": summary.get("calculation_method", "quick_estimate")
-            },
-            "instance_url": instance_url
+            "business_inputs": audit_request.business_inputs.dict() if audit_request.business_inputs else None,
+            "findings_count": 0,
+            "estimated_savings": {"annual_dollars": 0}
         }
         
-        # Store session in database
+        # Insert session record immediately so frontend can find it
         await db.audit_sessions.insert_one(session_data)
+        logger.info(f"Created processing audit session: {audit_session_id}")
         
-        # Store findings
-        findings_to_store = []
-        for finding in findings_data:
-            finding_copy = finding.copy()
-            finding_copy["session_id"] = audit_session_id
-            findings_to_store.append(finding_copy)
-        
-        await db.audit_findings.insert_many(findings_to_store)
-        
-        # Create clean response
-        response_data = {
+        # Return session ID immediately so frontend can navigate
+        processing_response = {
             "session_id": audit_session_id,
-            "org_name": org_name,
-            "org_id": org_id,
-            "findings": convert_objectid(findings_data),
-            "summary": summary,
-            "business_stage": {
-                "stage": business_stage['stage'],
-                "name": business_stage['name'],
-                "role": business_stage['role'],
-                "headcount_range": business_stage['hc_range'],
-                "revenue_range": business_stage['rev_range'],
-                "bottom_line": business_stage['bottom_line'],
-                "constraints_and_actions": business_stage['constraints_and_actions']
-            },
-            "metadata": {
-                "audit_type": "stage_based",
-                "confidence": "high" if audit_request.business_inputs else "medium",
-                "created_at": datetime.utcnow().isoformat()
-            }
+            "status": "processing",
+            "message": "Audit started successfully"
         }
         
-        logger.info("Enhanced Salesforce audit completed successfully")
-        return response_data
+        # Start actual audit processing in background
+        asyncio.create_task(process_audit_in_background(
+            audit_session_id, access_token, instance_url, 
+            audit_request.business_inputs, dept_salaries_dict
+        ))
+        
+        return processing_response
         
     except HTTPException:
         raise
