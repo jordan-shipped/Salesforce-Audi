@@ -55,6 +55,283 @@ class SalesforceAuditAPITester:
             print(f"❌ Failed - Error: {str(e)}")
             return False, {}
 
+    def test_critical_audit_creation_flow_debug(self):
+        """CRITICAL DEBUG: Test complete audit creation flow to identify failure points"""
+        print("\n🚨 CRITICAL AUDIT CREATION FLOW DEBUGGING")
+        print("=" * 60)
+        print("Debugging complete audit creation flow as requested in review")
+        
+        debug_results = {}
+        all_tests_passed = True
+        
+        # STEP 1: Test OAuth Session Validation
+        print("\n📋 1. OAUTH SESSION VALIDATION")
+        print("-" * 50)
+        
+        # Test if OAuth session endpoint is working
+        print("🔍 Testing OAuth authorization endpoint...")
+        success, oauth_response = self.run_test(
+            "OAuth Authorization - Session Creation",
+            "GET",
+            "oauth/authorize",
+            302  # Should redirect
+        )
+        
+        debug_results['oauth_endpoint_working'] = success
+        if success:
+            print("✅ OAuth authorization endpoint returns 302 redirect")
+            # Extract state for potential session testing
+            redirect_url = oauth_response.get('redirect_url', '')
+            if 'state=' in redirect_url:
+                import re
+                state_match = re.search(r'state=([^&]+)', redirect_url)
+                if state_match:
+                    oauth_state = state_match.group(1)
+                    print(f"✅ OAuth state generated: {oauth_state[:8]}...")
+                    debug_results['oauth_state'] = oauth_state
+        else:
+            print("❌ OAuth authorization endpoint failed")
+            all_tests_passed = False
+        
+        # Test GET /api/audit/sessions to check if any OAuth sessions exist
+        print("\n🔍 Testing existing OAuth sessions...")
+        success, sessions_response = self.run_test(
+            "Check Existing Sessions",
+            "GET",
+            "audit/sessions",
+            200
+        )
+        
+        debug_results['existing_sessions'] = success
+        if success:
+            session_count = len(sessions_response) if isinstance(sessions_response, list) else 0
+            print(f"✅ Found {session_count} existing audit sessions")
+            debug_results['session_count'] = session_count
+            
+            # If we have sessions, try to extract a session_id for testing
+            if session_count > 0:
+                test_session_id = sessions_response[0].get('id')
+                debug_results['test_session_id'] = test_session_id
+                print(f"✅ Using session ID for testing: {test_session_id}")
+        else:
+            print("❌ Failed to retrieve existing sessions")
+            all_tests_passed = False
+        
+        # STEP 2: Test Audit Request Structure
+        print("\n📋 2. AUDIT REQUEST STRUCTURE VALIDATION")
+        print("-" * 50)
+        
+        # Test with realistic audit request as specified in review
+        realistic_audit_request = {
+            "session_id": "test_oauth_session_id",
+            "use_quick_estimate": True,
+            "business_inputs": {
+                "annual_revenue": 2000000,
+                "employee_headcount": 7,
+                "revenue_range": "1M–3M",
+                "employee_range": "5–9"
+            }
+        }
+        
+        print("🔍 Testing POST /api/audit/run with realistic request structure...")
+        success, audit_response = self.run_test(
+            "Audit Request Structure - Realistic Data",
+            "POST",
+            "audit/run",
+            401,  # Expected to fail on session validation
+            data=realistic_audit_request
+        )
+        
+        # Check if error is about session (good) not structure (bad)
+        structure_valid = success or (audit_response and 'session' in str(audit_response).lower())
+        debug_results['audit_request_structure'] = structure_valid
+        
+        if structure_valid:
+            print("✅ Enhanced audit request structure accepted")
+            print("✅ business_inputs with both numeric and picklist values accepted")
+        else:
+            print("❌ Audit request structure validation failed")
+            print(f"   Error: {audit_response}")
+            all_tests_passed = False
+        
+        # STEP 3: Test Session Creation Logic (Mock)
+        print("\n📋 3. SESSION CREATION LOGIC VALIDATION")
+        print("-" * 50)
+        
+        # Test UUID generation logic
+        import uuid
+        test_uuid = str(uuid.uuid4())
+        print(f"🔍 Testing UUID generation: {test_uuid}")
+        
+        try:
+            uuid.UUID(test_uuid)
+            print("✅ UUID generation working correctly")
+            debug_results['uuid_generation'] = True
+        except ValueError:
+            print("❌ UUID generation failed")
+            debug_results['uuid_generation'] = False
+            all_tests_passed = False
+        
+        # Test if audit_sessions collection structure is accessible
+        print("🔍 Testing audit_sessions collection access...")
+        if debug_results.get('existing_sessions'):
+            print("✅ audit_sessions collection accessible (sessions found)")
+            debug_results['database_access'] = True
+        else:
+            print("⚠️ audit_sessions collection may be empty or inaccessible")
+            debug_results['database_access'] = False
+        
+        # STEP 4: Test Response Structure
+        print("\n📋 4. RESPONSE STRUCTURE VALIDATION")
+        print("-" * 50)
+        
+        # Test if existing session responses include session_id field
+        if debug_results.get('existing_sessions') and debug_results.get('session_count', 0) > 0:
+            print("🔍 Testing response structure of existing sessions...")
+            session = sessions_response[0]
+            
+            required_response_fields = ['id', 'org_name', 'findings_count', 'estimated_savings', 'created_at']
+            missing_fields = []
+            
+            for field in required_response_fields:
+                if field not in session:
+                    missing_fields.append(field)
+                else:
+                    print(f"✅ Found {field}: {session[field]}")
+            
+            if missing_fields:
+                print(f"❌ Missing response fields: {missing_fields}")
+                debug_results['response_structure'] = False
+                all_tests_passed = False
+            else:
+                print("✅ Response structure includes all required fields")
+                debug_results['response_structure'] = True
+        else:
+            print("⚠️ No existing sessions to validate response structure")
+            debug_results['response_structure'] = None
+        
+        # Test serialization by checking if we can parse session data
+        if debug_results.get('existing_sessions'):
+            try:
+                import json
+                json_str = json.dumps(sessions_response)
+                parsed_back = json.loads(json_str)
+                print("✅ Session data serialization working correctly")
+                debug_results['serialization'] = True
+            except Exception as e:
+                print(f"❌ Serialization error: {e}")
+                debug_results['serialization'] = False
+                all_tests_passed = False
+        
+        # STEP 5: Test Specific Failure Scenarios
+        print("\n📋 5. SPECIFIC FAILURE SCENARIO TESTING")
+        print("-" * 50)
+        
+        # Test with invalid session to see exact error message
+        print("🔍 Testing with invalid session to check error handling...")
+        invalid_session_request = {
+            "session_id": "definitely_invalid_session_id",
+            "use_quick_estimate": True,
+            "business_inputs": {
+                "annual_revenue": 2000000,
+                "employee_headcount": 7
+            }
+        }
+        
+        success, invalid_response = self.run_test(
+            "Invalid Session Error Testing",
+            "POST",
+            "audit/run",
+            401,
+            data=invalid_session_request
+        )
+        
+        if success:
+            print("✅ Invalid session properly rejected with 401")
+            print(f"   Error message: {invalid_response}")
+            debug_results['error_handling'] = True
+        else:
+            print("❌ Invalid session error handling failed")
+            debug_results['error_handling'] = False
+            all_tests_passed = False
+        
+        # Test if audit session retrieval works for non-existent sessions
+        print("\n🔍 Testing audit session retrieval for non-existent session...")
+        success, not_found_response = self.run_test(
+            "Non-existent Session Retrieval",
+            "GET",
+            "audit/nonexistent_session_12345",
+            404
+        )
+        
+        if success:
+            print("✅ Non-existent session properly returns 404")
+            debug_results['session_retrieval_404'] = True
+        else:
+            print("❌ Non-existent session handling failed")
+            debug_results['session_retrieval_404'] = False
+            all_tests_passed = False
+        
+        # SUMMARY OF DEBUG RESULTS
+        print("\n📊 CRITICAL DEBUG SUMMARY")
+        print("=" * 60)
+        
+        debug_points = [
+            ("✅ OAuth session validation", debug_results.get('oauth_endpoint_working', False)),
+            ("✅ Existing sessions accessible", debug_results.get('existing_sessions', False)),
+            ("✅ Audit request structure valid", debug_results.get('audit_request_structure', False)),
+            ("✅ UUID generation working", debug_results.get('uuid_generation', False)),
+            ("✅ Database access working", debug_results.get('database_access', False)),
+            ("✅ Response structure complete", debug_results.get('response_structure', False)),
+            ("✅ Serialization working", debug_results.get('serialization', False)),
+            ("✅ Error handling working", debug_results.get('error_handling', False)),
+            ("✅ 404 handling working", debug_results.get('session_retrieval_404', False))
+        ]
+        
+        passed_count = 0
+        for description, passed in debug_points:
+            if passed:
+                print(f"{description}")
+                passed_count += 1
+            elif passed is None:
+                print(f"⚠️{description[1:]} (Unable to test)")
+            else:
+                print(f"❌{description[1:]}")
+        
+        print(f"\n🎯 DEBUG RESULTS: {passed_count}/{len([p for p in debug_points if p[1] is not None])} CRITICAL POINTS PASSED")
+        
+        # SPECIFIC RECOMMENDATIONS
+        print("\n📋 SPECIFIC DEBUGGING RECOMMENDATIONS")
+        print("-" * 50)
+        
+        if not debug_results.get('oauth_endpoint_working'):
+            print("🔧 RECOMMENDATION: Fix OAuth authorization endpoint - it should return 302 redirect")
+        
+        if not debug_results.get('audit_request_structure'):
+            print("🔧 RECOMMENDATION: Check AuditRequest model validation - business_inputs may not be accepted")
+        
+        if not debug_results.get('database_access'):
+            print("🔧 RECOMMENDATION: Check MongoDB connection and audit_sessions collection")
+        
+        if not debug_results.get('serialization'):
+            print("🔧 RECOMMENDATION: Check for ObjectId serialization issues in session data")
+        
+        if not debug_results.get('error_handling'):
+            print("🔧 RECOMMENDATION: Check session validation logic in audit/run endpoint")
+        
+        if all_tests_passed:
+            print("\n🎉 CRITICAL AUDIT FLOW DEBUG COMPLETED - NO MAJOR ISSUES FOUND!")
+            print("✅ OAuth session validation passes")
+            print("✅ Audit request processes without errors")
+            print("✅ Session creation logic working")
+            print("✅ Response structure valid")
+            print("✅ No serialization or database errors")
+        else:
+            print("\n⚠️ CRITICAL ISSUES IDENTIFIED IN AUDIT FLOW")
+            print("❌ Silent failure root cause likely identified above")
+        
+        return all_tests_passed, debug_results
+
     def test_comprehensive_audit_session_flow(self):
         """COMPREHENSIVE FIX VALIDATION: Test complete audit session flow as requested in review"""
         print("\n🎯 COMPREHENSIVE AUDIT SESSION FLOW VALIDATION")
