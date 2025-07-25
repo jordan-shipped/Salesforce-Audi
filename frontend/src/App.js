@@ -83,28 +83,74 @@ const LandingPage = () => {
   );
 };
 
-// Stage Summary Panel Component
+// Stage Summary Panel Component - Apple-Grade Hormozi Style
 const StageSummaryPanel = ({ businessStage, summary }) => {
   if (!businessStage) return null;
 
+  // Parse constraints and next steps from the constraints_and_actions array
+  const parseConstraintsAndActions = (actions) => {
+    if (!actions || !Array.isArray(actions)) return { constraints: [], nextSteps: [] };
+    
+    let constraints = [];
+    let nextSteps = [];
+    let isConstraints = false;
+    let isNextSteps = false;
+    
+    actions.forEach(item => {
+      const text = item.toLowerCase();
+      
+      // Check for section headers
+      if (text.includes('constraint')) {
+        isConstraints = true;
+        isNextSteps = false;
+        return;
+      } else if (text.includes('quick wins') || text.includes('key actions') || text.includes('actions:')) {
+        isConstraints = false;
+        isNextSteps = true;
+        return;
+      }
+      
+      // Stage 4 has explicit format
+      if (businessStage.stage === 4) {
+        if (text.includes('weak process') || text.includes('data silos') || text.includes('inefficient')) {
+          constraints.push(item);
+        } else if (text.includes('centralize') || text.includes('standardize') || text.includes('automate')) {
+          nextSteps.push(item);
+        }
+      } else {
+        // For other stages, add all as next steps if not explicitly constraints
+        if (isConstraints) {
+          constraints.push(item);
+        } else {
+          nextSteps.push(item);
+        }
+      }
+    });
+    
+    // If no explicit parsing worked, split roughly in half
+    if (constraints.length === 0 && nextSteps.length === 0) {
+      const mid = Math.ceil(actions.length / 2);
+      constraints = actions.slice(0, mid);
+      nextSteps = actions.slice(mid);
+    }
+    
+    return { constraints, nextSteps };
+  };
+
+  const { constraints, nextSteps } = parseConstraintsAndActions(businessStage.constraints_and_actions);
+
   return (
     <div className="stage-summary-panel fade-in">
-      <div className="stage-header">
-        <div>
-          <h2 className="stage-title">
-            Stage {businessStage.stage}: {businessStage.name}
-          </h2>
-          <p className="stage-role">Your Role: {businessStage.role}</p>
-        </div>
-        <div className="priority-indicator">
-          <span className="priority-score">Priority Focus</span>
-        </div>
+      {/* Header Section */}
+      <div className="stage-header-section">
+        <h2 className="stage-title-large">
+          Stage {businessStage.stage}: {businessStage.name}
+        </h2>
+        <p className="stage-role-subtitle">{businessStage.role}</p>
+        <p className="stage-bottom-line-quote">"{businessStage.bottom_line}"</p>
       </div>
       
-      <div className="stage-bottom-line">
-        "{businessStage.bottom_line}"
-      </div>
-      
+      {/* Metrics Grid */}
       <div className="metrics-grid">
         <div className="metric-card accent">
           <span className="metric-value">{summary?.total_time_savings_hours || 0} h/mo</span>
@@ -120,20 +166,26 @@ const StageSummaryPanel = ({ businessStage, summary }) => {
         </div>
       </div>
       
-      {businessStage.constraints_and_actions && (
-        <div className="stage-constraints">
-          <h3 className="task-breakdown-title">Current Stage Focus:</h3>
-          <div className="task-list">
-            {businessStage.constraints_and_actions.map((action, index) => (
-              <div key={index} className="task-item">
-                <div className="task-info">
-                  <div className="task-name">{action}</div>
-                </div>
-              </div>
+      {/* Two-Column Hormozi-Style Layout */}
+      <div className="hormozi-two-column">
+        <div className="constraints-column">
+          <h3 className="column-header">Your Primary Constraints</h3>
+          <ul className="constraint-list">
+            {constraints.map((constraint, index) => (
+              <li key={index} className="constraint-item">{constraint}</li>
             ))}
-          </div>
+          </ul>
         </div>
-      )}
+        
+        <div className="next-steps-column">
+          <h3 className="column-header">Your Next Steps</h3>
+          <ul className="next-steps-list">
+            {nextSteps.map((step, index) => (
+              <li key={index} className="next-step-item">{step}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };
