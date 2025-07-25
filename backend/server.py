@@ -2152,9 +2152,8 @@ async def update_audit_assumptions(session_id: str, assumptions: AssumptionsUpda
         loop = asyncio.get_event_loop()
         
         # Note: We'll use empty department salaries as we're only updating assumptions
-        # In a full implementation, you might want to store original department salaries
         findings_data, org_name, org_id = await loop.run_in_executor(
-            executor, run_salesforce_audit_with_salaries, access_token, instance_url, None, custom_assumptions
+            executor, run_salesforce_audit_with_stage_engine, access_token, instance_url, None, None, custom_assumptions
         )
         
         # Calculate new summary
