@@ -376,56 +376,47 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* 2️⃣ Sessions Area - Grid Layout */}
-      <section aria-labelledby="sessions-heading">
-        <h2 id="sessions-heading" className="visually-hidden">Your Audit Sessions</h2>
+      {/* 2️⃣ Header above the sessions list */}
+      <h2 className="sessions-header" id="sessions-history">
+        Audit Report History
+      </h2>
+
+      {/* 3️⃣ Sessions Area - Grid Layout */}
+      <section className="sessions-list" aria-labelledby="sessions-history">
+        {/* Loading State */}
+        {loading && (
+          <div className="loading-state" style={{gridColumn: '1 / -1', justifySelf: 'center'}}>
+            <div className="loading-spinner-premium"></div>
+            <p>Loading your audit sessions...</p>
+          </div>
+        )}
         
-        <div className="sessions-list">
-          {/* Loading State */}
-          {loading && (
-            <div className="loading-state" style={{gridColumn: '1 / -1', justifySelf: 'center'}}>
-              <div className="loading-spinner-premium"></div>
-              <p>Loading your audit sessions...</p>
-            </div>
-          )}
-          
-          {/* Empty State - Show when not loading and no sessions */}
-          {!loading && sessions.length === 0 && (
-            <div className="empty-card premium">
-              <div className="empty-icon">📊</div>
-              <h3 className="empty-title">No Audit Sessions Yet</h3>
-              <p className="empty-sub">
-                Connect your Salesforce org to run your first audit and unlock insights.
-              </p>
-              <button onClick={handleConnect} className="btn-primary">
-                Connect to Salesforce
-              </button>
-            </div>
-          )}
-          
-          {/* Sessions - Show only visible sessions (first 4, then more) */}
-          {!loading && sessions.length > 0 && visibleSessions.map((session) => (
-            <SessionCard 
-              key={session.id}
-              id={session.id}
-              orgName={session.org_name}
-              findingsCount={session.findings_count}
-              annualSavings={session.estimated_savings?.annual_dollars || 0}
-              date={session.created_at}
-              onClick={() => navigate(`/audit/${session.id}`)}
-            />
-          ))}
-          
-          {/* See More Button - Show if there are more sessions */}
-          {!loading && hasMore && (
-            <button
-              className="btn-primary see-more-btn"
-              onClick={() => setVisibleCount(vc => vc + 4)}
-            >
-              See More
+        {/* Empty State - Show when not loading and no sessions */}
+        {!loading && sessions.length === 0 && (
+          <div className="empty-card premium">
+            <div className="empty-icon">📊</div>
+            <h3 className="empty-title">No Audit Sessions Yet</h3>
+            <p className="empty-sub">
+              Connect your Salesforce org to run your first audit and unlock insights.
+            </p>
+            <button onClick={handleConnect} className="btn-primary">
+              Connect to Salesforce
             </button>
-          )}
-        </div>
+          </div>
+        )}
+        
+        {/* Sessions - Show all sessions */}
+        {!loading && sessions.length > 0 && visibleSessions.map((session) => (
+          <SessionCard 
+            key={session.id}
+            id={session.id}
+            orgName={session.org_name}
+            findingsCount={session.findings_count}
+            annualSavings={session.estimated_savings?.annual_dollars || 0}
+            date={session.created_at}
+            onClick={() => navigate(`/audit/${session.id}`)}
+          />
+        ))}
       </section>
 
       {/* Org Profile Modal */}
