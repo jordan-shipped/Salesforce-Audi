@@ -274,36 +274,48 @@ const FindingAccordion = ({ finding, isExpanded, onToggle }) => {
   );
 };
 
-// Business Input Form Component
+// Business Input Form Component - Enhanced with Picklists
 const BusinessInputForm = ({ onSubmit, initialData }) => {
-  const [revenue, setRevenue] = useState(initialData?.annual_revenue || '');
-  const [headcount, setHeadcount] = useState(initialData?.employee_headcount || '');
-  const [stagePreview, setStagePreview] = useState(null);
+  const [revenue, setRevenue] = useState(initialData?.revenue_range || '');
+  const [employees, setEmployees] = useState(initialData?.employee_range || '');
 
-  useEffect(() => {
-    const updateStagePreview = async () => {
-      if (revenue || headcount) {
-        try {
-          const response = await axios.post(`${API}/business/stage`, {
-            annual_revenue: revenue ? parseInt(revenue) : null,
-            employee_headcount: headcount ? parseInt(headcount) : null
-          });
-          setStagePreview(response.data);
-        } catch (error) {
-          console.error('Error getting stage preview:', error);
-        }
-      }
-    };
+  // Mapping picklist values to numeric ranges for backend processing
+  const revenueMapping = {
+    '<100k': 50000,        // Mid-point of 0-100k
+    '100k–250k': 175000,   // Mid-point 
+    '250k–500k': 375000,   // Mid-point
+    '500k–1M': 750000,     // Mid-point
+    '1M–3M': 2000000,      // Mid-point
+    '3M–10M': 6500000,     // Mid-point
+    '10M–30M': 20000000,   // Mid-point
+    '30M+': 50000000       // Conservative estimate
+  };
 
-    const timeoutId = setTimeout(updateStagePreview, 300);
-    return () => clearTimeout(timeoutId);
-  }, [revenue, headcount]);
+  const employeeMapping = {
+    '0-only': 0,
+    '0-some': 1,
+    'vendors': 2,
+    '2–4': 3,
+    '5–9': 7,
+    '10–19': 15,
+    '20–49': 35,
+    '50–99': 75,
+    '100–249': 175,
+    '250–500': 375
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Convert picklist selections to numeric values
+    const numericRevenue = revenueMapping[revenue] || 1000000; // Default $1M
+    const numericEmployees = employeeMapping[employees] || 50;  // Default 50
+
     onSubmit({
-      annual_revenue: revenue ? parseInt(revenue) : null,
-      employee_headcount: headcount ? parseInt(headcount) : null
+      annual_revenue: numericRevenue,
+      employee_headcount: numericEmployees,
+      revenue_range: revenue,
+      employee_range: employees
     });
   };
 
@@ -318,42 +330,54 @@ const BusinessInputForm = ({ onSubmit, initialData }) => {
       
       <div className="input-row">
         <div className="input-group">
-          <label className="input-label" htmlFor="revenue">Annual Revenue (USD)</label>
-          <input
+          <label className="input-label" htmlFor="revenue">Annual Revenue</label>
+          <select
             id="revenue"
-            type="number"
+            name="revenue"
             className="input-field"
-            placeholder="e.g., 5000000"
             value={revenue}
             onChange={(e) => setRevenue(e.target.value)}
-          />
+            required
+          >
+            <option value="">Select revenue range...</option>
+            <option value="<100k">Under $100K</option>
+            <option value="100k–250k">$100K to $250K</option>
+            <option value="250k–500k">$250K to $500K</option>
+            <option value="500k–1M">$500K to $1M</option>
+            <option value="1M–3M">$1M to $3M</option>
+            <option value="3M–10M">$3M to $10M</option>
+            <option value="10M–30M">$10M to $30M</option>
+            <option value="30M+">$30M+</option>
+          </select>
         </div>
         
         <div className="input-group">
-          <label className="input-label" htmlFor="headcount">Total Employees</label>
-          <input
-            id="headcount"
-            type="number"
+          <label className="input-label" htmlFor="employees">Total Employees</label>
+          <select
+            id="employees"
+            name="employees"
             className="input-field"
-            placeholder="e.g., 50"
-            value={headcount}
-            onChange={(e) => setHeadcount(e.target.value)}
-          />
+            value={employees}
+            onChange={(e) => setEmployees(e.target.value)}
+            required
+          >
+            <option value="">Select employee count...</option>
+            <option value="0-only">Just me, no revenue</option>
+            <option value="0-some">Just me, some revenue</option>
+            <option value="vendors">Me and vendors</option>
+            <option value="2–4">2 to 4</option>
+            <option value="5–9">5 to 9</option>
+            <option value="10–19">10 to 19</option>
+            <option value="20–49">20 to 49</option>
+            <option value="50–99">50 to 99</option>
+            <option value="100–249">100 to 249</option>
+            <option value="250–500">250 to 500</option>
+          </select>
         </div>
       </div>
       
-      {stagePreview && (
-        <div className="stage-preview">
-          <p className="stage-preview-text">
-            Based on your inputs, you're at <span className="stage-preview-stage">
-              Stage {stagePreview.stage}: {stagePreview.name}
-            </span> ({stagePreview.role})
-          </p>
-        </div>
-      )}
-      
       <div>
-        <button type="submit" className="btn-primary">
+        <button type="submit" className="btn-primary" disabled={!revenue || !employees}>
           Start Stage-Based Audit
         </button>
       </div>
