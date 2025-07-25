@@ -8,6 +8,7 @@
 :root {
   /* Ultra-Clean Color Palette */
   --bg-page: #FFFFFF;
+  --bg-alt: #F9F9FB;
   --bg-strip: #F9F9FB;
   --text-primary: #1C1C1E;
   --text-secondary: #3A3A3C;
@@ -19,6 +20,15 @@
   /* Accent colors for Dashboard buttons & links */
   --color-accent: #0A84FF; /* SF Blue */
   --color-accent-hover: #006EDC; /* slightly darker for hover */
+  
+  /* Spacing */
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  
+  /* Border radius */
+  --radius-card: 16px;
   
   /* Typography */
   --font-family-base: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
