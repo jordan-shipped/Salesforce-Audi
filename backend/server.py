@@ -84,6 +84,7 @@ class AuditRequest(BaseModel):
     session_id: str
     department_salaries: Optional[DepartmentSalaries] = None
     use_quick_estimate: bool = True
+    business_inputs: Optional[BusinessInputs] = None
 
 class AssumptionsUpdate(BaseModel):
     admin_rate: Optional[float] = 40
