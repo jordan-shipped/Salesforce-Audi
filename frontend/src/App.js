@@ -388,12 +388,13 @@ const Dashboard = () => {
 
       {/* 3️⃣ Sessions Area - Grid Layout */}
       <section className="sessions-list" aria-labelledby="sessions-history">
-        {/* Loading State */}
+        {/* Loading State - Skeleton Grid */}
         {loading && (
-          <div className="loading-state" style={{gridColumn: '1 / -1', justifySelf: 'center'}}>
-            <div className="loading-spinner-premium"></div>
-            <p>Loading your audit sessions...</p>
-          </div>
+          <>
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="loading-card"></div>
+            ))}
+          </>
         )}
         
         {/* Empty State - Show when not loading and no sessions */}
