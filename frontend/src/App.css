@@ -1123,12 +1123,13 @@ body {
 .feature-card {
   background: var(--bg-page);
   border-radius: 12px;
-  /* Multi-layer Apple-style shadow */
+  /* Multi-layer Apple-style shadow with stronger top edge */
   box-shadow:
     0 1px 3px rgba(0,0,0,0.1),
-    0 8px 16px rgba(0,0,0,0.05);
+    0 8px 16px rgba(0,0,0,0.05),
+    0 -1px 2px rgba(0,0,0,0.03); /* subtle top shadow for depth */
   padding: 1.5rem;
-  width: 260px;
+  width: 280px; /* updated to match grid minmax */
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid var(--divider);
@@ -1139,7 +1140,8 @@ body {
   /* Enhanced multi-layer shadow on hover */
   box-shadow:
     0 2px 6px rgba(0,0,0,0.1),
-    0 12px 24px rgba(0,0,0,0.08);
+    0 12px 24px rgba(0,0,0,0.08),
+    0 -2px 4px rgba(0,0,0,0.04); /* stronger top shadow on hover */
 }
 
 .feature-card .icon {
@@ -1159,7 +1161,7 @@ body {
 
 .feature-card h3 {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  font-size: 1.2rem;
+  font-size: 17px; /* harmonized with hero subtitle at 18px */
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
@@ -1167,7 +1169,7 @@ body {
 
 .feature-card p {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  font-size: 15px; /* slightly larger for better readability */
+  font-size: 15px; /* harmonized sizing: hero 18px, titles 17px, body 15px */
   color: var(--text-secondary);
   line-height: 1.4;
   margin: 0;
