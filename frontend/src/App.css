@@ -556,6 +556,31 @@ body {
   background: rgba(0,0,0,0.07);
 }
 
+/* 2.5️⃣ Apple-Style Segmented Control */
+.view-toggle {
+  display: inline-flex;
+  background: #F2F2F7;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 16px 32px;
+}
+
+.segment {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: background 0.2s, color 0.2s;
+}
+
+.segment.active,
+.segment:hover {
+  background: #fff;
+  color: var(--text-primary);
+}
+
 /* 3️⃣ Sessions Area - Premium Grid Layout */
 .sessions-list {
   display: grid;
