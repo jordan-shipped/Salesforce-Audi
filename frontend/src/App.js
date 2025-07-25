@@ -671,6 +671,128 @@ const Dashboard = () => {
       setRunning(false);
     }
   };
+
+  return (
+    <div className="dashboard">
+      {/* Success Toast */}
+      {showToast && (
+        <div className="toast">
+          <span className="toast__icon">⚡️</span>
+          Successfully connected to Salesforce!
+        </div>
+      )}
+
+      {/* Running Overlay */}
+      {running && (
+        <div className="loading-overlay-premium">
+          <div className="loading-content-premium">
+            <div className="loading-spinner-premium"></div>
+            <span>Running your audit...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Connection Strip */}
+      <div className="dashboard__top-bar">
+        <div className="status-text status--ok">
+          <span className="status-icon">⚡︎</span>
+          {connected ? 'Connected to Salesforce' : ''}
+        </div>
+        <div className="status-text status--alert">
+          {connected ? (
+            <button onClick={handleDisconnect} className="dashboard__disconnect">
+              Disconnect
+            </button>
+          ) : 'Not Connected'}
+        </div>
+      </div>
+
+      <div className="dashboard-content">
+        {/* Business Input Form - Show when starting new audit */}
+        {showBusinessInput && (
+          <BusinessInputForm 
+            onSubmit={handleBusinessInputSubmit}
+            initialData={businessInputs}
+          />
+        )}
+
+        {/* History Header - Only show when connected */}
+        {connected && (
+          <div className="history-header">
+            <h1 className="sessions-header">Audit History</h1>
+            <button onClick={handleNewAudit} className="new-audit">
+              <span className="new-audit-icon">+</span>
+              New Audit
+            </button>
+          </div>
+        )}
+
+        {/* Sessions List */}
+        <div className="sessions-list">
+          {!connected ? (
+            <div className="empty-card premium">
+              <div className="empty-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 3v5h5M3 21v-5h5m8-12v5h5m0 8v-5h-5"></path>
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M3 16l2.26 2.26A9.75 9.75 0 0 0 12 21a9 9 0 0 1 9-9"></path>
+                </svg>
+              </div>
+              <h2 className="empty-title">No Audit Sessions Yet</h2>
+              <p className="empty-sub">
+                Connect your Salesforce org to run your first audit and unlock insights.
+              </p>
+              <button onClick={handleConnect} className="btn-primary">
+                Connect to Salesforce
+              </button>
+            </div>
+          ) : loading ? (
+            // Loading skeleton cards
+            <div className="sessions-list--grid">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="loading-card"></div>
+              ))}
+            </div>
+          ) : sessions.length === 0 ? (
+            <div className="empty-card premium">
+              <div className="empty-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 3v5h5M3 21v-5h5m8-12v5h5m0 8v-5h-5"></path>
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M3 16l2.26 2.26A9.75 9.75 0 0 0 12 21a9 9 0 0 1 9-9"></path>
+                </svg>
+              </div>
+              <h2 className="empty-title">No Audit Sessions Yet</h2>
+              <p className="empty-sub">
+                Run your first audit to discover optimization opportunities.
+              </p>
+              <button onClick={handleNewAudit} className="btn-primary">
+                Start Your First Audit
+              </button>
+            </div>
+          ) : (
+            <div className={`sessions-list--${viewMode}`}>
+              {sessions.map((session, index) => (
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  index={index}
+                  onClick={() => navigate(`/audit/${session.id}`)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Modals */}
+      <OrgProfileModal
+        isOpen={showOrgProfile}
+        onClose={() => setShowOrgProfile(false)}
+        onSubmit={runAuditWithProfile}
+        sessionId={sessionId}
+      />
+    </div>
+  );
+};
       
       if (response.data.session_id) {
         // Refresh sessions list
