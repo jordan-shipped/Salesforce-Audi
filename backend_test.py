@@ -1051,12 +1051,12 @@ class SalesforceAuditAPITester:
             
             success, response = self.run_test(
                 f"Business Stage - {scenario['name']}",
-                "GET",
+                "POST",
                 "business/stage",
                 200,
-                params={
-                    "revenue": scenario['revenue'],
-                    "headcount": scenario['headcount']
+                data={
+                    "annual_revenue": scenario['revenue'],
+                    "employee_headcount": scenario['headcount']
                 }
             )
             
