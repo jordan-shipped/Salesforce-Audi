@@ -598,16 +598,30 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
 };
 
 // Dashboard Component
-// SessionCard Component
-const SessionCard = ({ id, orgName, findingsCount, annualSavings, date, onClick }) => {
+// SessionCard Component - Fixed for proper session data handling
+const SessionCard = ({ session, index, onClick }) => {
   const formatCurrency = (amount) => {
     if (!amount) return '$0';
     return `$${Math.round(amount).toLocaleString()}`;
   };
 
-  const dt = new Date(date);
-  const formattedDate = dt.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
-  const formattedTime = dt.toLocaleTimeString(undefined, { hour:'numeric', minute:'2-digit' });
+  // Safe date handling
+  const formatDate = (dateValue) => {
+    if (!dateValue) return 'No date';
+    
+    try {
+      const dt = new Date(dateValue);
+      if (isNaN(dt.getTime())) return 'Invalid date';
+      
+      const formattedDate = dt.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+      const formattedTime = dt.toLocaleTimeString(undefined, { hour:'numeric', minute:'2-digit' });
+      
+      return { formattedDate, formattedTime };
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return { formattedDate: 'Invalid date', formattedTime: '' };
+    }
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -616,13 +630,20 @@ const SessionCard = ({ id, orgName, findingsCount, annualSavings, date, onClick 
     }
   };
 
+  // Extract session data with safe defaults
+  const orgName = session?.org_name || 'Unknown Org';
+  const findingsCount = session?.findings_count || 0;
+  const annualSavings = session?.estimated_savings?.annual_dollars || 0;
+  const dateInfo = formatDate(session?.created_at);
+
   return (
     <div 
-      className="session-card"
+      className="session-card fade-in"
       role="listitem"
       tabIndex="0"
       onClick={onClick}
       onKeyDown={handleKeyDown}
+      style={{ animationDelay: `${index * 0.1}s` }}
     >
       <div className="session-info">
         <p className="session-org gradient-text">{orgName}</p>
@@ -633,8 +654,8 @@ const SessionCard = ({ id, orgName, findingsCount, annualSavings, date, onClick 
         </p>
       </div>
       <div className="session-timestamp">
-        <p className="session-date">{formattedDate}</p>
-        <p className="session-time">{formattedTime}</p>
+        <p className="session-date">{dateInfo.formattedDate}</p>
+        <p className="session-time">{dateInfo.formattedTime}</p>
       </div>
     </div>
   );
