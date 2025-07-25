@@ -1692,12 +1692,30 @@ body {
   font-family: var(--font-family-base);
   background: var(--color-background);
   transition: all var(--transition-fast);
+  appearance: none; /* Remove default select styling */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px; /* Make room for custom arrow */
 }
 
 .input-field:focus {
   outline: none;
   border-color: var(--color-blue);
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+.input-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--color-background-secondary);
+}
+
+/* Select option styling */
+.input-field option {
+  padding: var(--space-3);
+  font-family: var(--font-family-base);
 }
 
 .stage-preview {
