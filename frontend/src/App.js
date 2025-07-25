@@ -340,7 +340,7 @@ const BusinessInputForm = ({ onSubmit, initialData }) => {
     '1M–3M': 2000000,      // Mid-point
     '3M–10M': 6500000,     // Mid-point
     '10M–30M': 20000000,   // Mid-point
-    '30M+': 50000000       // Conservative estimate
+    '30M+': 150000000      // $150M to ensure Stage 9 (Capitalize) ≥100M
   };
 
   const employeeMapping = {
