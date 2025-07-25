@@ -2263,7 +2263,7 @@ async def get_audit_details(session_id: str):
             "metadata": {
                 "audit_type": "stage_based",
                 "confidence": "medium",
-                "created_at": session.get('created_at', datetime.utcnow()).isoformat() if session.get('created_at') else datetime.utcnow().isoformat()
+                "created_at": session.get('created_at', datetime.utcnow().isoformat()) if isinstance(session.get('created_at'), str) else session.get('created_at', datetime.utcnow()).isoformat() if session.get('created_at') else datetime.utcnow().isoformat()
             }
         }
     except HTTPException:
