@@ -1829,6 +1829,47 @@ async def salesforce_oauth_callback(request: Request, code: str = Query(...), st
         logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"OAuth callback failed: {str(e)}")
 
+@api_router.post("/business/stage")
+async def get_business_stage(business_inputs: BusinessInputs):
+    """Get business stage information based on revenue and headcount"""
+    try:
+        revenue = business_inputs.annual_revenue or 1000000
+        headcount = business_inputs.employee_headcount or 50
+        
+        business_stage = determine_business_stage(revenue, headcount)
+        
+        return {
+            "stage": business_stage['stage'],
+            "name": business_stage['name'],
+            "role": business_stage['role'],
+            "headcount_range": business_stage['hc_range'],
+            "revenue_range": business_stage['rev_range'],
+            "bottom_line": business_stage['bottom_line'],
+            "constraints_and_actions": business_stage['constraints_and_actions'],
+            "inputs": {
+                "annual_revenue": revenue,
+                "employee_headcount": headcount
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Error determining business stage: {e}")
+        raise HTTPException(status_code=500, detail=f"Stage determination failed: {str(e)}")
+
+@api_router.get("/business/stages")
+async def get_all_business_stages():
+    """Get all available business stages 0-9"""
+    try:
+        return {
+            "stages": BUSINESS_STAGES,
+            "domains": FINDING_DOMAINS,
+            "stage_domain_priority": STAGE_DOMAIN_PRIORITY
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching business stages: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch stages: {str(e)}")
+
 @api_router.post("/audit/run")
 async def run_audit(audit_request: AuditRequest):
     """Run audit analysis with new ROI calculation method"""
