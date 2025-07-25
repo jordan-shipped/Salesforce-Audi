@@ -1833,8 +1833,8 @@ async def salesforce_oauth_callback(request: Request, code: str = Query(...), st
 async def get_business_stage(business_inputs: BusinessInputs):
     """Get business stage information based on revenue and headcount"""
     try:
-        revenue = business_inputs.annual_revenue or 1000000
-        headcount = business_inputs.employee_headcount or 50
+        revenue = business_inputs.annual_revenue if business_inputs.annual_revenue is not None else 1000000
+        headcount = business_inputs.employee_headcount if business_inputs.employee_headcount is not None else 50
         
         business_stage = determine_business_stage(revenue, headcount)
         
