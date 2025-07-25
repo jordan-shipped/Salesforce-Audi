@@ -415,6 +415,7 @@ const Dashboard = () => {
           Audit History
         </h1>
         <button className="new-audit" onClick={handleRunAudit}>
+          <span className="new-audit-icon">+</span>
           New Audit
         </button>
       </div>
