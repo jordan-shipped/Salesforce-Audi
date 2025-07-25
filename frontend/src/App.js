@@ -378,7 +378,7 @@ const Dashboard = () => {
 
       {/* 2️⃣ Header above the sessions list */}
       <h2 className="sessions-header" id="sessions-history">
-        Audit Report History
+        Audit History
       </h2>
 
       {/* 3️⃣ Sessions Area - Grid Layout */}
