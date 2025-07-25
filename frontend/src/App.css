@@ -546,15 +546,15 @@ body {
   text-decoration: underline;
 }
 
-/* Base connection‑status text */
+/* Base connection‑status text - no extra margins */
 .status-text {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-right: 32px; /* right padding */
+  margin: 0; /* Ensure no margin throws off alignment */
 }
 
 /* Connected: black text + icon */
@@ -569,7 +569,7 @@ body {
 
 /* Icon sizing to match the font */
 .status-icon {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1;
 }
 
