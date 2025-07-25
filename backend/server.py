@@ -2275,8 +2275,15 @@ async def get_audit_sessions():
                 session_data['created_at'] = datetime.utcnow()
             result.append(session_data)
         
-        # Sort by created_at descending in Python
-        result.sort(key=lambda x: x['created_at'], reverse=True)
+        # Sort by created_at descending in Python with defensive None handling
+        def safe_date_key(session):
+            created_at = session.get('created_at')
+            if created_at is None:
+                # Use epoch time (very old) for None dates so they sort last
+                return datetime(1970, 1, 1)
+            return created_at
+            
+        result.sort(key=safe_date_key, reverse=True)
         
         # Convert datetime back to ISO string for JSON serialization
         for session in result:
