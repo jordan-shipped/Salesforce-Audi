@@ -869,37 +869,3 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* ─── See More Button Reset & Styling ─── */
-.sessions-list .see-more-btn {
-  /* 1. Span the grid so we can center it */
-  grid-column: 1 / -1;
-  justify-self: center;
-
-  /* 2. Reset any prior fixed‑size overrides */
-  width: auto !important;
-  height: auto !important;
-  min-width: auto !important;
-  min-height: auto !important;
-  max-width: none !important;
-
-  /* 3. Wider pill‑shape padding to match first screenshot */
-  padding: 10px 32px !important;     /* Less vertical, more horizontal padding */
-  font-size: 14px !important;        /* 0.875rem */
-  line-height: 1.2 !important;
-  border-radius: 8px !important;
-  display: inline-block !important;
-  margin-top: 32px !important;
-
-  /* 4. Solid black background, white text */
-  background-color: #000 !important;
-  color: #fff !important;
-  border: none !important;
-  box-shadow: none !important;
-
-  /* 5. Hover state: simple darken + lift */
-  transition: background-color 0.2s ease, transform 0.1s ease !important;
-}
-.sessions-list .see-more-btn:hover {
-  background-color: #333 !important;
-  transform: translateY(-1px) !important;
-}
