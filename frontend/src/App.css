@@ -691,6 +691,56 @@ body {
   50% { opacity: 1; }
 }
 
+/* ===============================================
+   Dark Mode Support - Apple-Style
+   =============================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-page: #1C1C1E;
+    --bg-alt: #2C2C2E;
+    --text-primary: #EFEFF4;
+    --text-secondary: #8E8E93;
+    --divider: #38383A;
+  }
+
+  body {
+    background: #1C1C1E;
+    color: #EFEFF4;
+  }
+
+  .session-card {
+    background: #2C2C2E;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .session-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.9);
+  }
+
+  .connection-strip {
+    background: rgba(28,28,30,0.6);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .segmented {
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .sessions-header::after {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .loading-card {
+    background: #3A3A3C;
+  }
+
+  .empty-card.premium {
+    background: #2C2C2E;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
 .session-info {
   flex: 1; /* take up available space */
   margin-right: 16px; /* space between info and timestamp */
