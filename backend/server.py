@@ -2255,6 +2255,15 @@ async def get_audit_details(session_id: str):
                 ]
             }
         
+        # Handle created_at field properly (could be string or datetime)
+        created_at = session.get('created_at')
+        if isinstance(created_at, str):
+            created_at_iso = created_at
+        elif isinstance(created_at, datetime):
+            created_at_iso = created_at.isoformat()
+        else:
+            created_at_iso = datetime.utcnow().isoformat()
+        
         return {
             "session": session,
             "summary": summary,
@@ -2263,7 +2272,7 @@ async def get_audit_details(session_id: str):
             "metadata": {
                 "audit_type": "stage_based",
                 "confidence": "medium",
-                "created_at": session.get('created_at', datetime.utcnow().isoformat()) if isinstance(session.get('created_at'), str) else session.get('created_at', datetime.utcnow()).isoformat() if session.get('created_at') else datetime.utcnow().isoformat()
+                "created_at": created_at_iso
             }
         }
     except HTTPException:
