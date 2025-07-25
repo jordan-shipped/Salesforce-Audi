@@ -507,7 +507,7 @@ body {
   background: var(--bg-page);
 }
 
-/* 1️⃣ Connection Status Strip - Right-Aligned Status Only */
+/* 1️⃣ Connection Status Strip - Plain Black Text, Right-Aligned */
 .connection-strip {
   display: flex;
   justify-content: flex-end; /* status on the right */
@@ -518,38 +518,28 @@ body {
 }
 
 .connection-strip .status {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-  color: #FF9F0A; /* keep the warning orange */
+  color: var(--text-primary); /* Plain black text */
 }
 
-/* 2️⃣ Sessions Area - Conditional Layout */
+/* 2️⃣ Sessions Area - Premium Grid Layout */
 .sessions-list {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 32px; /* 2rem all around */
-  min-height: calc(100vh - 56px); /* subtract strip height (~56px) */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px; /* 2rem between cards */
+  padding: 32px; /* 2rem around the grid */
   box-sizing: border-box;
   background: var(--bg-page);
+  min-height: calc(100vh - 88px); /* subtract strip height */
 }
 
-/* Session Grid - When sessions exist */
-.session-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--space-lg);
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-/* Premium Empty-State Card - Tightened Apple Float */
-.empty-card.premium {
-  max-width: 360px; /* cap width so it's not too wide */
-  width: 100%; /* but shrink on mobile */
-  margin: 0 auto; /* center horizontally */
-  padding: 32px 24px; /* 2rem top/bottom, 1.5rem sides */
+/* Premium Empty-State Card - Centered in Grid */
+.sessions-list .empty-card.premium {
+  grid-column: 1 / -1; /* span full width of grid */
+  justify-self: center;
+  max-width: 360px;
+  padding: 32px 24px; /* generous padding */
   text-align: center;
   background: var(--bg-alt);
   border-radius: var(--radius-card);
@@ -558,7 +548,7 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.empty-card.premium:hover {
+.sessions-list .empty-card.premium:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
