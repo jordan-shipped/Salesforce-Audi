@@ -1263,7 +1263,14 @@ const AuditResults = () => {
           gap: '1rem'
         }}>
           <h2>Audit not found</h2>
-          <Link to="/dashboard" className="btn-outline">← Back to Dashboard</Link>
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+            The audit session "{sessionId}" could not be found.<br/>
+            It may still be processing or the session ID is invalid.
+          </p>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <Link to="/dashboard" className="btn-outline">← Back to Dashboard</Link>
+            <button onClick={loadAuditData} className="btn-primary">Retry</button>
+          </div>
         </div>
       </div>
     );
