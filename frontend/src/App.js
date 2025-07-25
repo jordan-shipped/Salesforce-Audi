@@ -1163,11 +1163,14 @@ const AuditResults = () => {
 
   const loadAuditData = async () => {
     try {
+      console.log('🔍 Loading audit data for session:', sessionId);
       const response = await axios.get(`${API}/audit/${sessionId}`);
-      console.log('Audit data loaded:', response.data);
+      console.log('✅ Audit data loaded successfully:', response.data);
       setAuditData(response.data);
     } catch (error) {
-      console.error('Failed to load audit data:', error);
+      console.error('❌ Failed to load audit data:', error);
+      console.error('❌ Session ID:', sessionId);
+      console.error('❌ Error details:', error.response?.data);
     } finally {
       setLoading(false);
     }
