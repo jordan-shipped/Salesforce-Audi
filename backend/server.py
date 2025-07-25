@@ -1883,6 +1883,119 @@ def calculate_audit_summary(findings: List[Dict[str, Any]]) -> Dict[str, Any]:
         "low_impact_count": len([f for f in findings if f.get("impact") == "Low"])
     }
 
+async def process_audit_in_background(audit_session_id, access_token, instance_url, business_inputs, dept_salaries_dict):
+    """Process audit in background and update session when complete"""
+    try:
+        logger.info(f"Starting background audit processing for: {audit_session_id}")
+        
+        # Run Salesforce audit in thread pool to avoid blocking
+        loop = asyncio.get_event_loop()
+        
+        # Run the stage-based audit
+        try:
+            findings_data, org_name, org_id, business_stage = await loop.run_in_executor(
+                executor, run_salesforce_audit_with_stage_engine, access_token, instance_url, business_inputs, dept_salaries_dict, None
+            )
+            logger.info(f"Background audit completed successfully. Found {len(findings_data)} findings for {org_name}")
+        except Exception as audit_error:
+            # CAPTURE FULL TRACEBACK FOR DEBUGGING
+            tb = traceback.format_exc()
+            logger.error("🔥 Full background audit exception traceback:\n" + tb)
+            logger.error(f"Background Salesforce audit failed: {audit_error}")
+            
+            # Update session with error status
+            await db.audit_sessions.update_one(
+                {"id": audit_session_id},
+                {"$set": {
+                    "status": "error",
+                    "error_message": "An unexpected error occurred during audit processing",
+                    "updated_at": datetime.utcnow()
+                }}
+            )
+            return
+        
+        # Calculate summary
+        if dept_salaries_dict:
+            # New calculation method
+            total_cleanup_cost = sum(f.get('cleanup_cost', 0) for f in findings_data)
+            total_monthly_savings = sum(f.get('monthly_user_savings', 0) for f in findings_data)
+            total_annual_savings = sum(f.get('annual_user_savings', 0) for f in findings_data)
+            total_net_roi = sum(f.get('net_annual_roi', 0) for f in findings_data)
+            total_monthly_hours = sum(f.get('monthly_savings_hours', 0) for f in findings_data)
+            
+            summary = {
+                "total_findings": len(findings_data),
+                "total_time_savings_hours": round(total_monthly_hours, 1),
+                "total_annual_roi": round(total_net_roi, 0),
+                "total_cleanup_cost": round(total_cleanup_cost, 0),
+                "total_monthly_savings": round(total_monthly_savings, 0),
+                "total_annual_savings": round(total_annual_savings, 0),
+                "calculation_method": "department_salaries"
+            }
+        else:
+            # Fallback to old method
+            summary = calculate_audit_summary(findings_data)
+            summary["calculation_method"] = "quick_estimate"
+        
+        logger.info(f"Generated {len(findings_data)} findings for {org_name}")
+        
+        # Update session with completed results
+        await db.audit_sessions.update_one(
+            {"id": audit_session_id},
+            {"$set": {
+                "org_name": org_name,
+                "org_id": org_id,
+                "status": "completed",
+                "findings_count": len(findings_data),
+                "estimated_savings": {
+                    "monthly_hours": float(summary.get("total_time_savings_hours", 0)),
+                    "annual_dollars": float(summary.get("total_annual_roi", 0)),
+                    "cleanup_cost": float(summary.get("total_cleanup_cost", 0)),
+                    "calculation_method": summary.get("calculation_method", "quick_estimate")
+                },
+                "business_stage": {
+                    "stage": business_stage['stage'],
+                    "name": business_stage['name'],
+                    "role": business_stage['role'],
+                    "headcount_range": business_stage['hc_range'],
+                    "revenue_range": business_stage['rev_range'],
+                    "bottom_line": business_stage['bottom_line'],
+                    "constraints_and_actions": business_stage['constraints_and_actions']
+                },
+                "summary": summary,
+                "updated_at": datetime.utcnow()
+            }}
+        )
+        
+        # Store findings
+        findings_to_store = []
+        for finding in findings_data:
+            finding_copy = finding.copy()
+            finding_copy["session_id"] = audit_session_id
+            findings_to_store.append(finding_copy)
+        
+        await db.audit_findings.insert_many(findings_to_store)
+        
+        logger.info(f"Background audit processing completed for session: {audit_session_id}")
+        
+    except Exception as e:
+        logger.error(f"Error in background audit processing: {e}")
+        tb = traceback.format_exc()
+        logger.error("🔥 Full background processing exception traceback:\n" + tb)
+        
+        # Update session with error status
+        try:
+            await db.audit_sessions.update_one(
+                {"id": audit_session_id},
+                {"$set": {
+                    "status": "error",
+                    "error_message": "An unexpected error occurred during audit processing",
+                    "updated_at": datetime.utcnow()
+                }}
+            )
+        except Exception as db_error:
+            logger.error(f"Failed to update session with error status: {db_error}")
+
 # API Routes
 @api_router.get("/")
 async def root():
