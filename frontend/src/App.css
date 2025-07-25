@@ -787,6 +787,81 @@ body {
   100% { opacity: 0; }
 }
 
+/* ===============================================
+   Apple-Style OAuth Redirect Card
+   =============================================== */
+.redirect-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.04); /* Very light backdrop */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.redirect-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 400px;
+  text-align: center;
+  animation: cardFadeIn 0.3s ease forwards;
+}
+
+.redirect-card__icon {
+  margin-bottom: 12px;
+}
+
+.redirect-card__title {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 12px 0 8px;
+  color: #000;
+}
+
+.redirect-card__subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #666;
+  margin: 0;
+}
+
+.redirect-card__spinner {
+  margin-top: 16px;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #666;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes cardFadeIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .session-info {
   flex: 1; /* take up available space */
   margin-right: 16px; /* space between info and timestamp */
