@@ -400,7 +400,199 @@ def calculate_finding_priority(finding: dict, business_stage: dict) -> int:
         
     final_priority = base_priority + stage_bonus + impact_multiplier + roi_boost
     
-    return final_priority
+# Enhanced Task-Based ROI Calculation Constants
+TASK_BASED_ROI_CONSTANTS = {
+    'admin_rate': 35,  # $35/hr for admin tasks
+    'cleanup_time_per_field': 0.25,  # 15 min per field cleanup
+    'user_confusion_per_field_per_day': 0.5,  # 30 seconds per day per user per field
+    'weekly_navigation_time': 2,  # 2 min/week/user for navigation confusion
+    'workdays_per_month': 22  # average workdays per month
+}
+
+# US Bureau of Labor average hourly rates by role
+HOURLY_RATES_BY_ROLE = {
+    'admin': 35,
+    'sales': 55, 
+    'customer_service': 25,
+    'marketing': 45,
+    'engineering': 75,
+    'executives': 95
+}
+
+def calculate_task_based_roi(finding_data, org_context, business_stage, custom_assumptions=None):
+    """
+    Enhanced task-based ROI calculation with stage-specific adjustments
+    
+    Args:
+        finding_data: Dict with finding details
+        org_context: Org data (users, complexity, etc.)
+        business_stage: Current business stage info
+        custom_assumptions: Override default constants
+    """
+    
+    # Use defaults, override with custom assumptions if provided
+    constants = TASK_BASED_ROI_CONSTANTS.copy()
+    if custom_assumptions:
+        constants.update(custom_assumptions)
+    
+    active_users = org_context.get('active_users', 10)
+    stage_num = business_stage['stage']
+    
+    # Stage-based hourly rate adjustments
+    stage_multipliers = {0: 0.7, 1: 0.8, 2: 0.9, 3: 1.0, 4: 1.1, 5: 1.2, 6: 1.3, 7: 1.4, 8: 1.5, 9: 1.6}
+    stage_multiplier = stage_multipliers.get(stage_num, 1.0)
+    
+    result = {
+        'finding_type': finding_data.get('type', 'unknown'),
+        'business_stage': stage_num,
+        'stage_multiplier': stage_multiplier,
+        'task_breakdown': [],
+        'role_attribution': {},
+        'one_time_costs': {},
+        'recurring_savings': {},
+        'total_one_time_cost': 0,
+        'total_monthly_savings': 0,
+        'total_annual_roi': 0,
+        'domain': classify_finding_domain(finding_data),
+        'priority_score': 0,
+        'confidence': 'Medium'
+    }
+    
+    # Custom Fields Analysis
+    if 'custom fields' in finding_data.get('title', '').lower():
+        field_count = finding_data.get('field_count', 0)
+        
+        # One-time cleanup (Admin role)
+        cleanup_hours = field_count * constants['cleanup_time_per_field']
+        cleanup_cost = cleanup_hours * HOURLY_RATES_BY_ROLE['admin'] * stage_multiplier
+        
+        # Monthly recurring savings (User confusion elimination)
+        daily_confusion_minutes = active_users * constants['user_confusion_per_field_per_day'] * field_count
+        monthly_confusion_hours = (daily_confusion_minutes * constants['workdays_per_month']) / 60
+        
+        # Use weighted average of user roles
+        avg_user_rate = (HOURLY_RATES_BY_ROLE['sales'] + HOURLY_RATES_BY_ROLE['customer_service']) / 2
+        monthly_confusion_savings = monthly_confusion_hours * avg_user_rate * stage_multiplier
+        
+        # Task breakdown
+        result['task_breakdown'] = [
+            {
+                'task': 'Custom field cleanup',
+                'type': 'one_time',
+                'hours': cleanup_hours,
+                'cost': cleanup_cost,
+                'role': 'Admin',
+                'description': f'Remove {field_count} unused fields from page layouts'
+            },
+            {
+                'task': 'User confusion elimination',
+                'type': 'recurring',
+                'hours_per_month': monthly_confusion_hours,
+                'savings_per_month': monthly_confusion_savings,
+                'role': 'All Users',
+                'description': f'{active_users} users × {constants["user_confusion_per_field_per_day"]} min/field × {field_count} fields'
+            }
+        ]
+        
+        result['one_time_costs'] = {'cleanup': cleanup_cost}
+        result['recurring_savings'] = {'confusion_elimination': monthly_confusion_savings}
+        result['total_one_time_cost'] = cleanup_cost
+        result['total_monthly_savings'] = monthly_confusion_savings
+        result['total_annual_roi'] = (monthly_confusion_savings * 12) - cleanup_cost
+        result['confidence'] = 'High'
+        
+    # Data Quality Issues
+    elif finding_data.get('category', '') == 'Revenue Leaks':
+        record_count = finding_data.get('record_count', 0)
+        cleanup_time_per_record = 0.1  # 6 minutes per record
+        
+        cleanup_hours = record_count * cleanup_time_per_record
+        cleanup_cost = cleanup_hours * HOURLY_RATES_BY_ROLE['admin'] * stage_multiplier
+        
+        # Ongoing efficiency gains
+        monthly_efficiency_hours = min(active_users * 0.5, 8)  # Cap at 8 hours
+        monthly_efficiency_savings = monthly_efficiency_hours * avg_user_rate * stage_multiplier
+        
+        result['task_breakdown'] = [{
+            'task': 'Data cleanup',
+            'type': 'one_time',
+            'hours': cleanup_hours,
+            'cost': cleanup_cost,
+            'role': 'Admin',
+            'description': f'Clean up {record_count} problematic records'
+        }, {
+            'task': 'Efficiency improvement',
+            'type': 'recurring',
+            'hours_per_month': monthly_efficiency_hours,
+            'savings_per_month': monthly_efficiency_savings,
+            'role': 'All Users',
+            'description': 'Reduced confusion and better reporting'
+        }]
+        
+        result['one_time_costs'] = {'cleanup': cleanup_cost}
+        result['recurring_savings'] = {'efficiency': monthly_efficiency_savings}
+        result['total_one_time_cost'] = cleanup_cost
+        result['total_monthly_savings'] = monthly_efficiency_savings
+        result['total_annual_roi'] = (monthly_efficiency_savings * 12) - cleanup_cost
+        result['confidence'] = 'Medium'
+        
+    # Automation Opportunities
+    elif finding_data.get('category', '') == 'Automation Opportunities':
+        setup_hours = 4  # Hours to implement automation
+        setup_cost = setup_hours * HOURLY_RATES_BY_ROLE['admin'] * stage_multiplier
+        
+        monthly_automation_hours = finding_data.get('estimated_monthly_hours', 8)
+        monthly_automation_savings = monthly_automation_hours * avg_user_rate * stage_multiplier
+        
+        result['task_breakdown'] = [{
+            'task': 'Automation setup',
+            'type': 'one_time', 
+            'hours': setup_hours,
+            'cost': setup_cost,
+            'role': 'Admin',
+            'description': 'Configure automated workflows and rules'
+        }, {
+            'task': 'Manual work elimination',
+            'type': 'recurring',
+            'hours_per_month': monthly_automation_hours,
+            'savings_per_month': monthly_automation_savings,
+            'role': 'All Users',
+            'description': 'Time saved from automated processes'
+        }]
+        
+        result['one_time_costs'] = {'setup': setup_cost}
+        result['recurring_savings'] = {'automation': monthly_automation_savings}
+        result['total_one_time_cost'] = setup_cost
+        result['total_monthly_savings'] = monthly_automation_savings
+        result['total_annual_roi'] = (monthly_automation_savings * 12) - setup_cost
+        result['confidence'] = 'Medium'
+        
+    # Default fallback
+    else:
+        time_hours = finding_data.get('time_savings_hours', 2.0)
+        monthly_savings = time_hours * avg_user_rate * stage_multiplier
+        
+        result['task_breakdown'] = [{
+            'task': finding_data.get('title', 'Process improvement'),
+            'type': 'recurring',
+            'hours_per_month': time_hours,
+            'savings_per_month': monthly_savings,
+            'role': 'Various',
+            'description': 'Estimated time savings from improvement'
+        }]
+        
+        result['total_monthly_savings'] = monthly_savings
+        result['total_annual_roi'] = monthly_savings * 12
+        result['confidence'] = 'Low'
+    
+    # Calculate priority score
+    result['priority_score'] = calculate_finding_priority(finding_data, business_stage)
+    
+    return result
+
+class SalesforceOAuthState(BaseModel):
+    state: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 def calculate_roi_with_department_salaries(finding_data, department_salaries, active_users):
     """
