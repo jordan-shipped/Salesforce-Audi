@@ -111,7 +111,7 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
@@ -122,6 +122,9 @@ backend:
         - working: true
           agent: "main"
           comment: "FIXED: Changed created_at storage to datetime object instead of ISO string, updated get_audit_sessions to handle both old and new records, implemented Python-based sorting to ensure proper descending order by created_at."
+        - working: true
+          agent: "testing"
+          comment: "RE-TESTED: Sorting fix is working perfectly! Verified 32 sessions are properly sorted by created_at descending (newest first). All sessions have correct data structure with required fields (id, org_name, findings_count, estimated_savings.annual_dollars, created_at). Endpoint returns 200 status and proper array format. The Python-based sorting successfully handles both old ISO string records and new datetime records."
 
 frontend:
   - task: "Fix API endpoint mismatch in Dashboard loadSessions function"
