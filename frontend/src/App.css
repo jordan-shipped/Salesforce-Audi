@@ -611,14 +611,31 @@ body {
   background: #007AFF;
 }
 
-/* 3️⃣ Sessions Area - Premium Grid Layout */
+/* 3️⃣ Sessions Area - Dynamic Layout Support */
 .sessions-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 32px; /* 2rem between cards */
   padding: 0 32px 32px; /* no top padding (header handles that) */
   box-sizing: border-box;
   background: var(--bg-page);
+}
+
+/* Grid layout (default) */
+.sessions-list--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px; /* 2rem between cards */
+}
+
+/* List layout (single column) */
+.sessions-list--list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* smaller gap for list items */
+}
+
+/* List mode card adjustments */
+.sessions-list--list .session-card {
+  width: 100%;
+  max-width: none;
 }
 
 /* Premium Empty-State Card - Centered in Grid */
