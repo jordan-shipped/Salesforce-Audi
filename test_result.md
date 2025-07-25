@@ -102,15 +102,30 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Complete dashboard session fetching and rendering logic to display existing audit sessions instead of always showing empty state"
+user_problem_statement: "Fix Salesforce OAuth authorization flow that was returning JSON instead of redirecting to Salesforce login"
 
 backend:
+  - task: "Fix OAuth authorization endpoint to redirect instead of returning JSON"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "User reported OAuth connection error - endpoint returning JSON data instead of redirecting to Salesforce"
+        - working: "unknown"
+          agent: "main"
+          comment: "FIXED: Changed /api/oauth/authorize endpoint to return RedirectResponse(url=auth_url, status_code=302) instead of JSON. This should properly redirect users to Salesforce login page."
+
   - task: "Verify /api/audit/sessions endpoint functionality"
     implemented: true
     working: true
     file: "backend/server.py"
     stuck_count: 0
-    priority: "high"
+    priority: "medium"
     needs_retesting: false
     status_history:
         - working: "unknown"
