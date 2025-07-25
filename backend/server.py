@@ -1876,8 +1876,11 @@ async def run_audit(audit_request: AuditRequest):
                 }
                 logger.info("Using custom department salaries for audit")
             else:
-                logger.info("No custom salaries provided, falling back to defaults")
-                # Still use custom calculation but with all defaults
+                logger.info("No custom salaries provided, using defaults")
+        else:
+            if use_quick_estimate:
+                logger.info("Quick estimate mode - using default calculations")
+            else:
                 dept_salaries_dict = {
                     'customer_service': None,
                     'sales': None,
@@ -1886,8 +1889,9 @@ async def run_audit(audit_request: AuditRequest):
                     'executives': None
                 }
         
+        # Run the stage-based audit
         findings_data, org_name, org_id, business_stage = await loop.run_in_executor(
-            executor, run_salesforce_audit_with_stage_engine, access_token, instance_url, None, dept_salaries_dict, None
+            executor, run_salesforce_audit_with_stage_engine, access_token, instance_url, audit_request.business_inputs, dept_salaries_dict, None
         )
         
         # Calculate summary
