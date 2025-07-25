@@ -329,58 +329,50 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* 2️⃣ Sessions Area */}
+      {/* 2️⃣ Sessions Area - Conditional Rendering */}
       <section aria-labelledby="sessions-heading">
         <h2 id="sessions-heading" className="visually-hidden">Your Audit Sessions</h2>
-        {loading ? (
-          <div className="sessions-list">
+        
+        <div className="sessions-list">
+          {/* Loading State */}
+          {loading && (
             <div className="loading-state">
               <div className="loading-spinner-premium"></div>
               <p>Loading your audit sessions...</p>
             </div>
-          </div>
-        ) : (
-          <div className={sessions.length === 0 ? "sessions-list" : "sessions-list grid"} role="list">
-            {sessions.length === 0 ? (
-              <div className="empty-card premium">
-                <div className="empty-icon">📊</div>
-                <h3 className="empty-title">No Audit Sessions Yet</h3>
-                <p className="empty-sub">
-                  Connect your Salesforce org to run your first audit and unlock insights.
-                </p>
-                <button onClick={handleConnect} className="btn-primary">
-                  Connect to Salesforce
-                </button>
-              </div>
-            ) : (
-              sessions.map((session) => (
-                <div 
+          )}
+          
+          {/* Empty State - Show when not loading and no sessions */}
+          {!loading && sessions.length === 0 && (
+            <div className="empty-card premium">
+              <div className="empty-icon">📊</div>
+              <h3 className="empty-title">No Audit Sessions Yet</h3>
+              <p className="empty-sub">
+                Connect your Salesforce org to run your first audit and unlock insights.
+              </p>
+              <button onClick={handleConnect} className="btn-primary">
+                Connect to Salesforce
+              </button>
+            </div>
+          )}
+          
+          {/* Sessions Grid - Show when sessions exist */}
+          {!loading && sessions.length > 0 && (
+            <div className="session-grid">
+              {sessions.map((session) => (
+                <SessionCard 
                   key={session.id}
-                  className="session-card"
-                  role="listitem"
-                  tabIndex="0"
+                  id={session.id}
+                  orgName={session.org_name}
+                  findingsCount={session.findings_count}
+                  annualSavings={session.estimated_savings?.annual_dollars || 0}
+                  date={session.created_at}
                   onClick={() => navigate(`/audit/${session.id}`)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      navigate(`/audit/${session.id}`);
-                    }
-                  }}
-                >
-                  <div className="session-info">
-                    <p className="session-org gradient-text">{session.org_name}</p>
-                    <p className="session-meta">
-                      {session.findings_count} findings • <span className="gradient-text">
-                        {formatCurrency(session.estimated_savings?.annual_dollars)}/yr
-                      </span>
-                    </p>
-                  </div>
-                  <p className="session-date">{formatDate(session.created_at)}</p>
-                </div>
-              ))
-            )}
-          </div>
-        )}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
       {/* Org Profile Modal */}
