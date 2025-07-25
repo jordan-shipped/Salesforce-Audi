@@ -434,36 +434,40 @@ const Dashboard = () => {
         )}
       </section>
 
-      {/* 2️⃣ History Header with New Audit Button */}
-      <div className="history-header">
-        <h1 className="sessions-header" id="sessions-history">
-          Audit History
-        </h1>
-        <button className="new-audit" onClick={handleRunAudit}>
-          <span className="new-audit-icon">+</span>
-          New Audit
-        </button>
-      </div>
+      {/* 2️⃣ History Header with New Audit Button - Only When Connected */}
+      {sessionId && (
+        <div className="history-header">
+          <h1 className="sessions-header" id="sessions-history">
+            Audit History
+          </h1>
+          <button className="new-audit" onClick={handleRunAudit}>
+            <span className="new-audit-icon">+</span>
+            New Audit
+          </button>
+        </div>
+      )}
 
-      {/* 2.5️⃣ Apple-style Segmented Control with Functionality */}
-      <div role="tablist" aria-label="View mode" className="view-mode-tabs">
-        <button
-          role="tab"
-          aria-selected={viewMode === 'grid'}
-          className={`tab-button ${viewMode === 'grid' ? 'tab-button--active' : ''}`}
-          onClick={() => setViewMode('grid')}
-        >
-          Grid
-        </button>
-        <button
-          role="tab"
-          aria-selected={viewMode === 'list'}
-          className={`tab-button ${viewMode === 'list' ? 'tab-button--active' : ''}`}
-          onClick={() => setViewMode('list')}
-        >
-          List
-        </button>
-      </div>
+      {/* 2.5️⃣ Apple-style View Mode Tabs - Only When Connected */}
+      {sessionId && (
+        <div role="tablist" aria-label="View mode" className="view-mode-tabs">
+          <button
+            role="tab"
+            aria-selected={viewMode === 'grid'}
+            className={`tab-button ${viewMode === 'grid' ? 'tab-button--active' : ''}`}
+            onClick={() => setViewMode('grid')}
+          >
+            Grid
+          </button>
+          <button
+            role="tab"
+            aria-selected={viewMode === 'list'}
+            className={`tab-button ${viewMode === 'list' ? 'tab-button--active' : ''}`}
+            onClick={() => setViewMode('list')}
+          >
+            List
+          </button>
+        </div>
+      )}
 
       {/* 3️⃣ Sessions Area - Dynamic Grid/List Layout */}
       <section className={viewMode === 'grid' ? 'sessions-list sessions-list--grid' : 'sessions-list sessions-list--list'} aria-labelledby="sessions-history">
