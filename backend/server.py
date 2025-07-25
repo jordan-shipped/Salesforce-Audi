@@ -1994,8 +1994,23 @@ async def run_audit(audit_request: AuditRequest):
         response_data = {
             "session_id": audit_session_id,
             "org_name": org_name,
+            "org_id": org_id,
+            "findings": convert_objectid(findings_data),
             "summary": summary,
-            "findings": findings_data
+            "business_stage": {
+                "stage": business_stage['stage'],
+                "name": business_stage['name'],
+                "role": business_stage['role'],
+                "headcount_range": business_stage['hc_range'],
+                "revenue_range": business_stage['rev_range'],
+                "bottom_line": business_stage['bottom_line'],
+                "constraints_and_actions": business_stage['constraints_and_actions']
+            },
+            "metadata": {
+                "audit_type": "stage_based",
+                "confidence": "high" if audit_request.business_inputs else "medium",
+                "created_at": datetime.utcnow().isoformat()
+            }
         }
         
         logger.info("Enhanced Salesforce audit completed successfully")
