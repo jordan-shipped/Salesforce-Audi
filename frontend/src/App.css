@@ -750,7 +750,7 @@ body {
   font-weight: 500;
   color: #007A3A; /* Apple system green */
   opacity: 0;
-  animation: fadeInOut 3s ease forwards;
+  animation: toast-fade 3s ease forwards;
   pointer-events: none;
   z-index: 1000;
 }
