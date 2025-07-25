@@ -323,6 +323,7 @@ const Dashboard = () => {
     setSessionId(null);
     setConnected(false);
     setSessions([]);
+    navigate('/'); // Navigate back to home page
   };
 
   const handleRunAudit = () => {
