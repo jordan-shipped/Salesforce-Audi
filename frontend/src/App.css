@@ -1044,10 +1044,10 @@ body {
   }
 }
 
-/* Hero Section for Landing Page - Compact Above-the-Fold Design */
+/* Hero Section for Landing Page - Apple-Grade Refinements */
 .hero {
-  background: var(--bg-strip);
-  padding: 3rem 0 2rem 0; /* Reduced padding for compact layout */
+  background: linear-gradient(to bottom, #F7F8FA 0%, #FFFFFF 100%); /* subtle gradient depth */
+  padding: 4rem 0 4rem 0; /* increased whitespace */
   text-align: center;
 }
 
@@ -1058,11 +1058,13 @@ body {
 }
 
 .hero h1 {
-  font-size: 2.8rem; /* Slightly smaller for compact layout */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  font-size: 2.8rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1rem; /* Reduced margin */
-  line-height: 1.1;
+  margin-bottom: 1rem;
+  line-height: 1.1; /* refined line-height */
+  letter-spacing: -0.5px; /* improved kerning */
 }
 
 .hero h1 .accent {
@@ -1073,17 +1075,29 @@ body {
 }
 
 .hero p.subhead {
-  font-size: 1.1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-size: 17px; /* Apple's preferred body text size */
+  line-height: 26px; /* Apple's typographic rhythm: 17px/26px */
   color: var(--text-secondary);
   max-width: 600px;
-  margin: 0 auto 1.5rem; /* Reduced margin */
-  line-height: 1.5;
+  margin: 0 auto 2rem; /* more breathing room */
 }
 
 .hero .btn-primary.size-lg {
-  padding: 0.875rem 1.75rem; /* Slightly smaller for compact layout */
+  background: var(--gradient-tech);
+  color: white;
+  border: none;
+  padding: 14px 32px;
   font-size: 1rem;
   font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hero .btn-primary.size-lg:hover {
+  transform: scale(1.03); /* gentle scale for engineered delight */
+  box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3); /* gradient glow */
 }
 
 /* Features Section - Compact Above-the-Fold Layout */
