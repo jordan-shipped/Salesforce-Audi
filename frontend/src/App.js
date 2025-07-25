@@ -297,29 +297,11 @@ const Dashboard = () => {
 
   return (
     <main className="dashboard">
-      {/* 1️⃣ Connection Status Strip - Fixed Layout */}
+      {/* 1️⃣ Connection Status Strip - Status Only, Right-Aligned */}
       <section className="connection-strip">
         <div className="status">
           {sessionId ? '✅ Connected to Salesforce' : '⚠️ Not connected'}
         </div>
-        {sessionId ? (
-          <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
-            <button onClick={handleDisconnect} className="btn-outline">
-              Disconnect
-            </button>
-            <button 
-              onClick={handleRunAudit} 
-              disabled={running}
-              className="btn-primary"
-            >
-              {running ? 'Running Audit...' : 'Run New Audit'}
-            </button>
-          </div>
-        ) : (
-          <button onClick={handleConnect} className="btn-primary">
-            Connect to Salesforce
-          </button>
-        )}
       </section>
 
       {/* 2️⃣ Sessions Area */}
