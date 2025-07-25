@@ -153,22 +153,28 @@ def convert_picklist_to_numeric(business_inputs):
         '250–500': 375
     }
     
+    # Initialize with defaults
+    annual_revenue = 1000000  # Default $1M
+    employee_headcount = 50   # Default 50 employees
+    
     # Prioritize picklist values if provided, otherwise use numeric values
-    if business_inputs.revenue_range:
+    if business_inputs and hasattr(business_inputs, 'revenue_range') and business_inputs.revenue_range:
         annual_revenue = revenue_mapping.get(business_inputs.revenue_range, 1000000)
-    elif business_inputs.annual_revenue is not None:
-        annual_revenue = business_inputs.annual_revenue
-    else:
-        annual_revenue = 1000000  # Default
+    elif business_inputs and hasattr(business_inputs, 'annual_revenue') and business_inputs.annual_revenue is not None:
+        annual_revenue = max(0, int(business_inputs.annual_revenue))  # Ensure positive integer
     
-    if business_inputs.employee_range:
+    if business_inputs and hasattr(business_inputs, 'employee_range') and business_inputs.employee_range:
         employee_headcount = employee_mapping.get(business_inputs.employee_range, 50)
-    elif business_inputs.employee_headcount is not None:
-        employee_headcount = business_inputs.employee_headcount
-    else:
-        employee_headcount = 50  # Default
+    elif business_inputs and hasattr(business_inputs, 'employee_headcount') and business_inputs.employee_headcount is not None:
+        employee_headcount = max(0, int(business_inputs.employee_headcount))  # Ensure positive integer
     
-    return annual_revenue, employee_headcount
+    # Final safety check to ensure we never return None
+    if annual_revenue is None:
+        annual_revenue = 1000000
+    if employee_headcount is None:
+        employee_headcount = 50
+        
+    return int(annual_revenue), int(employee_headcount)
 
 # Stage Engine Models for Alex Hormozi Benchmarking System
 class BusinessStage(BaseModel):
