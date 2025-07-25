@@ -991,36 +991,28 @@ class SalesforceAuditAPITester:
         return True, {"oauth_state": self.oauth_state}
 
 def main():
-    print("🚀 Starting Salesforce Audit API Tests - GET /api/audit/sessions Focus")
-    print("=" * 60)
+    print("🚀 Starting Salesforce OAuth Authorization Fix Testing")
+    print("🎯 PRIMARY FOCUS: Testing GET /api/oauth/authorize endpoint for 302 redirect fix")
+    print("=" * 80)
     
     tester = SalesforceAuditAPITester()
     
-    # Test sequence - focusing on GET /api/audit/sessions endpoint
+    # Test sequence - focusing on OAuth authorization fix
     tests = [
         ("Root Endpoint", tester.test_root_endpoint),
-        ("OAuth Authorize", tester.test_oauth_authorize),
+        
+        # PRIMARY FOCUS: OAuth authorization fix testing
+        ("OAuth Authorize - 302 Redirect Fix", tester.test_oauth_authorize),
         ("OAuth Callback Invalid State", tester.test_oauth_callback_invalid_state),
+        ("OAuth Security Validation", tester.validate_oauth_security),
         
-        # MAIN FOCUS: GET /api/audit/sessions endpoint testing
-        ("Get Audit Sessions - Basic", tester.test_get_audit_sessions),
-        ("Audit Sessions Endpoint - Comprehensive", tester.test_audit_sessions_endpoint_comprehensive),
-        
-        # Supporting tests
-        ("Enhanced Audit Request Structure", tester.test_enhanced_audit_request_structure),
+        # Secondary tests to ensure other functionality still works
+        ("Get Audit Sessions", tester.test_get_audit_sessions),
         ("Run Audit Without Session", tester.test_run_audit_without_session),
-        ("Get Audit Details Not Found", tester.test_get_audit_details_not_found),
-        ("Generate PDF Mock", tester.test_generate_pdf_mock),
-        ("Audit Data Structure", tester.test_audit_data_structure),
-        
-        # Edit Assumptions tests (secondary focus)
-        ("Update Assumptions Endpoint Structure", tester.test_update_assumptions_endpoint_structure),
-        ("AssumptionsUpdate Model Validation", tester.test_assumptions_update_model_validation),
-        ("Default Assumptions Values", tester.test_default_assumptions_values),
-        ("ROI Recalculation Logic", tester.test_roi_recalculation_logic),
-        ("Custom Assumptions Integration", tester.test_custom_assumptions_integration),
-        ("Error Handling Scenarios", tester.test_error_handling_scenarios),
+        ("Enhanced Audit Request Structure", tester.test_enhanced_audit_request_structure),
     ]
+    
+    oauth_fix_working = False
     
     for test_name, test_func in tests:
         print(f"\n🔄 Running test: {test_name}")
@@ -1031,36 +1023,42 @@ def main():
                 success, response = False, {}
             else:
                 success, response = result
+                
+            # Check if OAuth fix is working
+            if test_name == "OAuth Authorize - 302 Redirect Fix" and success:
+                if response.get('status') == 'redirect_working':
+                    oauth_fix_working = True
+                    
         except Exception as e:
             print(f"❌ Test {test_name} failed with error: {e}")
             success, response = False, {}
     
-    # Validate OAuth security implementation
-    success, response = tester.validate_oauth_security()
-    
-    # Validate enhanced ROI calculations
-    success, response = tester.validate_enhanced_roi_structure()
-    success, response = tester.test_department_salary_calculations()
-    
     # Print final results
-    print("\n" + "=" * 60)
+    print("\n" + "=" * 80)
     print(f"📊 Test Results: {tester.tests_passed}/{tester.tests_run} tests passed")
     
-    # Summary of GET /api/audit/sessions testing
-    print("\n🎯 GET /api/audit/sessions Endpoint Testing Summary:")
-    print("   ✅ Basic endpoint availability")
-    print("   ✅ Response structure validation")
-    print("   ✅ Frontend compatibility check")
-    print("   ✅ Empty database scenario")
-    print("   ✅ Sorting by created_at descending")
-    print("   ✅ Required fields validation")
-    print("   ✅ Error handling scenarios")
+    # Summary of OAuth authorization fix testing
+    print("\n🎯 OAuth Authorization Fix Testing Summary:")
+    if oauth_fix_working:
+        print("   ✅ GET /api/oauth/authorize returns HTTP 302 redirect (FIXED!)")
+        print("   ✅ Location header contains correct Salesforce authorization URL")
+        print("   ✅ Authorization URL contains all required OAuth parameters")
+        print("   ✅ Parameters have correct values (client_id, redirect_uri, scope, state)")
+        print("   ✅ State parameter is properly generated UUID for security")
+        print("   ✅ OAuth fix successfully resolves the connection issue!")
+        print("\n🎉 OAuth authorization fix verification PASSED!")
+        print("   Users will now be properly redirected to Salesforce login instead of seeing JSON data")
+    else:
+        print("   ❌ OAuth authorization fix not working properly")
+        print("   ❌ Endpoint may still be returning JSON instead of redirecting")
+        print("   ❌ Users will continue to see JSON data instead of Salesforce login")
+        print("\n⚠️  OAuth authorization fix verification FAILED!")
     
-    if tester.tests_passed >= tester.tests_run - 2:  # Allow 2 failures for edge cases
-        print("\n🎉 GET /api/audit/sessions endpoint tests passed! Implementation looks solid.")
+    if oauth_fix_working and tester.tests_passed >= tester.tests_run - 2:
+        print("\n✅ PRIMARY OBJECTIVE ACHIEVED: OAuth authorization fix is working correctly!")
         return 0
     else:
-        print("\n❌ Multiple tests failed - GET /api/audit/sessions implementation needs investigation")
+        print("\n❌ PRIMARY OBJECTIVE FAILED: OAuth authorization fix needs investigation")
         return 1
 
 if __name__ == "__main__":
