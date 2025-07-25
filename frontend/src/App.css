@@ -517,14 +517,15 @@ body {
   background: var(--bg-page);
 }
 
-/* 1️⃣ Connection Status Strip - Plain Black Text, Right-Aligned */
+/* 1️⃣ Frosted-Glass Connection Status Strip */
 .connection-strip {
   display: flex;
   justify-content: flex-end; /* status on the right */
   align-items: center;
-  background: var(--bg-alt);
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(12px);
   padding: 16px 24px;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .connection-strip .status {
