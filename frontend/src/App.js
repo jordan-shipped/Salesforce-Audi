@@ -368,11 +368,12 @@ const Dashboard = () => {
 
   return (
     <main className="dashboard">
-      {/* 1️⃣ Connection Status Strip - Clean Text Indicators */}
+      {/* 1️⃣ Connection Status Strip - Clean Text with Icon */}
       <section className="connection-strip">
         {sessionId ? (
           <div className="status-text status--ok">
-            Connected
+            <span className="status-icon">⚡︎</span>
+            <span className="status-label">Connected</span>
           </div>
         ) : (
           <div className="status-text status--alert">
