@@ -569,12 +569,13 @@ const Dashboard = () => {
   const [sessionId, setSessionId] = useState(localStorage.getItem('salesforce_session_id'));
   const [connected, setConnected] = useState(!!localStorage.getItem('salesforce_session_id'));
   const [sessions, setSessions] = useState([]);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid');
   const [showToast, setShowToast] = useState(false);
-  // No more pagination; show all sessions
   const [loading, setLoading] = useState(false);
   const [running, setRunning] = useState(false);
   const [showOrgProfile, setShowOrgProfile] = useState(false);
+  const [showBusinessInput, setShowBusinessInput] = useState(false);
+  const [businessInputs, setBusinessInputs] = useState(null);
   const navigate = useNavigate();
 
   // Load sessions when connected
@@ -593,7 +594,7 @@ const Dashboard = () => {
       localStorage.setItem('salesforce_session_id', newSessionId);
       setSessionId(newSessionId);
       setConnected(true);
-      setShowToast(true); // Show success toast
+      setShowToast(true);
       
       // Auto-hide toast after 3 seconds
       setTimeout(() => setShowToast(false), 3000);
@@ -607,7 +608,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/audit/sessions`);
-      console.log('Sessions response:', response.data); // Debug log
+      console.log('Sessions response:', response.data);
       setSessions(response.data || []);
     } catch (error) {
       console.error('Failed to load sessions:', error);
@@ -626,27 +627,50 @@ const Dashboard = () => {
     setSessionId(null);
     setConnected(false);
     setSessions([]);
-    navigate('/'); // Navigate back to home page
+    navigate('/');
   };
 
-  const handleRunAudit = () => {
+  const handleNewAudit = () => {
     if (!connected) {
       handleConnect();
       return;
     }
+    setShowBusinessInput(true);
+  };
+
+  const handleBusinessInputSubmit = (inputs) => {
+    setBusinessInputs(inputs);
+    setShowBusinessInput(false);
     setShowOrgProfile(true);
   };
 
-  const runAuditWithProfile = async (departmentSalaries) => {
+  const runAuditWithProfile = async (auditRequest) => {
     setRunning(true);
     setShowOrgProfile(false);
     
     try {
-      const response = await axios.post(`${API}/run-audit`, {
-        session_id: sessionId,
-        department_salaries: departmentSalaries,
-        use_quick_estimate: false
-      });
+      // Add business inputs to the audit request
+      const enhancedRequest = {
+        ...auditRequest,
+        business_inputs: businessInputs
+      };
+      
+      console.log('Running audit with enhanced request:', enhancedRequest);
+      
+      const response = await axios.post(`${API}/audit/run`, enhancedRequest);
+      
+      console.log('Audit response:', response.data);
+      
+      // Navigate to results with new session ID
+      navigate(`/audit/${response.data.session_id}`);
+      
+    } catch (error) {
+      console.error('Audit failed:', error);
+      alert(`Audit failed: ${error.response?.data?.detail || error.message}`);
+    } finally {
+      setRunning(false);
+    }
+  };
       
       if (response.data.session_id) {
         // Refresh sessions list
