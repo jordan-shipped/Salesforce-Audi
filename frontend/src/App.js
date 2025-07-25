@@ -380,8 +380,8 @@ const Dashboard = () => {
         Audit History
       </h2>
 
-      {/* 2.5️⃣ Apple-style Segmented Control */}
-      <div className="view-toggle">
+      {/* 2.5️⃣ Apple-style Segmented Control with Sliding Indicator */}
+      <div className="segmented">
         <button className="segment active">Grid</button>
         <button className="segment">List</button>
       </div>
