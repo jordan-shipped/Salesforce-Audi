@@ -517,7 +517,7 @@ body {
   background: var(--bg-page);
 }
 
-/* 1️⃣ Frosted-Glass Connection Status Strip */
+/* 1️⃣ Frosted-Glass Connection Status Strip with Apple Colors */
 .connection-strip {
   display: flex;
   justify-content: flex-end; /* status on the right */
@@ -528,10 +528,22 @@ body {
   border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-.connection-strip .status {
-  font-size: 14px;
+/* Base connection‑status text */
+.status-text {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--text-primary); /* Plain black text */
+  margin-right: 32px; /* right padding */
+}
+
+/* Green for OK */
+.status--ok {
+  color: #007A3A;  /* Apple system green */
+}
+
+/* Red for alert */
+.status--alert {
+  color: #FF3B30;  /* Apple system red */
 }
 
 /* 2️⃣ Sessions Header - Apple-Style Typography with Divider */
