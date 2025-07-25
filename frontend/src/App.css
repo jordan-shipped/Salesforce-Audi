@@ -407,10 +407,9 @@ body {
     padding: 16px; 
   }
   
-  .sessions-list.grid {
-    padding: 16px;
-    gap: var(--space-md);
+  .session-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
   
   .connection-strip {
