@@ -162,7 +162,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Fix sorting issue in /api/audit/sessions endpoint"
     - "Test Dashboard session fetching and rendering"
     - "Test conditional rendering between empty state and session grid"
   stuck_tasks: []
