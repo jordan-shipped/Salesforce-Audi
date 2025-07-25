@@ -2478,43 +2478,51 @@ def main():
     print("\n" + "=" * 80)
     print(f"📊 COMPREHENSIVE TEST RESULTS")
     print("=" * 80)
-    print(f"🎯 Stage Engine Tests: {sum(1 for r in stage_results.values() if r.get('success', False))}/{len(stage_results)} passed")
+    print(f"🎯 Picklist Integration Tests: {sum(1 for r in picklist_results.values() if r.get('success', False))}/{len(picklist_results)} passed")
+    print(f"🔄 Stage Engine Tests: {sum(1 for r in stage_results.values() if r.get('success', False))}/{len(stage_results)} passed")
     print(f"🔄 Compatibility Tests: {compatibility_passed}/{compatibility_total} passed")
     print(f"📊 Total Tests: {tester.tests_passed}/{tester.tests_run} passed")
     
     # Final assessment
-    print("\n🎯 ALEX HORMOZI STAGE ENGINE ASSESSMENT:")
+    print("\n🎯 PICKLIST + STAGE ENGINE INTEGRATION ASSESSMENT:")
     
-    if stage_engine_success:
-        print("   ✅ Stage 0-9 business mapping logic working correctly")
-        print("   ✅ /api/business/stage endpoint maps revenue/headcount to stages")
-        print("   ✅ /api/business/stages returns all 10 stages with correct data")
-        print("   ✅ Enhanced audit flow accepts business_inputs parameter")
-        print("   ✅ Domain classification system properly structured")
-        print("   ✅ Stage-based priority scoring implemented")
-        print("   ✅ Enhanced ROI calculations with stage multipliers")
-        print("   ✅ Task breakdown and role attribution working")
-        print("\n🎉 STAGE ENGINE PHASE 1 IMPLEMENTATION: SUCCESS!")
-        print("   The Alex Hormozi Stage Engine is ready for production use")
+    if picklist_success:
+        print("   ✅ Picklist value mapping working correctly")
+        print("   ✅ Revenue picklist: '<100k' → $50,000, '1M–3M' → $2,000,000, '30M+' → $50,000,000")
+        print("   ✅ Employee picklist: '0-some' → 1, '5–9' → 7, '250–500' → 375")
+        print("   ✅ Stage mapping works with converted picklist values")
+        print("   ✅ Enhanced audit accepts both picklist and numeric business_inputs")
+        print("   ✅ Apple-grade StageSummaryPanel data structure properly defined")
+        print("   ✅ Constraints and actions arrays can be properly parsed")
+        print("\n🎉 PICKLIST + STAGE ENGINE INTEGRATION: SUCCESS!")
+        print("   The comprehensive picklist-based business inputs are ready for production")
     else:
-        print("   ❌ Some critical stage engine functionality has issues")
-        print("   ❌ Stage mapping or API endpoints may not be working correctly")
+        print("   ❌ Some critical picklist integration functionality has issues")
+        print("   ❌ Picklist value conversion or stage mapping may not be working correctly")
         print("   ❌ Enhanced audit processing may have structural problems")
-        print("\n⚠️  STAGE ENGINE PHASE 1 IMPLEMENTATION: NEEDS ATTENTION!")
+        print("\n⚠️  PICKLIST + STAGE ENGINE INTEGRATION: NEEDS ATTENTION!")
         print("   Critical issues found that require main agent investigation")
+    
+    # Stage engine compatibility assessment
+    if stage_engine_success:
+        print("\n✅ STAGE ENGINE COMPATIBILITY: MAINTAINED")
+        print("   Existing stage engine functionality continues to work with picklist integration")
+    else:
+        print("\n❌ STAGE ENGINE COMPATIBILITY: ISSUES DETECTED")
+        print("   Some stage engine functionality may be affected by picklist changes")
     
     # Backward compatibility assessment
     if compatibility_passed >= compatibility_total - 1:  # Allow 1 failure
         print("\n✅ BACKWARD COMPATIBILITY: MAINTAINED")
-        print("   Existing functionality continues to work with stage engine")
+        print("   Existing functionality continues to work with picklist + stage engine")
     else:
         print("\n❌ BACKWARD COMPATIBILITY: ISSUES DETECTED")
-        print("   Some existing functionality may be broken by stage engine changes")
+        print("   Some existing functionality may be broken by integration changes")
     
-    # Return success if stage engine is working and compatibility is maintained
-    if stage_engine_success and compatibility_passed >= compatibility_total - 1:
+    # Return success if picklist integration is working and compatibility is maintained
+    if picklist_success and stage_engine_success and compatibility_passed >= compatibility_total - 1:
         print("\n🎉 OVERALL ASSESSMENT: SUCCESS!")
-        print("   Stage Engine Phase 1 implementation is working correctly")
+        print("   Picklist + Stage Engine integration is working correctly")
         print("   All critical functionality verified and backward compatibility maintained")
         return 0
     else:
