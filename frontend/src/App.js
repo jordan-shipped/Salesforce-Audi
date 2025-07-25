@@ -93,45 +93,57 @@ const StageSummaryPanel = ({ businessStage, summary }) => {
     
     let constraints = [];
     let nextSteps = [];
-    let isConstraints = false;
-    let isNextSteps = false;
     
-    actions.forEach(item => {
-      const text = item.toLowerCase();
+    // Stage-specific parsing rules
+    if (businessStage.stage === 4) {
+      // Stage 4 has explicit "Constraints:" and "Quick Wins:" sections
+      let isConstraints = false;
+      let isQuickWins = false;
       
-      // Check for section headers
-      if (text.includes('constraint')) {
-        isConstraints = true;
-        isNextSteps = false;
-        return;
-      } else if (text.includes('quick wins') || text.includes('key actions') || text.includes('actions:')) {
-        isConstraints = false;
-        isNextSteps = true;
-        return;
-      }
-      
-      // Stage 4 has explicit format
-      if (businessStage.stage === 4) {
-        if (text.includes('weak process') || text.includes('data silos') || text.includes('inefficient')) {
+      actions.forEach(item => {
+        const text = item.toLowerCase();
+        
+        if (text.includes('constraints:')) {
+          isConstraints = true;
+          isQuickWins = false;
+          return;
+        } else if (text.includes('quick wins:')) {
+          isConstraints = false;
+          isQuickWins = true;
+          return;
+        }
+        
+        if (isConstraints && (text.includes('weak process') || text.includes('data silos') || text.includes('inefficient'))) {
           constraints.push(item);
-        } else if (text.includes('centralize') || text.includes('standardize') || text.includes('automate')) {
+        } else if (isQuickWins && (text.includes('centralize') || text.includes('standardize') || text.includes('automate'))) {
           nextSteps.push(item);
         }
-      } else {
-        // For other stages, add all as next steps if not explicitly constraints
-        if (isConstraints) {
-          constraints.push(item);
-        } else {
-          nextSteps.push(item);
-        }
-      }
-    });
-    
-    // If no explicit parsing worked, split roughly in half
-    if (constraints.length === 0 && nextSteps.length === 0) {
+      });
+    } else {
+      // For other stages, split actions roughly in half or use content-based rules
       const mid = Math.ceil(actions.length / 2);
+      
+      // Simple heuristic: first half as constraints, second half as next steps
       constraints = actions.slice(0, mid);
       nextSteps = actions.slice(mid);
+      
+      // If no clear split, at least ensure some content in both sections
+      if (constraints.length === 0 && nextSteps.length > 0) {
+        constraints = [nextSteps.shift()]; // Move first next step to constraints
+      }
+      if (nextSteps.length === 0 && constraints.length > 1) {
+        nextSteps = [constraints.pop()]; // Move last constraint to next steps
+      }
+    }
+    
+    // Fallback: ensure both sections have content
+    if (constraints.length === 0 && nextSteps.length === 0) {
+      constraints = ["No specific constraints identified for this stage"];
+      nextSteps = ["Focus on the key actions for your current business stage"];
+    } else if (constraints.length === 0) {
+      constraints = ["Review and optimize current processes"];
+    } else if (nextSteps.length === 0) {
+      nextSteps = ["Implement the identified improvements"];
     }
     
     return { constraints, nextSteps };
