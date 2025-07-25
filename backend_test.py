@@ -979,11 +979,11 @@ def main():
         success, response = test_func()
     
     # Validate OAuth security implementation
-    tester.validate_oauth_security()
+    success, response = tester.validate_oauth_security()
     
     # Validate enhanced ROI calculations
-    tester.validate_enhanced_roi_structure()
-    tester.test_department_salary_calculations()
+    success, response = tester.validate_enhanced_roi_structure()
+    success, response = tester.test_department_salary_calculations()
     
     # Print final results
     print("\n" + "=" * 60)
