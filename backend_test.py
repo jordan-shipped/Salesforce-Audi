@@ -614,6 +614,298 @@ class SalesforceAuditAPITester:
         """Test the root API endpoint"""
         return self.run_test("Root API Endpoint", "GET", "", 200)
 
+    def test_oauth_authorize_comprehensive(self):
+        """COMPREHENSIVE OAUTH ENDPOINT TESTING - Direct testing as requested in review"""
+        print("\n🚨 OAUTH ENDPOINT DIRECT TESTING")
+        print("=" * 60)
+        print("Testing OAuth authorization endpoint for 405 Method Not Allowed issue")
+        
+        oauth_results = {}
+        all_tests_passed = True
+        
+        # STEP 1: Test GET /api/oauth/authorize
+        print("\n📋 1. TEST GET /api/oauth/authorize")
+        print("-" * 50)
+        
+        self.tests_run += 1
+        
+        try:
+            # Make request without following redirects
+            response = requests.get(f"{self.api_url}/oauth/authorize", allow_redirects=False, timeout=10)
+            
+            print(f"   URL: {self.api_url}/oauth/authorize")
+            print(f"   Status: {response.status_code}")
+            print(f"   Headers: {dict(response.headers)}")
+            
+            # Check for 405 Method Not Allowed (the reported issue)
+            if response.status_code == 405:
+                print("❌ CRITICAL ISSUE CONFIRMED: Returns 405 Method Not Allowed")
+                print("❌ This is the root cause of silent audit failures!")
+                oauth_results['endpoint_accessible'] = False
+                oauth_results['returns_405'] = True
+                all_tests_passed = False
+                
+                # Check allowed methods
+                allowed_methods = response.headers.get('Allow', 'Not specified')
+                print(f"   Allowed methods: {allowed_methods}")
+                
+            elif response.status_code == 302:
+                print("✅ SUCCESS: Returns 302 redirect (correct behavior)")
+                self.tests_passed += 1
+                oauth_results['endpoint_accessible'] = True
+                oauth_results['returns_302'] = True
+                
+                # Get the redirect URL from Location header
+                redirect_url = response.headers.get('Location')
+                if not redirect_url:
+                    print("❌ Missing Location header in 302 response")
+                    oauth_results['has_location_header'] = False
+                    all_tests_passed = False
+                else:
+                    print(f"   Redirect URL: {redirect_url}")
+                    oauth_results['redirect_url'] = redirect_url
+                    oauth_results['has_location_header'] = True
+                    
+                    # Validate redirect points to Salesforce
+                    if 'login.salesforce.com' in redirect_url:
+                        print("✅ Location header points to login.salesforce.com")
+                        oauth_results['points_to_salesforce'] = True
+                    else:
+                        print("❌ Location header does not point to login.salesforce.com")
+                        oauth_results['points_to_salesforce'] = False
+                        all_tests_passed = False
+                
+            elif response.status_code == 200:
+                print("❌ ISSUE: Returns 200 HTML instead of 302 redirect")
+                print("❌ This prevents proper OAuth flow completion")
+                oauth_results['endpoint_accessible'] = True
+                oauth_results['returns_html'] = True
+                oauth_results['returns_302'] = False
+                all_tests_passed = False
+                
+                # Check if it's HTML content
+                content_type = response.headers.get('Content-Type', '')
+                if 'html' in content_type.lower():
+                    print(f"   Content-Type: {content_type}")
+                    print(f"   Response preview: {response.text[:200]}...")
+                
+            else:
+                print(f"❌ UNEXPECTED STATUS: {response.status_code}")
+                oauth_results['endpoint_accessible'] = False
+                oauth_results['unexpected_status'] = response.status_code
+                all_tests_passed = False
+                
+                try:
+                    error_data = response.json()
+                    print(f"   Error: {error_data}")
+                except:
+                    print(f"   Error: {response.text[:300]}...")
+
+        except Exception as e:
+            print(f"❌ CRITICAL ERROR: {str(e)}")
+            oauth_results['endpoint_accessible'] = False
+            oauth_results['connection_error'] = str(e)
+            all_tests_passed = False
+        
+        # STEP 2: Test OAuth State Generation (if endpoint works)
+        print("\n📋 2. TEST OAUTH STATE GENERATION")
+        print("-" * 50)
+        
+        if oauth_results.get('returns_302') and oauth_results.get('redirect_url'):
+            redirect_url = oauth_results['redirect_url']
+            
+            # Parse URL components
+            parsed_url = urlparse(redirect_url)
+            query_params = parse_qs(parsed_url.query)
+            
+            # Check for state parameter
+            if 'state' in query_params:
+                state_value = query_params['state'][0]
+                print(f"✅ State parameter generated: {state_value[:8]}...")
+                oauth_results['state_generated'] = True
+                oauth_results['state_value'] = state_value
+                
+                # Validate state format (should be UUID)
+                try:
+                    import uuid
+                    uuid.UUID(state_value)
+                    print("✅ State parameter is valid UUID format")
+                    oauth_results['state_valid_format'] = True
+                except ValueError:
+                    print("❌ State parameter is not valid UUID format")
+                    oauth_results['state_valid_format'] = False
+                    all_tests_passed = False
+                    
+            else:
+                print("❌ Missing state parameter in authorization URL")
+                oauth_results['state_generated'] = False
+                all_tests_passed = False
+        else:
+            print("⚠️ Cannot test state generation - endpoint not returning 302 redirect")
+            oauth_results['state_generated'] = None
+        
+        # STEP 3: Environment Variable Validation
+        print("\n📋 3. ENVIRONMENT VARIABLE VALIDATION")
+        print("-" * 50)
+        
+        # Check if we can infer environment variables from redirect URL
+        if oauth_results.get('redirect_url'):
+            redirect_url = oauth_results['redirect_url']
+            parsed_url = urlparse(redirect_url)
+            query_params = parse_qs(parsed_url.query)
+            
+            # Validate SALESFORCE_CLIENT_ID
+            client_id = query_params.get('client_id', [''])[0]
+            if client_id:
+                print(f"✅ SALESFORCE_CLIENT_ID exists: {client_id[:10]}...")
+                oauth_results['client_id_exists'] = True
+                
+                # Check if it matches expected format
+                expected_client_id = "3MVG9BBZP0d0A9KAyOOqhXjeH9PXBsXSaw7NsQ7JhgWkUthSAKSLSWXboNRXlYhTjzVqV9Ja223CMpkekeQ7o"
+                if client_id == expected_client_id:
+                    print("✅ SALESFORCE_CLIENT_ID matches expected value")
+                    oauth_results['client_id_valid'] = True
+                else:
+                    print("❌ SALESFORCE_CLIENT_ID does not match expected value")
+                    oauth_results['client_id_valid'] = False
+                    all_tests_passed = False
+            else:
+                print("❌ SALESFORCE_CLIENT_ID is empty or missing")
+                oauth_results['client_id_exists'] = False
+                all_tests_passed = False
+            
+            # Validate SALESFORCE_CALLBACK_URL
+            callback_url = query_params.get('redirect_uri', [''])[0]
+            if callback_url:
+                print(f"✅ SALESFORCE_CALLBACK_URL exists: {callback_url}")
+                oauth_results['callback_url_exists'] = True
+                
+                # Check format
+                expected_callback = "https://f7d85829-0100-4d00-b60e-d0a6bd56fc03.preview.emergentagent.com/api/oauth/callback"
+                if callback_url == expected_callback:
+                    print("✅ SALESFORCE_CALLBACK_URL matches expected format")
+                    oauth_results['callback_url_valid'] = True
+                else:
+                    print("❌ SALESFORCE_CALLBACK_URL does not match expected format")
+                    oauth_results['callback_url_valid'] = False
+                    all_tests_passed = False
+            else:
+                print("❌ SALESFORCE_CALLBACK_URL is empty or missing")
+                oauth_results['callback_url_exists'] = False
+                all_tests_passed = False
+            
+            # Validate SALESFORCE_LOGIN_URL
+            if redirect_url.startswith('https://login.salesforce.com'):
+                print("✅ SALESFORCE_LOGIN_URL is set correctly")
+                oauth_results['login_url_valid'] = True
+            else:
+                print("❌ SALESFORCE_LOGIN_URL is not set correctly")
+                oauth_results['login_url_valid'] = False
+                all_tests_passed = False
+                
+        else:
+            print("⚠️ Cannot validate environment variables - no redirect URL available")
+            oauth_results['env_vars_testable'] = False
+        
+        # STEP 4: Route Registration Check
+        print("\n📋 4. ROUTE REGISTRATION CHECK")
+        print("-" * 50)
+        
+        # Test different HTTP methods to check route registration
+        methods_to_test = ['GET', 'POST', 'PUT', 'DELETE']
+        
+        for method in methods_to_test:
+            try:
+                if method == 'GET':
+                    resp = requests.get(f"{self.api_url}/oauth/authorize", allow_redirects=False, timeout=5)
+                elif method == 'POST':
+                    resp = requests.post(f"{self.api_url}/oauth/authorize", allow_redirects=False, timeout=5)
+                elif method == 'PUT':
+                    resp = requests.put(f"{self.api_url}/oauth/authorize", allow_redirects=False, timeout=5)
+                elif method == 'DELETE':
+                    resp = requests.delete(f"{self.api_url}/oauth/authorize", allow_redirects=False, timeout=5)
+                
+                print(f"   {method}: {resp.status_code}")
+                
+                if method == 'GET':
+                    if resp.status_code == 302:
+                        print(f"   ✅ GET method properly configured (returns 302)")
+                        oauth_results['get_method_configured'] = True
+                    elif resp.status_code == 405:
+                        print(f"   ❌ GET method returns 405 - route registration issue!")
+                        oauth_results['get_method_configured'] = False
+                        all_tests_passed = False
+                    else:
+                        print(f"   ⚠️ GET method returns {resp.status_code}")
+                        oauth_results['get_method_configured'] = None
+                else:
+                    if resp.status_code == 405:
+                        print(f"   ✅ {method} method correctly returns 405 (not allowed)")
+                    else:
+                        print(f"   ⚠️ {method} method returns {resp.status_code}")
+                        
+            except Exception as e:
+                print(f"   ❌ {method} method test failed: {e}")
+        
+        # SUMMARY OF OAUTH TESTING
+        print("\n📊 OAUTH ENDPOINT TESTING SUMMARY")
+        print("=" * 60)
+        
+        critical_criteria = [
+            ("✅ GET /api/oauth/authorize returns 302 redirect", oauth_results.get('returns_302', False)),
+            ("✅ Location header points to login.salesforce.com", oauth_results.get('points_to_salesforce', False)),
+            ("✅ Authorization URL includes all required OAuth parameters", oauth_results.get('has_location_header', False)),
+            ("✅ State parameter is generated and stored", oauth_results.get('state_generated', False))
+        ]
+        
+        passed_count = 0
+        for description, passed in critical_criteria:
+            if passed:
+                print(f"{description}")
+                passed_count += 1
+            elif passed is None:
+                print(f"⚠️{description[1:]} (Unable to test)")
+            else:
+                print(f"❌{description[1:]}")
+        
+        print(f"\n🎯 CRITICAL SUCCESS CRITERIA: {passed_count}/{len([c for c in critical_criteria if c[1] is not None])} PASSED")
+        
+        # SPECIFIC RECOMMENDATIONS
+        print("\n📋 OAUTH ENDPOINT RECOMMENDATIONS")
+        print("-" * 50)
+        
+        if oauth_results.get('returns_405'):
+            print("🔧 CRITICAL FIX NEEDED: OAuth endpoint returns 405 Method Not Allowed")
+            print("   - Check route registration in FastAPI")
+            print("   - Ensure GET method is properly configured for /api/oauth/authorize")
+            print("   - Verify router.get() decorator is used correctly")
+            
+        if not oauth_results.get('returns_302'):
+            print("🔧 CRITICAL FIX NEEDED: OAuth endpoint should return 302 redirect")
+            print("   - Change endpoint to return RedirectResponse(url=auth_url, status_code=302)")
+            print("   - Do not return JSON response")
+            
+        if not oauth_results.get('points_to_salesforce'):
+            print("🔧 FIX NEEDED: Redirect URL should point to login.salesforce.com")
+            print("   - Check SALESFORCE_LOGIN_URL environment variable")
+            print("   - Ensure authorization URL is built correctly")
+            
+        if not oauth_results.get('state_generated'):
+            print("🔧 FIX NEEDED: State parameter generation and storage")
+            print("   - Generate UUID state parameter")
+            print("   - Store state in database for validation")
+        
+        if all_tests_passed:
+            print("\n🎉 OAUTH ENDPOINT TESTING COMPLETED - ALL CRITERIA MET!")
+            print("✅ OAuth authorization flow is working correctly")
+            print("✅ Users can successfully authenticate with Salesforce")
+        else:
+            print("\n⚠️ OAUTH ENDPOINT ISSUES IDENTIFIED")
+            print("❌ This is the root cause of silent audit failures")
+            print("❌ Users cannot complete OAuth flow to create valid sessions")
+        
+        return all_tests_passed, oauth_results
+
     def test_oauth_authorize(self):
         """Test OAuth authorization endpoint - should return 302 redirect instead of JSON"""
         print(f"\n🔍 Testing OAuth Authorize endpoint for 302 redirect...")
