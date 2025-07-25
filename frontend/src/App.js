@@ -290,6 +290,7 @@ const Dashboard = () => {
       localStorage.setItem('salesforce_session_id', newSessionId);
       setSessionId(newSessionId);
       setConnected(true);
+      setShowToast(true); // Show success toast
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
