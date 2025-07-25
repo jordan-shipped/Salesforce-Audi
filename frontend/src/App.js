@@ -770,12 +770,34 @@ const Dashboard = () => {
       
       console.log('Audit response:', response.data);
       
-      // Navigate to results with new session ID
-      navigate(`/audit/${response.data.session_id}`);
+      // Check if we got a valid session ID
+      if (response.data && response.data.session_id) {
+        // Wait a moment for database to update, then refresh sessions
+        setTimeout(async () => {
+          await loadSessions();
+        }, 1000);
+        
+        // Navigate to results with new session ID
+        navigate(`/audit/${response.data.session_id}`);
+      } else {
+        console.error('No session_id in response:', response.data);
+        alert('Audit completed but no session ID returned. Please check the audit history.');
+      }
       
     } catch (error) {
       console.error('Audit failed:', error);
-      alert(`Audit failed: ${error.response?.data?.detail || error.message}`);
+      
+      // More detailed error handling
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+        alert(`Audit failed: ${error.response.data?.detail || error.response.data?.message || 'Unknown server error'}`);
+      } else if (error.request) {
+        console.error('Error request:', error.request);
+        alert('Audit failed: Network error. Please check your connection.');
+      } else {
+        console.error('Error message:', error.message);
+        alert(`Audit failed: ${error.message}`);
+      }
     } finally {
       setRunning(false);
     }
