@@ -152,25 +152,27 @@ body {
   margin-left: 1rem;
 }
 
-/* Clean Buttons */
+/* Clean Buttons - Default Solid Accent */
 .btn-primary {
-  background: var(--gradient-tech);
+  background-color: var(--color-accent); /* Solid SF Blue by default */
   color: #ffffff;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 14px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: none; /* No shadows by default */
+  text-decoration: none;
 }
 
 .btn-primary:hover {
+  background-color: var(--color-accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
 }
 
 .btn-outline {
