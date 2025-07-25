@@ -126,13 +126,92 @@ class SalesforceAuditAPITester:
         )
 
     def test_get_audit_sessions(self):
-        """Test getting audit sessions"""
-        return self.run_test(
+        """Test getting audit sessions - comprehensive testing"""
+        print("\n🔍 Testing GET /api/audit/sessions endpoint comprehensively...")
+        
+        success, response = self.run_test(
             "Get Audit Sessions",
             "GET",
             "audit/sessions",
             200
         )
+        
+        if not success:
+            return False, response
+        
+        # Validate response structure
+        if not isinstance(response, list):
+            print("❌ Response should be an array of sessions")
+            return False, response
+        
+        print(f"✅ Received {len(response)} sessions")
+        
+        # If we have sessions, validate their structure
+        if len(response) > 0:
+            session = response[0]
+            required_fields = ['id', 'org_name', 'findings_count', 'estimated_savings', 'created_at']
+            
+            print("🔍 Validating session structure...")
+            for field in required_fields:
+                if field not in session:
+                    print(f"❌ Missing required field: {field}")
+                    return False, response
+                else:
+                    print(f"✅ Found field: {field} = {session[field]}")
+            
+            # Validate estimated_savings structure
+            if 'estimated_savings' in session:
+                savings = session['estimated_savings']
+                if isinstance(savings, dict) and 'annual_dollars' in savings:
+                    print(f"✅ Found estimated_savings.annual_dollars: {savings['annual_dollars']}")
+                else:
+                    print(f"❌ estimated_savings should have 'annual_dollars' field. Got: {savings}")
+                    return False, response
+            
+            # Validate created_at format
+            created_at = session.get('created_at')
+            if created_at:
+                try:
+                    # Try to parse as ISO format datetime
+                    if isinstance(created_at, str):
+                        datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                    print(f"✅ created_at is properly formatted: {created_at}")
+                except:
+                    print(f"❌ created_at format invalid: {created_at}")
+                    return False, response
+            
+            # Check if sessions are sorted by created_at descending
+            if len(response) > 1:
+                print("🔍 Checking if sessions are sorted by created_at descending...")
+                for i in range(len(response) - 1):
+                    current_date = response[i].get('created_at')
+                    next_date = response[i + 1].get('created_at')
+                    
+                    if current_date and next_date:
+                        try:
+                            if isinstance(current_date, str):
+                                current_dt = datetime.fromisoformat(current_date.replace('Z', '+00:00'))
+                            else:
+                                current_dt = current_date
+                            
+                            if isinstance(next_date, str):
+                                next_dt = datetime.fromisoformat(next_date.replace('Z', '+00:00'))
+                            else:
+                                next_dt = next_date
+                            
+                            if current_dt < next_dt:
+                                print(f"❌ Sessions not sorted correctly: {current_date} should be after {next_date}")
+                                return False, response
+                        except Exception as e:
+                            print(f"⚠️ Could not validate sorting due to date parsing: {e}")
+                
+                print("✅ Sessions are properly sorted by created_at descending")
+        
+        else:
+            print("ℹ️ No sessions found - testing empty database scenario")
+            print("✅ Empty database returns empty array (correct behavior)")
+        
+        return True, response
 
     def test_run_audit_without_session(self):
         """Test running audit without valid session"""
