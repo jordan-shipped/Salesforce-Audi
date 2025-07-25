@@ -2130,9 +2130,11 @@ async def run_audit(audit_request: AuditRequest):
             )
             logger.info(f"Audit completed successfully. Found {len(findings_data)} findings for {org_name}")
         except Exception as audit_error:
+            # CAPTURE FULL TRACEBACK FOR DEBUGGING
+            tb = traceback.format_exc()
+            logger.error("🔥 Full audit exception traceback:\n" + tb)
             logger.error(f"Salesforce audit failed: {audit_error}")
-            logger.error(f"Audit error traceback: ", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Salesforce audit failed: {str(audit_error)}")
+            raise HTTPException(status_code=500, detail="An unexpected error occurred during audit processing. Our team has been notified.")
         
         # Calculate summary
         if dept_salaries_dict:
