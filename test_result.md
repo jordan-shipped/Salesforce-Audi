@@ -102,7 +102,141 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix Salesforce OAuth authorization flow that was returning JSON instead of redirecting to Salesforce login"
+user_problem_statement: "Implement Phase 1 of Alex Hormozi Stage Engine for Salesforce Audit - Core stage mapping logic, enhanced ROI calculations, domain classification, and priority scoring while maintaining existing UI"
+
+backend:
+  - task: "Implement Stage 0-9 business mapping logic with Alex Hormozi stages"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Added BUSINESS_STAGES lookup table with all 10 stages (0-9) including headcount ranges, revenue ranges, roles, bottom lines, and constraints_and_actions. Implemented determine_business_stage() function to map revenue/headcount to appropriate stage using scoring algorithm."
+          
+  - task: "Add BusinessInputs model and update AuditRequest to accept revenue/headcount"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Added BusinessInputs model with optional annual_revenue (default $1M) and employee_headcount (default 50). Updated AuditRequest to include business_inputs field. Models support both custom inputs and fallback defaults."
+          
+  - task: "Implement domain classification system for findings"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Added FINDING_DOMAINS array with 5 domains: Data Quality, Automation, Reporting, Security, Adoption. Implemented classify_finding_domain() function using keyword-based classification rules to categorize findings into appropriate domains."
+          
+  - task: "Implement stage-based priority scoring system"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Added STAGE_DOMAIN_PRIORITY mapping showing which domains are most important per stage (0-9). Implemented calculate_finding_priority() function that combines stage alignment, impact score, and ROI value to calculate final priority score."
+          
+  - task: "Implement enhanced task-based ROI calculations"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Added TASK_BASED_ROI_CONSTANTS and HOURLY_RATES_BY_ROLE with realistic US rates. Implemented calculate_task_based_roi() function with stage multipliers, detailed task breakdowns, and separate one-time vs recurring cost analysis."
+          
+  - task: "Replace audit function with stage-based engine"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Replaced run_salesforce_audit_with_salaries with run_salesforce_audit_with_stage_engine. New function determines business stage, enhances findings with domain classification, priority scoring, and stage-based ROI analysis. Returns 4 values including business_stage."
+          
+  - task: "Add new API endpoints for stage information"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Added /api/business/stage endpoint to get stage info for revenue/headcount inputs. Added /api/business/stages endpoint to get all available stages and domain mappings."
+          
+  - task: "Update audit response to include business stage data"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Enhanced /api/audit/run response to include business_stage object with stage info and metadata object with audit_type, confidence level, and timestamp. Updated findings serialization with convert_objectid()."
+
+frontend:
+  - task: "Maintain existing UI while backend implements stage engine"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "No changes made to frontend - keeping existing UI intact as requested for Phase 1. All current functionality should continue working with enhanced backend."
+
+metadata:
+  created_by: "main_agent"
+  version: "3.0"
+  test_sequence: 2
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Implement Stage 0-9 business mapping logic with Alex Hormozi stages"
+    - "Add BusinessInputs model and update AuditRequest to accept revenue/headcount"
+    - "Implement domain classification system for findings"
+    - "Implement stage-based priority scoring system"
+    - "Implement enhanced task-based ROI calculations"
+    - "Replace audit function with stage-based engine"
+    - "Add new API endpoints for stage information"
+    - "Update audit response to include business stage data"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+      message: "PHASE 1 IMPLEMENTATION COMPLETE: Successfully implemented core Alex Hormozi Stage Engine (0-9) with business stage mapping, domain classification (5 domains), stage-based priority scoring, and enhanced task-based ROI calculations. Added new API endpoints for stage information and updated audit responses. All changes maintain backward compatibility. Ready for comprehensive backend testing to verify stage engine functionality."
 
 backend:
   - task: "Fix OAuth authorization endpoint to redirect instead of returning JSON"
