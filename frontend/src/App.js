@@ -1285,7 +1285,43 @@ const AuditResults = () => {
     );
   }
 
-  if (!auditData) {
+  // Handle processing state
+  if (auditStatus === 'processing') {
+    return (
+      <div className="audit-results">
+        <header className="header">
+          <Link to="/" className="logo gradient">SalesAudit Pro</Link>
+        </header>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          height: '60vh',
+          flexDirection: 'column',
+          gap: '1.5rem'
+        }}>
+          <div className="loading-spinner-premium"></div>
+          <h2 style={{ color: 'var(--text-primary)' }}>Running your audit...</h2>
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+            We're analyzing your Salesforce org to find optimization opportunities.<br/>
+            This usually takes 30-60 seconds. Please hang tight!
+          </p>
+          <div style={{ 
+            background: 'var(--color-background-secondary)', 
+            padding: '1rem', 
+            borderRadius: '8px',
+            fontSize: '0.875rem',
+            color: 'var(--text-tertiary)'
+          }}>
+            Session ID: {sessionId}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (auditStatus === 'error') {
     return (
       <div className="audit-results">
         <header className="header">
@@ -1299,10 +1335,37 @@ const AuditResults = () => {
           flexDirection: 'column',
           gap: '1rem'
         }}>
-          <h2>Audit not found</h2>
+          <h2 style={{ color: 'var(--color-red)' }}>Audit Processing Failed</h2>
           <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
-            The audit session "{sessionId}" could not be found.<br/>
-            It may still be processing or the session ID is invalid.
+            {auditData?.message || 'An unexpected error occurred during audit processing.'}
+          </p>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <Link to="/dashboard" className="btn-outline">← Back to Dashboard</Link>
+            <button onClick={loadAuditData} className="btn-primary">Try Again</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!auditData || auditStatus !== 'completed') {
+    return (
+      <div className="audit-results">
+        <header className="header">
+          <Link to="/" className="logo gradient">SalesAudit Pro</Link>
+        </header>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          height: '60vh',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}>
+          <h2>Audit not available</h2>
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center' }}>
+            The audit session "{sessionId}" is not available.<br/>
+            Status: {auditStatus}
           </p>
           <div style={{ display: 'flex', gap: '1rem' }}>
             <Link to="/dashboard" className="btn-outline">← Back to Dashboard</Link>
