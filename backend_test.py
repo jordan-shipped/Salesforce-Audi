@@ -6,7 +6,7 @@ import re
 from urllib.parse import urlparse, parse_qs
 
 class SalesforceAuditAPITester:
-    def __init__(self, base_url="https://3b470343-cd88-4405-94dd-daa66c5c60bb.preview.emergentagent.com"):
+    def __init__(self, base_url="https://52c7eec7-1a32-4b8f-a7f9-3aa075155b2c.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.tests_run = 0
@@ -98,7 +98,7 @@ class SalesforceAuditAPITester:
                 print(f"❌ Invalid client_id")
                 return False, response
             
-            expected_callback = "https://3b470343-cd88-4405-94dd-daa66c5c60bb.preview.emergentagent.com/oauth/callback"
+            expected_callback = "https://52c7eec7-1a32-4b8f-a7f9-3aa075155b2c.preview.emergentagent.com/oauth/callback"
             if query_params.get('redirect_uri', [''])[0] != expected_callback:
                 print(f"❌ Invalid redirect_uri")
                 return False, response
