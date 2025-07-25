@@ -1659,10 +1659,9 @@ def run_salesforce_audit_with_stage_engine(access_token, instance_url, business_
         org_name = org_context['org_name']
         org_id = sf.query("SELECT Id FROM Organization LIMIT 1")['records'][0]['Id']
         
-        # Determine business stage
+        # Determine business stage with picklist support
         if business_inputs:
-            revenue = business_inputs.annual_revenue or 1000000
-            headcount = business_inputs.employee_headcount or 50
+            revenue, headcount = convert_picklist_to_numeric(business_inputs)
         else:
             revenue = 1000000  # Default $1M
             headcount = 50     # Default 50 employees
