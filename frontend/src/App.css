@@ -678,6 +678,19 @@ body {
   }
 }
 
+/* Loading Skeleton Cards */
+.loading-card {
+  background: #E5E5EA;
+  border-radius: var(--radius-card);
+  height: 120px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
 .session-info {
   flex: 1; /* take up available space */
   margin-right: 16px; /* space between info and timestamp */
