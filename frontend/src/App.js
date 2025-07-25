@@ -1141,6 +1141,8 @@ const AuditResults = () => {
   const [showEditAssumptions, setShowEditAssumptions] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [openFindings, setOpenFindings] = useState(new Set());
+  const [selectedDomain, setSelectedDomain] = useState('All');
+  const [selectedPriority, setSelectedPriority] = useState('All');
 
   useEffect(() => {
     loadAuditData();
@@ -1149,6 +1151,7 @@ const AuditResults = () => {
   const loadAuditData = async () => {
     try {
       const response = await axios.get(`${API}/audit/${sessionId}`);
+      console.log('Audit data loaded:', response.data);
       setAuditData(response.data);
     } catch (error) {
       console.error('Failed to load audit data:', error);
@@ -1190,14 +1193,22 @@ const AuditResults = () => {
     setOpenFindings(newOpenFindings);
   };
 
-  const formatCurrency = (amount) => {
-    if (!amount) return '$0';
-    return `$${Math.round(amount).toLocaleString()}`;
+  // Filter findings based on selected domain and priority
+  const getFilteredFindings = () => {
+    if (!auditData?.findings) return [];
+    
+    return auditData.findings.filter(finding => {
+      const domainMatch = selectedDomain === 'All' || finding.domain === selectedDomain;
+      const priorityMatch = selectedPriority === 'All' || finding.impact === selectedPriority;
+      return domainMatch && priorityMatch;
+    });
   };
 
-  const formatHours = (hours) => {
-    if (!hours) return '0h';
-    return `${hours.toFixed(1)}h`;
+  // Get unique domains from findings
+  const getUniqueDomains = () => {
+    if (!auditData?.findings) return [];
+    const domains = [...new Set(auditData.findings.map(f => f.domain).filter(Boolean))];
+    return domains;
   };
 
   if (loading) {
@@ -1242,7 +1253,80 @@ const AuditResults = () => {
     );
   }
 
-  const { summary, findings } = auditData;
+  const { summary, findings, business_stage } = auditData;
+  const filteredFindings = getFilteredFindings();
+  const uniqueDomains = getUniqueDomains();
+
+  return (
+    <main className="audit-results app-container">
+      {/* Ultra-Clean Header */}
+      <header className="header">
+        <Link to="/" className="logo gradient">SalesAudit Pro</Link>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <button onClick={() => setShowEditAssumptions(true)} className="btn-outline">
+            Edit Assumptions
+          </button>
+          <button onClick={generatePDF} className="btn-primary">
+            Export PDF
+          </button>
+        </div>
+      </header>
+
+      <div className="dashboard-content">
+        {/* Stage Summary Panel */}
+        {business_stage && (
+          <StageSummaryPanel 
+            businessStage={business_stage} 
+            summary={summary}
+          />
+        )}
+
+        {/* Priority Filter Bar */}
+        <PriorityFilterBar
+          selectedDomain={selectedDomain}
+          onDomainChange={setSelectedDomain}
+          selectedPriority={selectedPriority}
+          onPriorityChange={setSelectedPriority}
+          domains={uniqueDomains}
+          findings={findings}
+        />
+
+        {/* Findings Section */}
+        <div className="findings-section">
+          {filteredFindings.length === 0 ? (
+            <div className="empty-card premium">
+              <div className="empty-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="21 21l-4.35-4.35"></path>
+                </svg>
+              </div>
+              <h2 className="empty-title">No findings match your filters</h2>
+              <p className="empty-sub">Try adjusting your domain or priority filters.</p>
+            </div>
+          ) : (
+            filteredFindings.map((finding) => (
+              <FindingAccordion
+                key={finding.id}
+                finding={finding}
+                isExpanded={openFindings.has(finding.id)}
+                onToggle={() => toggleFinding(finding.id)}
+              />
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Edit Assumptions Modal */}
+      <EditAssumptionsModal
+        isOpen={showEditAssumptions}
+        onClose={() => setShowEditAssumptions(false)}
+        onSubmit={handleUpdateAssumptions}
+        updating={updating}
+      />
+    </main>
+  );
+};
 
   return (
     <main className="audit-results">
