@@ -4257,57 +4257,76 @@ def main():
         return all_tests_passed, test_results
 
 def main():
-    """Run comprehensive audit session flow validation as requested in review"""
-    print("🚀 COMPREHENSIVE FIX VALIDATION: AUDIT SESSION & UI ISSUES")
-    print("🎯 Testing all fixes for the issues reported by the user")
+    """Main test runner - Focus on OAuth endpoint testing as requested in review"""
+    print("🚀 SALESFORCE AUDIT API TESTING - OAUTH ENDPOINT FOCUS")
+    print("=" * 80)
+    print("SPECIFIC FOCUS: OAuth authorization endpoint returning 405 Method Not Allowed")
+    print("GOAL: Diagnose routing issue preventing 302 redirect to Salesforce")
     print("=" * 80)
     
     tester = SalesforceAuditAPITester()
     
-    # PRIMARY TEST: Comprehensive Audit Session Flow Validation
-    comprehensive_success, comprehensive_results = tester.test_comprehensive_audit_session_flow()
-    
-    # SECONDARY TESTS: Core functionality validation
-    print("\n\n🔧 ADDITIONAL CORE FUNCTIONALITY TESTS")
+    # PRIMARY TEST: OAuth Endpoint Comprehensive Testing
+    print("\n🎯 PRIMARY TEST: OAUTH ENDPOINT COMPREHENSIVE TESTING")
     print("=" * 60)
     
-    # Core API Tests
-    tester.test_root_endpoint()
-    tester.test_oauth_authorize()
-    tester.validate_oauth_security()
+    oauth_success, oauth_results = tester.test_oauth_authorize_comprehensive()
     
-    # Stage Engine Core Tests
-    tester.test_business_stage_mapping()
-    tester.test_business_stages_list()
+    # SECONDARY TESTS: Related functionality
+    print("\n📋 SECONDARY TESTS: RELATED FUNCTIONALITY")
+    print("=" * 60)
     
-    # Enhanced Audit Structure Tests
-    tester.test_enhanced_audit_request_structure()
-    tester.test_stage_based_response_structure()
+    # Test basic OAuth endpoint (legacy test)
+    print("\n🔍 Legacy OAuth Test (for comparison)...")
+    legacy_oauth_success, legacy_oauth_results = tester.test_oauth_authorize()
     
-    # Final Results
-    print(f"\n🎯 FINAL RESULTS:")
-    print(f"   Tests Run: {tester.tests_run}")
-    print(f"   Tests Passed: {tester.tests_passed}")
-    print(f"   Success Rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
+    # Test audit sessions endpoint (depends on OAuth working)
+    print("\n🔍 Testing audit sessions endpoint...")
+    sessions_success, sessions_results = tester.test_get_audit_sessions()
     
-    # Highlight comprehensive validation results
-    print(f"\n🎯 COMPREHENSIVE AUDIT SESSION FLOW VALIDATION:")
-    if comprehensive_success:
-        print("🎉 ALL AUDIT SESSION FIXES VERIFIED WORKING!")
-        print("✅ Audit sessions create successfully with proper session_id")
-        print("✅ Session list returns valid timestamps and summary data")
-        print("✅ Audit details endpoint returns complete Stage Engine data")
-        print("✅ Constraints parsing can extract both constraints and next steps")
-        print("✅ All response fields populated correctly for frontend consumption")
+    # Test audit creation flow (depends on OAuth working)
+    print("\n🔍 Testing audit creation flow...")
+    audit_success, audit_results = tester.test_run_audit_without_session()
+    
+    # FINAL SUMMARY
+    print("\n📊 FINAL TESTING SUMMARY")
+    print("=" * 80)
+    
+    print(f"Tests Run: {tester.tests_run}")
+    print(f"Tests Passed: {tester.tests_passed}")
+    print(f"Success Rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
+    
+    print("\n🎯 OAUTH ENDPOINT ANALYSIS:")
+    if oauth_success:
+        print("✅ OAuth authorization endpoint is working correctly")
+        print("✅ Returns 302 redirect to Salesforce")
+        print("✅ All OAuth parameters are properly configured")
+        print("✅ State generation and validation working")
     else:
-        print("⚠️ SOME AUDIT SESSION FIXES NEED ATTENTION")
-        failed_validations = [k for k, v in comprehensive_results.items() if not v]
-        if failed_validations:
-            print("❌ Failed validation points:")
-            for validation in failed_validations:
-                print(f"   - {validation}")
+        print("❌ OAuth authorization endpoint has critical issues")
+        if oauth_results.get('returns_405'):
+            print("❌ CONFIRMED: Returns 405 Method Not Allowed")
+            print("❌ ROOT CAUSE: Route registration or HTTP method configuration issue")
+        elif oauth_results.get('returns_html'):
+            print("❌ CONFIRMED: Returns HTML instead of 302 redirect")
+            print("❌ ROOT CAUSE: Endpoint implementation issue")
+        else:
+            print("❌ CONFIRMED: Unexpected behavior preventing OAuth flow")
     
-    return comprehensive_success
+    print("\n🔧 RECOMMENDATIONS:")
+    if not oauth_success:
+        print("1. Check FastAPI route registration for /api/oauth/authorize")
+        print("2. Ensure GET method is properly configured")
+        print("3. Verify RedirectResponse is returned, not JSON or HTML")
+        print("4. Check environment variables are loaded correctly")
+        print("5. Test route conflicts or overlapping patterns")
+    else:
+        print("1. OAuth endpoint is working correctly")
+        print("2. Issue may be elsewhere in the audit flow")
+        print("3. Check session creation and validation logic")
+    
+    # Return overall success status
+    return oauth_success
 
 if __name__ == "__main__":
     sys.exit(main())
