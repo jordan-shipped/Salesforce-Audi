@@ -197,15 +197,18 @@ backend:
           
   - task: "Add new API endpoints for stage information"
     implemented: true
-    working: "unknown"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
           comment: "Added /api/business/stage endpoint to get stage info for revenue/headcount inputs. Added /api/business/stages endpoint to get all available stages and domain mappings."
+        - working: true
+          agent: "testing"
+          comment: "NEW STAGE API ENDPOINTS VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) POST /api/business/stage endpoint correctly maps revenue/headcount to appropriate stages with all required response fields (stage, name, role, headcount_range, revenue_range, bottom_line, constraints_and_actions, inputs), 2) GET /api/business/stages endpoint returns all 10 stages (0-9) with complete data structure, includes domains array and stage_domain_priority mapping, 3) Both endpoints handle edge cases correctly (fixed 0 values issue and JSON serialization of infinity), 4) Response structure matches expected format for frontend integration, 5) All test scenarios verified: Stage 0 (Improvise), Stage 2 (Advertise), Stage 4 (Prioritize), Stage 9 (Capitalize), etc. New API endpoints are fully functional and ready for production use."
           
   - task: "Update audit response to include business stage data"
     implemented: true
