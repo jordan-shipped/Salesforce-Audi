@@ -1787,6 +1787,7 @@ def run_salesforce_audit_with_stage_engine(access_token, instance_url, business_
         logger.info(f"Revenue: ${revenue:,} | Headcount: {headcount} | Active SF Users: {org_context['active_users']}")
         
         # Run analysis modules
+        logger.info("Running audit analysis modules...")
         custom_fields_findings = analyze_custom_fields(sf, org_context, department_salaries, custom_assumptions)
         data_quality_findings = analyze_data_quality(sf, org_context)
         automation_findings = analyze_automation_opportunities(sf, org_context)
@@ -1799,6 +1800,8 @@ def run_salesforce_audit_with_stage_engine(access_token, instance_url, business_
         all_findings.extend(automation_findings)
         all_findings.extend(system_config_findings)
         all_findings.extend(data_governance_findings)
+        
+        logger.info(f"Generated {len(all_findings)} raw findings")
         
         # Enhance each finding with stage-based analysis
         for finding in all_findings:
