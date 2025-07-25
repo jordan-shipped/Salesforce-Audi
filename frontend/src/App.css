@@ -533,17 +533,26 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
   font-size: 13px;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   margin-right: 32px; /* right padding */
 }
 
-/* Green for OK */
+/* Connected: black text + icon */
 .status--ok {
-  color: #007A3A;  /* Apple system green */
+  color: #000; /* pure black */
 }
 
-/* Red for alert */
+/* Not connected: red text, no icon */
 .status--alert {
-  color: #FF3B30;  /* Apple system red */
+  color: #FF3B30; /* Apple system red */
+}
+
+/* Icon sizing to match the font */
+.status-icon {
+  font-size: 13px;
+  line-height: 1;
 }
 
 /* 2️⃣ Sessions Header - Apple-Style Typography with Divider */
