@@ -2096,7 +2096,21 @@ async def run_audit(audit_request: AuditRequest):
         raise
     except Exception as e:
         logger.error(f"Error in run_audit: {str(e)}")
-        return {"error": f"Audit failed: {str(e)}", "session_id": None}
+        logger.error(f"Error traceback: ", exc_info=True)
+        
+        # Always return a properly structured error response
+        error_response = {
+            "error": f"Audit failed: {str(e)}", 
+            "session_id": None,
+            "success": False,
+            "message": f"Audit processing failed: {str(e)}"
+        }
+        
+        # Return HTTPException instead of dict to ensure proper error handling
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Audit processing failed: {str(e)}"
+        )
 
 @api_router.get("/debug/sessions")
 async def debug_oauth_sessions():
