@@ -167,15 +167,18 @@ backend:
           
   - task: "Implement enhanced task-based ROI calculations"
     implemented: true
-    working: "unknown"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
           comment: "Added TASK_BASED_ROI_CONSTANTS and HOURLY_RATES_BY_ROLE with realistic US rates. Implemented calculate_task_based_roi() function with stage multipliers, detailed task breakdowns, and separate one-time vs recurring cost analysis."
+        - working: true
+          agent: "testing"
+          comment: "ENHANCED ROI CALCULATIONS VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) Stage multipliers correctly implemented (Stage 0=0.7x, Stage 2=0.9x, Stage 5=1.2x, Stage 9=1.6x), 2) HOURLY_RATES_BY_ROLE contains realistic US rates (Admin=$35, Sales=$55, Customer Service=$25, Marketing=$45, Engineering=$75, Executives=$95), 3) calculate_task_based_roi() function provides detailed task breakdowns with one-time costs vs recurring savings, 4) Role attribution system properly assigns tasks to appropriate roles, 5) Enhanced ROI calculation components include: custom field cleanup (15min per field × admin rate), user confusion elimination (2min/user/field/month × avg user rate), confidence levels (High/Medium/Low), 6) All test scenarios (Small Business, Mid-Market, Enterprise) successfully accepted enhanced ROI requests. Enhanced ROI calculation system is fully functional and ready for production use."
           
   - task: "Replace audit function with stage-based engine"
     implemented: true
