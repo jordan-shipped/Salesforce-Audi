@@ -1570,6 +1570,110 @@ def run_salesforce_audit(access_token, instance_url):
         logger.error(f"Error running Salesforce audit: {e}")
         raise e
 
+def run_salesforce_audit_with_stage_engine(access_token, instance_url, business_inputs=None, department_salaries=None, custom_assumptions=None):
+    """
+    Run comprehensive Salesforce audit with Alex Hormozi Stage Engine
+    
+    Args:
+        access_token: Salesforce access token
+        instance_url: Salesforce instance URL  
+        business_inputs: BusinessInputs with revenue/headcount
+        department_salaries: Optional department salary overrides
+        custom_assumptions: Optional ROI calculation overrides
+    """
+    findings = []
+    
+    try:
+        # Initialize Salesforce client
+        sf = Salesforce(instance_url=instance_url, session_id=access_token)
+        
+        # Get org context for realistic calculations
+        org_context = get_org_context(sf)
+        org_name = org_context['org_name']
+        org_id = sf.query("SELECT Id FROM Organization LIMIT 1")['records'][0]['Id']
+        
+        # Determine business stage
+        if business_inputs:
+            revenue = business_inputs.annual_revenue or 1000000
+            headcount = business_inputs.employee_headcount or 50
+        else:
+            revenue = 1000000  # Default $1M
+            headcount = 50     # Default 50 employees
+            
+        business_stage = determine_business_stage(revenue, headcount)
+        
+        logger.info(f"Starting Stage {business_stage['stage']} audit for org: {org_name}")
+        logger.info(f"Stage: {business_stage['name']} ({business_stage['role']}) - {business_stage['bottom_line']}")
+        logger.info(f"Revenue: ${revenue:,} | Headcount: {headcount} | Active SF Users: {org_context['active_users']}")
+        
+        # Run analysis modules
+        custom_fields_findings = analyze_custom_fields(sf, org_context, department_salaries, custom_assumptions)
+        data_quality_findings = analyze_data_quality(sf, org_context)
+        automation_findings = analyze_automation_opportunities(sf, org_context)
+        system_config_findings = analyze_system_configuration(sf, org_context)
+        data_governance_findings = analyze_data_governance(sf, org_context)
+        
+        all_findings = []
+        all_findings.extend(custom_fields_findings)
+        all_findings.extend(data_quality_findings)
+        all_findings.extend(automation_findings)
+        all_findings.extend(system_config_findings)
+        all_findings.extend(data_governance_findings)
+        
+        # Enhance each finding with stage-based analysis
+        for finding in all_findings:
+            # Add domain classification
+            finding['domain'] = classify_finding_domain(finding)
+            
+            # Calculate stage-based priority
+            finding['priority_score'] = calculate_finding_priority(finding, business_stage)
+            
+            # Calculate enhanced ROI using stage engine
+            finding_data = {
+                'title': finding.get('title', ''),
+                'category': finding.get('category', ''),
+                'description': finding.get('description', ''),
+                'type': 'custom_fields' if 'custom fields' in finding.get('title', '').lower() else 'general',
+                'field_count': finding.get('salesforce_data', {}).get('potentially_unused', 0),
+                'record_count': finding.get('salesforce_data', {}).get('orphaned_opportunities', 0) or finding.get('salesforce_data', {}).get('stale_leads', 0),
+                'estimated_monthly_hours': finding.get('time_savings_hours', 2.0)
+            }
+            
+            enhanced_roi = calculate_task_based_roi(finding_data, org_context, business_stage, custom_assumptions)
+            
+            # Merge enhanced ROI data into finding
+            finding.update({
+                'stage_analysis': {
+                    'current_stage': business_stage['stage'],
+                    'stage_name': business_stage['name'],
+                    'stage_role': business_stage['role'],
+                    'stage_relevance': enhanced_roi['priority_score']
+                },
+                'enhanced_roi': enhanced_roi,
+                'domain': enhanced_roi['domain'],
+                'priority_score': enhanced_roi['priority_score'],
+                'task_breakdown': enhanced_roi['task_breakdown'],
+                'total_annual_roi': enhanced_roi['total_annual_roi'],
+                'confidence_level': enhanced_roi['confidence']
+            })
+            
+            # Update legacy fields for backward compatibility
+            if enhanced_roi['total_annual_roi'] > 0:
+                finding['roi_estimate'] = enhanced_roi['total_annual_roi']
+            
+        
+        # Sort findings by priority score (descending)
+        all_findings.sort(key=lambda x: x.get('priority_score', 0), reverse=True)
+        
+        logger.info(f"Stage {business_stage['stage']} audit completed: {len(all_findings)} findings")
+        logger.info(f"Priority distribution: {[f['priority_score'] for f in all_findings[:5]]}")
+        
+        return all_findings, org_name, org_id, business_stage
+        
+    except Exception as e:
+        logger.error(f"Error running stage-based audit: {e}")
+        raise e
+
 def run_salesforce_audit_with_salaries(access_token, instance_url, department_salaries=None, custom_assumptions=None):
     """Run comprehensive Salesforce audit with department salary calculations"""
     findings = []
