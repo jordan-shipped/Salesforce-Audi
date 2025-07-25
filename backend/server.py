@@ -62,23 +62,22 @@ class DepartmentSalaries(BaseModel):
     engineering: Optional[int] = None
     executives: Optional[int] = None
 
-# Stage Engine Models for Alex Hormozi Benchmarking System
-class BusinessStage(BaseModel):
-    stage: int
-    name: str
-    hc_range: str
-    rev_range: str
-    role: str
-    headcount_min: int
-    headcount_max: int
-    revenue_min: int
-    revenue_max: int
-    bottom_line: str
-    constraints_and_actions: List[str]
+# Enhanced Business Inputs with Picklist Support
+class EnhancedBusinessInputs(BaseModel):
+    # Numeric values (converted from picklists)
+    annual_revenue: Optional[int] = 1000000
+    employee_headcount: Optional[int] = 50
+    # Original picklist selections (for reference)
+    revenue_range: Optional[str] = None
+    employee_range: Optional[str] = None
 
+# Update original BusinessInputs for backward compatibility
 class BusinessInputs(BaseModel):
     annual_revenue: Optional[int] = 1000000  # Default $1M
     employee_headcount: Optional[int] = 50   # Default 50 employees
+    # Add optional picklist fields for enhanced support
+    revenue_range: Optional[str] = None
+    employee_range: Optional[str] = None
 
 class AuditRequest(BaseModel):
     session_id: str
