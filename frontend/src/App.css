@@ -577,38 +577,38 @@ body {
   background: rgba(0,0,0,0.07);
 }
 
-/* 2.5️⃣ Apple-Style Segmented Control with Sliding Indicator */
-.segmented {
-  position: relative;
+/* 2.5️⃣ Apple-Style View Mode Tabs */
+.view-mode-tabs {
   display: inline-flex;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  margin: 16px 32px;
+  border-bottom: 1px solid #E0E0E0;
+  margin: 16px 32px 24px;
 }
 
-.segment {
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
+.tab-button {
   background: none;
+  border: none;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
   cursor: pointer;
-  color: var(--text-secondary);
+  color: #666; /* muted when inactive */
+  transition: color 0.2s ease;
   position: relative;
-  transition: color 0.15s ease;
 }
 
-.segment.active {
-  color: var(--text-primary);
+.tab-button--active {
+  color: #007AFF; /* Apple blue */
 }
 
-.segmented::after {
+.tab-button--active::after {
   content: "";
   position: absolute;
   bottom: -1px;
-  left: 0; /* will update via JS on toggle */
-  width: 50%; /* width of one segment */
+  left: 0;
+  right: 0;
   height: 2px;
-  background: var(--color-accent);
-  transition: left 0.15s ease;
+  background: #007AFF;
 }
 
 /* 3️⃣ Sessions Area - Premium Grid Layout */
