@@ -409,10 +409,15 @@ const Dashboard = () => {
         )}
       </section>
 
-      {/* 2️⃣ Header above the sessions list */}
-      <h2 className="sessions-header" id="sessions-history">
-        Audit History
-      </h2>
+      {/* 2️⃣ History Header with New Audit Button */}
+      <div className="history-header">
+        <h1 className="sessions-header" id="sessions-history">
+          Audit History
+        </h1>
+        <button className="new-audit" onClick={handleRunAudit}>
+          New Audit
+        </button>
+      </div>
 
       {/* 2.5️⃣ Apple-style Segmented Control with Functionality */}
       <div role="tablist" aria-label="View mode" className="view-mode-tabs">
