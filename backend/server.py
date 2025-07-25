@@ -1955,6 +1955,7 @@ async def run_audit(audit_request: AuditRequest):
         use_quick_estimate = audit_request.use_quick_estimate
         
         logger.info(f"Starting audit for session: {session_id} (Quick estimate: {use_quick_estimate})")
+        logger.info(f"Business inputs: {audit_request.business_inputs}")
         
         # Get OAuth session
         oauth_session = await db.oauth_sessions.find_one({
@@ -1963,10 +1964,13 @@ async def run_audit(audit_request: AuditRequest):
         })
         
         if not oauth_session:
+            logger.error(f"Invalid or expired session: {session_id}")
             raise HTTPException(status_code=401, detail="Invalid or expired session")
         
+        logger.info(f"OAuth session found for: {session_id}")
         access_token = oauth_session['access_token']
         instance_url = oauth_session['instance_url']
+        logger.info(f"Using Salesforce instance: {instance_url}")
         
         # Run Salesforce audit in thread pool to avoid blocking
         loop = asyncio.get_event_loop()
@@ -2006,10 +2010,18 @@ async def run_audit(audit_request: AuditRequest):
                     'executives': None
                 }
         
+        logger.info("Starting Salesforce audit with stage engine...")
+        
         # Run the stage-based audit
-        findings_data, org_name, org_id, business_stage = await loop.run_in_executor(
-            executor, run_salesforce_audit_with_stage_engine, access_token, instance_url, audit_request.business_inputs, dept_salaries_dict, None
-        )
+        try:
+            findings_data, org_name, org_id, business_stage = await loop.run_in_executor(
+                executor, run_salesforce_audit_with_stage_engine, access_token, instance_url, audit_request.business_inputs, dept_salaries_dict, None
+            )
+            logger.info(f"Audit completed successfully. Found {len(findings_data)} findings for {org_name}")
+        except Exception as audit_error:
+            logger.error(f"Salesforce audit failed: {audit_error}")
+            logger.error(f"Audit error traceback: ", exc_info=True)
+            raise HTTPException(status_code=500, detail=f"Salesforce audit failed: {str(audit_error)}")
         
         # Calculate summary
         if dept_salaries_dict:
