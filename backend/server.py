@@ -509,6 +509,9 @@ def calculate_task_based_roi(finding_data, org_context, business_stage, custom_a
     stage_multipliers = {0: 0.7, 1: 0.8, 2: 0.9, 3: 1.0, 4: 1.1, 5: 1.2, 6: 1.3, 7: 1.4, 8: 1.5, 9: 1.6}
     stage_multiplier = stage_multipliers.get(stage_num, 1.0)
     
+    # Calculate weighted average user rate (used across all finding types)
+    avg_user_rate = (HOURLY_RATES_BY_ROLE['sales'] + HOURLY_RATES_BY_ROLE['customer_service']) / 2
+    
     result = {
         'finding_type': finding_data.get('type', 'unknown'),
         'business_stage': stage_num,
