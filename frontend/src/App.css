@@ -1044,10 +1044,10 @@ body {
   }
 }
 
-/* Hero Section for Landing Page - Apple-Grade Refinements */
+/* Hero Section for Landing Page - Tightened Spacing */
 .hero {
   background: linear-gradient(to bottom, #F7F8FA 0%, #FFFFFF 100%); /* subtle gradient depth */
-  padding: 4rem 0 4rem 0; /* increased whitespace */
+  padding: 4rem 0 2rem 0; /* tightened bottom padding: 4rem to 2rem */
   text-align: center;
 }
 
@@ -1076,11 +1076,11 @@ body {
 
 .hero p.subhead {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  font-size: 17px; /* Apple's preferred body text size */
-  line-height: 26px; /* Apple's typographic rhythm: 17px/26px */
+  font-size: 18px; /* increased from 17px for better hierarchy */
+  line-height: 26px; /* Apple's typographic rhythm */
   color: var(--text-secondary);
   max-width: 600px;
-  margin: 0 auto 2rem; /* more breathing room */
+  margin: 0 auto 2rem; /* consistent spacing */
 }
 
 .hero .btn-primary.size-lg {
@@ -1100,23 +1100,24 @@ body {
   box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3); /* gradient glow */
 }
 
-/* Features Section - Added Breathing Room */
+/* Features Section - Crisp Spacing & Centering */
 .features {
-  padding: 4rem 0; /* increased from 3rem - more expansive feel */
+  padding: 2rem 0 4rem 0; /* tightened top padding, brought cards closer */
   background: var(--bg-page);
 }
 
 .features .container {
-  max-width: 1200px;
+  max-width: 1024px; /* centered constraint for better balance */
   margin: 0 auto;
   padding: 0 2rem;
 }
 
 .features .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2rem; /* increased gap for more air */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px; /* uniform 24px gutters both horizontal and vertical */
   justify-content: center;
+  transform: translateY(-12px); /* subtle overlap - cards sit closer to hero */
 }
 
 .feature-card {
