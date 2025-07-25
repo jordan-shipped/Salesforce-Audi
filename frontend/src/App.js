@@ -380,6 +380,12 @@ const Dashboard = () => {
         Audit History
       </h2>
 
+      {/* 2.5️⃣ Apple-style Segmented Control */}
+      <div className="view-toggle">
+        <button className="segment active">Grid</button>
+        <button className="segment">List</button>
+      </div>
+
       {/* 3️⃣ Sessions Area - Grid Layout */}
       <section className="sessions-list" aria-labelledby="sessions-history">
         {/* Loading State */}
