@@ -483,7 +483,20 @@ const Dashboard = () => {
         {/* Empty State - Show when not loading and no sessions */}
         {!loading && sessions.length === 0 && (
           <div className="empty-card premium">
-            <div className="empty-icon">📊</div>
+            <div className="empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <path d="M7 7h10v10H7z"></path>
+                <path d="M7 3v2"></path>
+                <path d="M17 3v2"></path>
+                <path d="M7 19v2"></path>
+                <path d="M17 19v2"></path>
+                <path d="M3 7h2"></path>
+                <path d="M3 17h2"></path>
+                <path d="M19 7h2"></path>
+                <path d="M19 17h2"></path>
+              </svg>
+            </div>
             <h3 className="empty-title">No Audit Sessions Yet</h3>
             <p className="empty-sub">
               Connect your Salesforce org to run your first audit and unlock insights.
