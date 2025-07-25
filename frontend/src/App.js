@@ -32,25 +32,50 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Features Section - Compact Cards */}
+      {/* Features Section - Refined SVG Icons */}
       <section className="features">
         <div className="container">
-          <div className="feature-card slide-in-up">
-            <span className="icon">🔍</span>
-            <h3>Deep Analysis</h3>
-            <p>Comprehensive audit of custom fields, data quality, and automation opportunities</p>
-          </div>
-          
-          <div className="feature-card slide-in-up">
-            <span className="icon">💰</span>
-            <h3>ROI Insights</h3>
-            <p>Transparent cost-benefit analysis with customizable assumptions and detailed breakdowns</p>
-          </div>
-          
-          <div className="feature-card slide-in-up">
-            <span className="icon">📊</span>
-            <h3>Actionable Reports</h3>
-            <p>Professional PDF reports with prioritized recommendations and implementation guidance</p>
+          <div className="grid">
+            <div className="feature-card slide-in-up">
+              <div className="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="21 21l-4.35-4.35"></path>
+                </svg>
+              </div>
+              <h3>Deep Analysis</h3>
+              <p>Comprehensive audit of custom fields, data quality, and automation opportunities</p>
+            </div>
+            
+            <div className="feature-card slide-in-up">
+              <div className="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="2" x2="12" y2="22"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </div>
+              <h3>ROI Insights</h3>
+              <p>Transparent cost-benefit analysis with customizable assumptions and detailed breakdowns</p>
+            </div>
+            
+            <div className="feature-card slide-in-up">
+              <div className="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <path d="M9 9h6v6H9z"></path>
+                  <path d="M9 3v2"></path>
+                  <path d="M15 3v2"></path>
+                  <path d="M9 19v2"></path>
+                  <path d="M15 19v2"></path>
+                  <path d="M3 9h2"></path>
+                  <path d="M3 15h2"></path>
+                  <path d="M19 9h2"></path>
+                  <path d="M19 15h2"></path>
+                </svg>
+              </div>
+              <h3>Actionable Reports</h3>
+              <p>Professional PDF reports with prioritized recommendations and implementation guidance</p>
+            </div>
           </div>
         </div>
       </section>
