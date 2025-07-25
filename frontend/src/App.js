@@ -371,6 +371,14 @@ const Dashboard = () => {
 
   return (
     <main className="dashboard">
+      {/* Success Toast Notification */}
+      {showToast && (
+        <div className="toast toast--success">
+          <span className="toast__icon" aria-hidden="true">✓</span>
+          <span className="toast__message">Connected to Salesforce</span>
+        </div>
+      )}
+
       {/* 1️⃣ Connection Status Strip - Clean Text with Icon */}
       <section className="connection-strip">
         {sessionId ? (
