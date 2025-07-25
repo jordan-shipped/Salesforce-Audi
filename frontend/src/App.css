@@ -563,23 +563,44 @@ body {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* Reset sizing and use standard btn-primary padding/font */
+/* Reset sizing and use standard btn-primary padding/font - AGGRESSIVE RESET */
 .see-more-btn {
   /* span full grid width for centering */
-  grid-column: 1 / -1;
-  justify-self: center;
+  grid-column: 1 / -1 !important;
+  justify-self: center !important;
 
-  /* reset any old overrides */
+  /* reset any old overrides - be very aggressive */
   width: auto !important;
   height: auto !important;
   min-width: unset !important;
+  max-width: unset !important;
+  min-height: unset !important;
+  max-height: unset !important;
 
   /* use the same padding and font-size as other btn-primary */
   padding: 12px 24px !important;     /* 0.75rem / 1.5rem */
   font-size: 14px !important;        /* 0.875rem */
+  font-weight: 600 !important;
   border-radius: 8px !important;
-  display: inline-block;             /* ensure it sizes to its content */
-  margin-top: 32px;                  /* give space above */
+  border: none !important;
+  background-color: #000 !important;
+  color: #fff !important;
+  display: inline-block !important;  /* ensure it sizes to its content */
+  margin-top: 32px !important;       /* give space above */
+  box-sizing: border-box !important;
+  
+  /* Remove any flex properties that might cause stretching */
+  flex: none !important;
+  align-self: auto !important;
+  justify-items: auto !important;
+  
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.see-more-btn:hover {
+  background-color: #333 !important;
+  transform: translateY(-1px) !important;
 }
 
 .empty-icon {
