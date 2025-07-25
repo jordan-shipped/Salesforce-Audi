@@ -116,6 +116,74 @@ class AuditFinding(BaseModel):
     salesforce_data: Optional[Dict[str, Any]] = None
 
 # Alex Hormozi Stage 0-9 Benchmarking System
+def convert_picklist_to_numeric(business_inputs):
+    """
+    Convert picklist selections to numeric values for stage mapping
+    
+    Args:
+        business_inputs: BusinessInputs object with optional picklist fields
+        
+    Returns:
+        tuple: (annual_revenue, employee_headcount) as integers
+    """
+    
+    # Revenue picklist mapping (matches frontend)
+    revenue_mapping = {
+        '<100k': 50000,
+        '100k–250k': 175000,
+        '250k–500k': 375000,
+        '500k–1M': 750000,
+        '1M–3M': 2000000,
+        '3M–10M': 6500000,
+        '10M–30M': 20000000,
+        '30M+': 150000000  # Updated to ensure Stage 9 mapping
+    }
+    
+    # Employee picklist mapping (matches frontend)
+    employee_mapping = {
+        '0-only': 0,
+        '0-some': 1,
+        'vendors': 2,
+        '2–4': 3,
+        '5–9': 7,
+        '10–19': 15,
+        '20–49': 35,
+        '50–99': 75,
+        '100–249': 175,
+        '250–500': 375
+    }
+    
+    # Use numeric values if provided, otherwise convert from picklist
+    if business_inputs.annual_revenue is not None:
+        annual_revenue = business_inputs.annual_revenue
+    elif business_inputs.revenue_range:
+        annual_revenue = revenue_mapping.get(business_inputs.revenue_range, 1000000)
+    else:
+        annual_revenue = 1000000  # Default
+    
+    if business_inputs.employee_headcount is not None:
+        employee_headcount = business_inputs.employee_headcount
+    elif business_inputs.employee_range:
+        employee_headcount = employee_mapping.get(business_inputs.employee_range, 50)
+    else:
+        employee_headcount = 50  # Default
+    
+    return annual_revenue, employee_headcount
+
+# Stage Engine Models for Alex Hormozi Benchmarking System
+class BusinessStage(BaseModel):
+    stage: int
+    name: str
+    hc_range: str
+    rev_range: str
+    role: str
+    headcount_min: int
+    headcount_max: int
+    revenue_min: int
+    revenue_max: int
+    bottom_line: str
+    constraints_and_actions: List[str]
+
 BUSINESS_STAGES = [
     {
         "stage": 0, "name": "Improvise", "hc_range": "0", "rev_range": "0", "role": "Researcher",
