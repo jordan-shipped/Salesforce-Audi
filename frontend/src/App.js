@@ -384,17 +384,28 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* 1️⃣ Connection Status Strip - Clean Text with Icon */}
-      <section className="connection-strip">
+      {/* 1️⃣ Dashboard Top Bar - Disconnect & Status */}
+      <section className="dashboard__top-bar">
         {sessionId ? (
-          <div className="status-text status--ok">
-            <span className="status-icon">⚡︎</span>
-            <span className="status-label">Connected</span>
-          </div>
+          <>
+            <button
+              className="dashboard__disconnect"
+              onClick={handleDisconnect}
+            >
+              Disconnect
+            </button>
+            <div className="status-text status--ok">
+              <span className="status-icon">⚡︎</span>
+              <span className="status-label">Connected</span>
+            </div>
+          </>
         ) : (
-          <div className="status-text status--alert">
-            Not Connected
-          </div>
+          <>
+            <div></div> {/* Empty div to maintain spacing */}
+            <div className="status-text status--alert">
+              Not Connected
+            </div>
+          </>
         )}
       </section>
 
