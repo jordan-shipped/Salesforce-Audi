@@ -563,29 +563,34 @@ body {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* See More Button - Centered Below Grid */
+/* See More Button - Positioning Only, Styling From .btn-primary */
 .see-more-btn {
-  grid-column: 1 / -1; /* span full grid width */
+  grid-column: 1 / -1; /* span full grid */
   justify-self: center; /* center horizontally */
-  margin-top: 16px; /* give a little breathing room */
+  margin-top: 24px; /* space above */
+  
+  /* Remove any width/height overrides */
+  width: auto !important;
+  height: auto !important;
+  
+  /* Smaller pill padding */
+  padding: 8px 16px; /* 0.5rem top/bottom, 1rem sides */
+  font-size: 14px; /* match other CTAs */
 }
 
-/* Dashboard Black Button Styling */
-.see-more-btn,
-.sessions-list .btn-primary {
+/* Dashboard Black Pill Button Styling */
+.btn-primary {
   background-color: #000;
   color: #fff;
-  padding: 12px 24px;
   border-radius: 8px;
   border: none;
-  font-size: 14px;
+  box-shadow: none;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.see-more-btn:hover,
-.sessions-list .btn-primary:hover {
+.btn-primary:hover {
   background-color: #333;
   transform: translateY(-1px);
 }
