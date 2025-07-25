@@ -153,18 +153,18 @@ def convert_picklist_to_numeric(business_inputs):
         '250–500': 375
     }
     
-    # Use numeric values if provided, otherwise convert from picklist
-    if business_inputs.annual_revenue is not None:
-        annual_revenue = business_inputs.annual_revenue
-    elif business_inputs.revenue_range:
+    # Prioritize picklist values if provided, otherwise use numeric values
+    if business_inputs.revenue_range:
         annual_revenue = revenue_mapping.get(business_inputs.revenue_range, 1000000)
+    elif business_inputs.annual_revenue is not None:
+        annual_revenue = business_inputs.annual_revenue
     else:
         annual_revenue = 1000000  # Default
     
-    if business_inputs.employee_headcount is not None:
-        employee_headcount = business_inputs.employee_headcount
-    elif business_inputs.employee_range:
+    if business_inputs.employee_range:
         employee_headcount = employee_mapping.get(business_inputs.employee_range, 50)
+    elif business_inputs.employee_headcount is not None:
+        employee_headcount = business_inputs.employee_headcount
     else:
         employee_headcount = 50  # Default
     
