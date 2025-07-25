@@ -1140,7 +1140,14 @@ def get_org_context(sf_client):
         org_name = org_info['records'][0]['Name'] if org_info['records'] else "Unknown Org"
         org_type = org_info['records'][0].get('OrganizationType', 'Unknown')
         
-        # Estimate hourly rate based on org type and size
+        # Estimate hourly rate based on org type and size with defensive None checks
+        logger.debug(f"Determining hourly rate for org_type={org_type}, active_users={active_users}")
+        
+        # Guard against None active_users
+        if active_users is None:
+            logger.warning("active_users is None, using default value 10 for hourly rate calculation")
+            active_users = 10
+            
         if org_type == 'Developer Edition':
             hourly_rate = 65  # Lower for dev orgs
         elif active_users < 10:
@@ -1149,6 +1156,8 @@ def get_org_context(sf_client):
             hourly_rate = 85  # Mid-market
         else:
             hourly_rate = 95  # Enterprise
+            
+        logger.debug(f"Selected hourly rate: ${hourly_rate} for {active_users} active users")
         
         return {
             'active_users': active_users,
