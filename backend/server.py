@@ -2220,21 +2220,15 @@ async def run_audit(audit_request: AuditRequest):
     except HTTPException:
         raise
     except Exception as e:
+        # CAPTURE FULL TRACEBACK FOR TOP-LEVEL AUDIT ERRORS
+        tb = traceback.format_exc()
+        logger.error("🔥 Full top-level audit exception traceback:\n" + tb)
         logger.error(f"Error in run_audit: {str(e)}")
-        logger.error(f"Error traceback: ", exc_info=True)
         
-        # Always return a properly structured error response
-        error_response = {
-            "error": f"Audit failed: {str(e)}", 
-            "session_id": None,
-            "success": False,
-            "message": f"Audit processing failed: {str(e)}"
-        }
-        
-        # Return HTTPException instead of dict to ensure proper error handling
+        # Return user-friendly error but keep full technical details in logs
         raise HTTPException(
             status_code=500, 
-            detail=f"Audit processing failed: {str(e)}"
+            detail="An unexpected error occurred during audit processing. Our team has been notified."
         )
 
 @api_router.get("/debug/sessions")
