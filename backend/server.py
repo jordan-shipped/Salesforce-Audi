@@ -1860,8 +1860,16 @@ async def get_business_stage(business_inputs: BusinessInputs):
 async def get_all_business_stages():
     """Get all available business stages 0-9"""
     try:
+        # Transform stages to include expected field names
+        transformed_stages = []
+        for stage in BUSINESS_STAGES:
+            transformed_stage = stage.copy()
+            transformed_stage['headcount_range'] = stage['hc_range']
+            transformed_stage['revenue_range'] = stage['rev_range']
+            transformed_stages.append(transformed_stage)
+        
         return {
-            "stages": BUSINESS_STAGES,
+            "stages": transformed_stages,
             "domains": FINDING_DOMAINS,
             "stage_domain_priority": STAGE_DOMAIN_PRIORITY
         }
