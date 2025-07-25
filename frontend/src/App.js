@@ -267,7 +267,7 @@ const Dashboard = () => {
   const [sessionId, setSessionId] = useState(localStorage.getItem('salesforce_session_id'));
   const [connected, setConnected] = useState(!!localStorage.getItem('salesforce_session_id'));
   const [sessions, setSessions] = useState([]);
-  const [visibleCount, setVisibleCount] = useState(4);
+  // No more pagination; show all sessions
   const [loading, setLoading] = useState(false);
   const [running, setRunning] = useState(false);
   const [showOrgProfile, setShowOrgProfile] = useState(false);
