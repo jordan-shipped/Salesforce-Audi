@@ -1185,7 +1185,8 @@ async def salesforce_oauth_authorize():
         
         auth_url = f"{SALESFORCE_LOGIN_URL}/services/oauth2/authorize?{urlencode(auth_params)}"
         
-        return {"authorization_url": auth_url, "state": state}
+        # Redirect to Salesforce instead of returning JSON
+        return RedirectResponse(url=auth_url, status_code=302)
         
     except Exception as e:
         logger.error(f"OAuth authorize error: {e}")
