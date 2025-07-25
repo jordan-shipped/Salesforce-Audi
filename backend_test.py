@@ -2426,13 +2426,20 @@ class SalesforceAuditAPITester:
             return False, stage_results
 
 def main():
-    print("🚀 Starting Alex Hormozi Stage Engine Comprehensive Testing")
-    print("🎯 PRIMARY FOCUS: Testing Phase 1 Stage Engine Implementation")
+    print("🚀 Starting Comprehensive Picklist + Stage Engine Integration Testing")
+    print("🎯 PRIMARY FOCUS: Testing Picklist-Based Business Inputs with Stage Engine")
     print("=" * 80)
     
     tester = SalesforceAuditAPITester()
     
-    # Run the complete Stage Engine test suite
+    # Run the new Picklist Integration test suite first
+    picklist_success, picklist_results = tester.run_picklist_integration_test_suite()
+    
+    # Run the complete Stage Engine test suite for compatibility
+    print("\n" + "=" * 80)
+    print("🔄 STAGE ENGINE COMPATIBILITY VERIFICATION")
+    print("=" * 80)
+    
     stage_engine_success, stage_results = tester.run_stage_engine_test_suite()
     
     # Also run some basic functionality tests to ensure backward compatibility
