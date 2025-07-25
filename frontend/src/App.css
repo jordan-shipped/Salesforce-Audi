@@ -573,19 +573,27 @@ body {
   line-height: 1;
 }
 
-/* 2️⃣ Sessions Header - Apple-Style Typography with Divider */
-.sessions-header {
+/* 2️⃣ History Header with New Audit Button */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px; /* match header padding */
+  margin: 48px 0 24px; /* breathing room above and below */
+}
+
+.history-header .sessions-header {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-  font-size: 28px;              /* larger headline size */
-  font-weight: 600;             /* semibold for good emphasis */
-  line-height: 1.25;            /* comfortable reading */
-  letter-spacing: -0.02em;      /* slight tightening, per Apple headline style */
-  color: var(--text-primary);   /* pure black for maximum contrast */
-  margin: 48px 32px 24px;       /* ↑ 3rem above, 1.5rem below */
+  font-size: 28px; /* larger headline size */
+  font-weight: 600; /* semibold for good emphasis */
+  line-height: 1.25; /* comfortable reading */
+  letter-spacing: -0.02em; /* slight tightening, per Apple headline style */
+  color: var(--text-primary); /* pure black for maximum contrast */
+  margin: 0; /* remove default margins */
   position: relative;
 }
 
-.sessions-header::after {
+.history-header .sessions-header::after {
   content: "";
   position: absolute;
   bottom: -8px;
@@ -593,6 +601,23 @@ body {
   right: 0;
   height: 1px;
   background: rgba(0,0,0,0.07);
+}
+
+.new-audit {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  background: #F2F2F7; /* very subtle grey */
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.new-audit:hover {
+  background: #E5E5EA; /* a touch darker on hover */
 }
 
 /* 2.5️⃣ Apple-Style View Mode Tabs */
