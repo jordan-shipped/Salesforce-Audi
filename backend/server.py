@@ -128,6 +128,9 @@ def convert_picklist_to_numeric(business_inputs):
         tuple: (annual_revenue, employee_headcount) as integers
     """
     
+    # DEBUG LOG to confirm this patched function is running
+    logger.debug("🏷️ convert_picklist_to_numeric called with %r", business_inputs)
+    
     # Revenue picklist mapping (matches frontend)
     revenue_mapping = {
         '<100k': 50000,
