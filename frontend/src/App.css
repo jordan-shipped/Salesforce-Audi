@@ -596,15 +596,15 @@ body {
   line-height: 1.5;
 }
 
-/* Session Cards - Premium Airy Design */
+/* Session Cards - Premium Airy Design with Timestamp */
 .session-card {
   background: var(--bg-page);
   border-radius: var(--radius-card);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 24px; /* 1.5rem all around for breathing room */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: flex; /* flex layout for info and timestamp */
+  justify-content: space-between; /* space between left and right content */
+  align-items: flex-start; /* timestamp sits at top right */
   cursor: pointer;
   transition: box-shadow 0.2s ease;
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -620,7 +620,8 @@ body {
 }
 
 .session-info {
-  margin-bottom: 16px; /* space between info & date */
+  flex: 1; /* take up available space */
+  margin-right: 16px; /* space between info and timestamp */
 }
 
 .session-org {
@@ -637,11 +638,19 @@ body {
   line-height: 1.4;
 }
 
-.session-date {
-  font-size: 12px;
+.session-timestamp {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* right-align both lines */
+  gap: 4px; /* small gap between date & time */
+}
+
+.session-date,
+.session-time {
+  font-size: 12px; /* same as before */
   color: var(--text-secondary);
-  text-align: right; /* clearly separated */
   margin: 0;
+  line-height: 1.2;
   font-weight: 500;
 }
 
