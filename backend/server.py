@@ -116,9 +116,291 @@ class AuditFinding(BaseModel):
     affected_objects: List[str]
     salesforce_data: Optional[Dict[str, Any]] = None
 
-class SalesforceOAuthState(BaseModel):
-    state: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+# Alex Hormozi Stage 0-9 Benchmarking System
+BUSINESS_STAGES = [
+    {
+        "stage": 0, "name": "Improvise", "hc_range": "0", "rev_range": "0", "role": "Researcher",
+        "headcount_min": 0, "headcount_max": 0, "revenue_min": 0, "revenue_max": 0,
+        "bottom_line": "Get people to try your stuff for free",
+        "constraints_and_actions": [
+            "Product: Give away a free MVP, iterate fast",
+            "Marketing: Leverage friends/family/social channels", 
+            "Sales: Solicit feedback & test willingness to pay",
+            "Customer Service: Hand‑hold early users",
+            "Tech: Use free/basic tools and trials",
+            "Setup: Register basic business entity, track expenses"
+        ]
+    },
+    {
+        "stage": 1, "name": "Monetize", "hc_range": "1", "rev_range": "0-100K", "role": "Starter",
+        "headcount_min": 1, "headcount_max": 1, "revenue_min": 0, "revenue_max": 100000,
+        "bottom_line": "Prove that people will pay consistently",
+        "constraints_and_actions": [
+            "Product: Ship a V1 people will pay for",
+            "Marketing: Clarify value proposition",
+            "Sales: Turn free‑user feedback into paid conversions",
+            "Support: Elevate customer care standards",
+            "Tech: Leverage free/trial software",
+            "Operations: Set up payment processing & bookkeeping",
+            "Legal: Use basic contracts/agreements"
+        ]
+    },
+    {
+        "stage": 2, "name": "Advertise", "hc_range": "1–4", "rev_range": "100K–500K", "role": "Doer",
+        "headcount_min": 1, "headcount_max": 4, "revenue_min": 100000, "revenue_max": 500000,
+        "bottom_line": "Build consistent customer pipeline",
+        "constraints_and_actions": [
+            "Product: Foundation must be solid before scaling",
+            "Marketing: Move from ad hoc to daily outreach",
+            "Lead Gen: Qualify & follow up on leads promptly",
+            "Reporting: Track pipeline stages in a simple CRM",
+            "Onboarding: Standardize customer welcome flow",
+            "Hiring: Post basic job ads & set expectations",
+            "Finance: Formalize payroll & bookkeeping"
+        ]
+    },
+    {
+        "stage": 3, "name": "Stabilize", "hc_range": "1–4", "rev_range": "500K–2M", "role": "Trainer",
+        "headcount_min": 1, "headcount_max": 4, "revenue_min": 500000, "revenue_max": 2000000,
+        "bottom_line": "Put stable systems in place",
+        "constraints_and_actions": [
+            "Focus: Pick your single biggest customer pain & fix it",
+            "Marketing/Sales: Build trust with consistent content & follow‑up",
+            "Tech: Standardize on one platform, secure data",
+            "HR: Create an employee handbook & clear roles",
+            "Finance: Implement P&L statements & basic insurance"
+        ]
+    },
+    {
+        "stage": 4, "name": "Prioritize", "hc_range": "5–9", "rev_range": "2M–5M", "role": "Manager",
+        "headcount_min": 5, "headcount_max": 9, "revenue_min": 2000000, "revenue_max": 5000000,
+        "bottom_line": "Say \"no\" & focus on your best customers",
+        "constraints_and_actions": [
+            "Constraints: Weak process governance, Data silos, Inefficient hand‑offs",
+            "Quick Wins: Centralize customer data, Standardize reporting, Automate key hand‑offs"
+        ]
+    },
+    {
+        "stage": 5, "name": "Productize", "hc_range": "10–19", "rev_range": "5M–10M", "role": "Director",
+        "headcount_min": 10, "headcount_max": 19, "revenue_min": 5000000, "revenue_max": 10000000,
+        "bottom_line": "Turn from one‑hit wonder into multi‑product business",
+        "constraints_and_actions": [
+            "Launch a second product (start small, test with top customers)",
+            "Professionalize all processes & branding",
+            "Balance existing product health vs. new product R&D",
+            "Invest in proper systems & roles"
+        ]
+    },
+    {
+        "stage": 6, "name": "Optimize", "hc_range": "20–49", "rev_range": "10M–20M", "role": "VP",
+        "headcount_min": 20, "headcount_max": 49, "revenue_min": 10000000, "revenue_max": 20000000,
+        "bottom_line": "Do better, not just bigger",
+        "constraints_and_actions": [
+            "Identify biggest bottlenecks, fix iteratively",
+            "Measure impact rigorously",
+            "Train teams on new processes",
+            "Document & institutionalize improvements",
+            "Harden security & compliance"
+        ]
+    },
+    {
+        "stage": 7, "name": "Categorize", "hc_range": "50–99", "rev_range": "20M–50M", "role": "SVP",
+        "headcount_min": 50, "headcount_max": 99, "revenue_min": 20000000, "revenue_max": 50000000,
+        "bottom_line": "Organize chaos into domains",
+        "constraints_and_actions": [
+            "Data & operations scattered across teams",
+            "No clear ownership of key processes",
+            "→ Sort into categories:",
+            "Employees (who does what)",
+            "Applicants (who to interview)",
+            "Customers (which need attention)",
+            "Money (where to invest/spend)",
+            "Leads (where to focus)"
+        ]
+    },
+    {
+        "stage": 8, "name": "Specialize", "hc_range": "100–249", "rev_range": "50M–100M", "role": "C‑Suite",
+        "headcount_min": 100, "headcount_max": 249, "revenue_min": 50000000, "revenue_max": 100000000,
+        "bottom_line": "Build expert teams, not generalists",
+        "constraints_and_actions": [
+            "No one can do everything well",
+            "Define precise roles & hire specialists",
+            "Create hand‑off systems between teams",
+            "Break big projects into focused streams"
+        ]
+    },
+    {
+        "stage": 9, "name": "Capitalize", "hc_range": "250–500", "rev_range": "≥100M", "role": "Chairman",
+        "headcount_min": 250, "headcount_max": 500, "revenue_min": 100000000, "revenue_max": float('inf'),
+        "bottom_line": "Leverage your scale for exponential returns",
+        "constraints_and_actions": [
+            "Capital allocation inefficiencies (paying retail on cash)",
+            "Performance & governance gaps",
+            "→ Actions:",
+            "Renegotiate vendor pricing, lock in enterprise discounts",
+            "Deploy treasury strategies (interest‑bearing accounts)",
+            "Conduct regular internal audits",
+            "Establish board‑level oversight & performance systems",
+            "Identify strategic acquisition targets"
+        ]
+    }
+]
+
+# Domain classification for findings
+FINDING_DOMAINS = ["Data Quality", "Automation", "Reporting", "Security", "Adoption"]
+
+# Stage-Domain Priority Mapping (which domains are most important per stage)
+STAGE_DOMAIN_PRIORITY = {
+    0: {"Adoption": 3, "Data Quality": 2, "Automation": 1, "Reporting": 1, "Security": 1},
+    1: {"Adoption": 3, "Data Quality": 3, "Automation": 1, "Reporting": 2, "Security": 1},
+    2: {"Adoption": 2, "Data Quality": 3, "Automation": 2, "Reporting": 3, "Security": 1},
+    3: {"Data Quality": 3, "Automation": 2, "Reporting": 3, "Adoption": 2, "Security": 2},
+    4: {"Automation": 3, "Data Quality": 3, "Reporting": 3, "Adoption": 2, "Security": 2},
+    5: {"Automation": 3, "Reporting": 3, "Data Quality": 2, "Security": 2, "Adoption": 2},
+    6: {"Automation": 3, "Reporting": 3, "Security": 3, "Data Quality": 2, "Adoption": 1},
+    7: {"Reporting": 3, "Automation": 3, "Data Quality": 3, "Security": 3, "Adoption": 1},
+    8: {"Security": 3, "Automation": 3, "Reporting": 3, "Data Quality": 2, "Adoption": 1},
+    9: {"Security": 3, "Automation": 2, "Reporting": 3, "Data Quality": 2, "Adoption": 1}
+}
+
+def determine_business_stage(revenue: int, headcount: int) -> dict:
+    """
+    Map business revenue and headcount to Alex Hormozi Stage 0-9
+    
+    Args:
+        revenue: Annual revenue in USD
+        headcount: Total employee count
+    
+    Returns:
+        dict: Stage information with stage number, name, role, etc.
+    """
+    
+    # Handle edge cases
+    if revenue == 0 and headcount == 0:
+        return BUSINESS_STAGES[0]  # Stage 0: Improvise
+    
+    # Find best matching stage based on both revenue and headcount
+    best_stage = None
+    best_score = -1
+    
+    for stage in BUSINESS_STAGES:
+        score = 0
+        
+        # Check revenue fit
+        if revenue >= stage["revenue_min"] and revenue <= stage["revenue_max"]:
+            score += 2  # Perfect revenue match
+        elif revenue >= stage["revenue_min"] * 0.8 and revenue <= stage["revenue_max"] * 1.2:
+            score += 1  # Close revenue match
+            
+        # Check headcount fit  
+        if headcount >= stage["headcount_min"] and headcount <= stage["headcount_max"]:
+            score += 2  # Perfect headcount match
+        elif headcount >= stage["headcount_min"] * 0.8 and headcount <= stage["headcount_max"] * 1.2:
+            score += 1  # Close headcount match
+            
+        if score > best_score:
+            best_score = score
+            best_stage = stage
+    
+    # If no good match found, use revenue as primary factor
+    if best_stage is None:
+        for stage in BUSINESS_STAGES:
+            if revenue >= stage["revenue_min"] and revenue <= stage["revenue_max"]:
+                best_stage = stage
+                break
+                
+        # Ultimate fallback - use headcount
+        if best_stage is None:
+            for stage in BUSINESS_STAGES:
+                if headcount >= stage["headcount_min"] and headcount <= stage["headcount_max"]:
+                    best_stage = stage
+                    break
+                    
+        # Final fallback
+        if best_stage is None:
+            best_stage = BUSINESS_STAGES[2]  # Default to Stage 2: Advertise
+    
+    return best_stage
+
+def classify_finding_domain(finding: dict) -> str:
+    """
+    Classify a finding into one of the 5 domains based on its characteristics
+    
+    Args:
+        finding: Finding dictionary with category, title, description, etc.
+        
+    Returns:
+        str: Domain name from FINDING_DOMAINS
+    """
+    
+    title = finding.get('title', '').lower()
+    category = finding.get('category', '').lower()
+    description = finding.get('description', '').lower()
+    
+    # Classification rules based on keywords
+    if any(keyword in title + description for keyword in ['unused', 'orphaned', 'missing', 'duplicate', 'stale', 'quality']):
+        return "Data Quality"
+    elif any(keyword in title + description for keyword in ['automation', 'manual', 'workflow', 'alert', 'assignment']):
+        return "Automation"
+    elif any(keyword in title + description for keyword in ['report', 'dashboard', 'forecast', 'pipeline', 'analytics']):
+        return "Reporting"
+    elif any(keyword in title + description for keyword in ['security', 'permission', 'profile', 'access', 'user']):
+        return "Security"
+    elif any(keyword in title + description for keyword in ['adoption', 'training', 'usage', 'layout', 'configuration']):
+        return "Adoption"
+    else:
+        # Default classification based on category
+        if 'time saving' in category:
+            return "Automation"
+        elif 'revenue leak' in category:
+            return "Data Quality"
+        elif 'automation opportunit' in category:
+            return "Automation"
+        else:
+            return "Data Quality"  # Safe default
+
+def calculate_finding_priority(finding: dict, business_stage: dict) -> int:
+    """
+    Calculate priority score for a finding based on stage alignment and impact
+    
+    Args:
+        finding: Finding dictionary
+        business_stage: Current business stage information
+        
+    Returns:
+        int: Priority score (higher = more important)
+    """
+    
+    base_priority = 1
+    stage_num = business_stage['stage']
+    
+    # Classify finding domain
+    domain = classify_finding_domain(finding)
+    
+    # Stage alignment bonus
+    stage_bonus = STAGE_DOMAIN_PRIORITY.get(stage_num, {}).get(domain, 1)
+    
+    # Impact score based on severity and user count
+    impact_multiplier = 1
+    impact = finding.get('impact', 'Medium').lower()
+    if impact == 'high':
+        impact_multiplier = 3
+    elif impact == 'medium':
+        impact_multiplier = 2
+    elif impact == 'low':
+        impact_multiplier = 1
+        
+    # ROI boost for high-value findings
+    roi_boost = 0
+    roi_estimate = finding.get('roi_estimate', 0)
+    if roi_estimate > 10000:  # > $10k annual
+        roi_boost = 2
+    elif roi_estimate > 5000:  # > $5k annual
+        roi_boost = 1
+        
+    final_priority = base_priority + stage_bonus + impact_multiplier + roi_boost
+    
+    return final_priority
 
 def calculate_roi_with_department_salaries(finding_data, department_salaries, active_users):
     """
