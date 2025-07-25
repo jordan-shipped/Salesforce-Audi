@@ -1377,7 +1377,7 @@ async def run_audit(audit_request: AuditRequest):
             "id": audit_session_id,
             "org_name": org_name,
             "org_id": org_id,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.utcnow(),
             "status": "completed",
             "findings_count": len(findings_data),
             "estimated_savings": {
