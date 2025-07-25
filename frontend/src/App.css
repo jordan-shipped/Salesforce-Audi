@@ -1044,10 +1044,10 @@ body {
   }
 }
 
-/* Hero Section for Landing Page - Tightened Vertical Rhythm */
+/* Hero Section for Landing Page - Seamless Rhythm */
 .hero {
   background: linear-gradient(to bottom, #F7F8FA 0%, #FFFFFF 100%); /* subtle gradient depth */
-  padding: 4rem 0 1.5rem 0; /* reduced bottom padding to 24px */
+  padding: 4rem 0 1.5rem 0; /* 24px bottom padding */
   text-align: center;
 }
 
@@ -1080,7 +1080,7 @@ body {
   line-height: 26px; /* Apple's typographic rhythm */
   color: var(--text-secondary);
   max-width: 600px;
-  margin: 0 auto 1.5rem; /* reduced to 24px for consistent rhythm */
+  margin: 0 auto 1.5rem; /* 24px bottom margin */
 }
 
 .hero .btn-primary.size-lg {
@@ -1100,9 +1100,10 @@ body {
   box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3); /* gradient glow */
 }
 
-/* Features Section - Tight Overlap for Dynamic Layering */
+/* Features Section - Seamless Connection */
 .features {
-  padding: 1rem 0 4rem 0; /* reduced top padding to 16px */
+  margin-top: -0.5rem; /* -8px overlap - cards sit just under hero fold */
+  padding: 1.5rem 0 4rem 0; /* 24px top matches hero bottom */
   background: var(--bg-page);
 }
 
@@ -1115,9 +1116,8 @@ body {
 .features .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px; /* uniform 24px gutters both horizontal and vertical */
+  gap: 24px; /* tight, consistent 24px gutters */
   justify-content: center;
-  transform: translateY(-20px); /* increased overlap - cards peek up under hero */
 }
 
 .feature-card {
