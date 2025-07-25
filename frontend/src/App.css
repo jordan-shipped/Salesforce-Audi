@@ -606,18 +606,23 @@ body {
 .new-audit {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600; /* SF Pro Semibold for more intentional feel */
   color: #000;
-  background: #F2F2F7; /* very subtle grey */
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
+  background: transparent; /* ghost button style */
+  border: 1px solid rgba(0,0,0,0.2); /* subtle semi-opaque border */
+  border-radius: 6px; /* slightly sharper, more Apple-like */
+  padding: 6px 14px; /* tighter padding */
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.1s ease, opacity 0.1s ease;
 }
 
 .new-audit:hover {
-  background: #E5E5EA; /* a touch darker on hover */
+  background: #F2F2F7; /* light gray fill on hover */
+}
+
+.new-audit:active {
+  transform: scale(0.98); /* micro-interaction: brief scale down */
+  opacity: 0.8; /* slight opacity reduction */
 }
 
 /* 2.5️⃣ Apple-Style View Mode Tabs */
