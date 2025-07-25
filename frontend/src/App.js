@@ -219,25 +219,46 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
 };
 
 // Dashboard Component
-// Ultra-Clean Dashboard Component - Apple-Inspired
+// Ultra-Clean Dashboard Component - Properly Wired Logic
 const Dashboard = () => {
   const [sessionId, setSessionId] = useState(localStorage.getItem('salesforce_session_id'));
+  const [connected, setConnected] = useState(!!localStorage.getItem('salesforce_session_id'));
   const [sessions, setSessions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [running, setRunning] = useState(false);
   const [showOrgProfile, setShowOrgProfile] = useState(false);
   const navigate = useNavigate();
 
+  // Load sessions when connected
   useEffect(() => {
-    loadSessions();
+    if (connected && sessionId) {
+      loadSessions();
+    }
+  }, [connected, sessionId]);
+
+  // Check for OAuth callback on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const newSessionId = urlParams.get('session_id');
+    
+    if (newSessionId) {
+      localStorage.setItem('salesforce_session_id', newSessionId);
+      setSessionId(newSessionId);
+      setConnected(true);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
 
   const loadSessions = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(`${API}/audit-sessions`);
-      setSessions(response.data);
+      console.log('Sessions response:', response.data); // Debug log
+      setSessions(response.data || []);
     } catch (error) {
       console.error('Failed to load sessions:', error);
+      setSessions([]);
     } finally {
       setLoading(false);
     }
@@ -250,10 +271,12 @@ const Dashboard = () => {
   const handleDisconnect = () => {
     localStorage.removeItem('salesforce_session_id');
     setSessionId(null);
+    setConnected(false);
+    setSessions([]);
   };
 
   const handleRunAudit = () => {
-    if (!sessionId) {
+    if (!connected) {
       handleConnect();
       return;
     }
@@ -272,6 +295,8 @@ const Dashboard = () => {
       });
       
       if (response.data.session_id) {
+        // Refresh sessions list
+        await loadSessions();
         navigate(`/audit/${response.data.session_id}`);
       }
     } catch (error) {
