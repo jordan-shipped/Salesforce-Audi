@@ -540,8 +540,6 @@ def calculate_task_based_roi(finding_data, org_context, business_stage, custom_a
         daily_confusion_minutes = active_users * constants['user_confusion_per_field_per_day'] * field_count
         monthly_confusion_hours = (daily_confusion_minutes * constants['workdays_per_month']) / 60
         
-        # Use weighted average of user roles
-        avg_user_rate = (HOURLY_RATES_BY_ROLE['sales'] + HOURLY_RATES_BY_ROLE['customer_service']) / 2
         monthly_confusion_savings = monthly_confusion_hours * avg_user_rate * stage_multiplier
         
         # Task breakdown
