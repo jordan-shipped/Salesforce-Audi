@@ -364,9 +364,8 @@ const Dashboard = () => {
     return `$${Math.round(amount).toLocaleString()}`;
   };
 
-  // Sessions to show right now
-  const visibleSessions = sessions.slice(0, visibleCount);
-  const hasMore = sessions.length > visibleCount;
+  // Show all sessions
+  const visibleSessions = sessions;
 
   return (
     <main className="dashboard">
