@@ -1727,10 +1727,20 @@ def run_salesforce_audit_with_stage_engine(access_token, instance_url, business_
         
         # Determine business stage with picklist support
         if business_inputs:
+            logger.debug(f"Business inputs provided: {business_inputs}")
             revenue, headcount = convert_picklist_to_numeric(business_inputs)
+            logger.debug(f"Converted to numeric: revenue=${revenue:,}, headcount={headcount}")
         else:
+            logger.debug("No business inputs provided, using defaults")
             revenue = 1000000  # Default $1M
             headcount = 50     # Default 50 employees
+            
+        # Final safety check before stage determination
+        if revenue is None or headcount is None:
+            logger.error(f"Critical error: None values after conversion - revenue={revenue}, headcount={headcount}")
+            revenue = revenue or 1000000
+            headcount = headcount or 50
+            logger.info(f"Applied emergency defaults: revenue=${revenue:,}, headcount={headcount}")
             
         business_stage = determine_business_stage(revenue, headcount)
         
