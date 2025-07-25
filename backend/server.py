@@ -1106,12 +1106,34 @@ def calculate_enhanced_roi_with_tasks(finding_data, department_salaries, active_
 def get_org_context(sf_client):
     """Get org context for realistic ROI calculations"""
     try:
-        # Get user count for scaling calculations
-        active_users = sf_client.query("SELECT COUNT() FROM User WHERE IsActive = true")['totalSize']
+        # Get user count for scaling calculations with defensive handling
+        try:
+            active_users_result = sf_client.query("SELECT COUNT() FROM User WHERE IsActive = true")
+            active_users = active_users_result.get('totalSize', 10) if active_users_result else 10
+            if active_users is None:
+                active_users = 10
+        except Exception as e:
+            logger.warning(f"Failed to get active users count: {e}, using default 10")
+            active_users = 10
         
-        # Get record volumes for complexity assessment
-        account_count = sf_client.query("SELECT COUNT() FROM Account")['totalSize']
-        opportunity_count = sf_client.query("SELECT COUNT() FROM Opportunity")['totalSize']
+        # Get record volumes for complexity assessment with defensive handling
+        try:
+            account_result = sf_client.query("SELECT COUNT() FROM Account")
+            account_count = account_result.get('totalSize', 100) if account_result else 100
+            if account_count is None:
+                account_count = 100
+        except Exception as e:
+            logger.warning(f"Failed to get account count: {e}, using default 100")
+            account_count = 100
+            
+        try:
+            opportunity_result = sf_client.query("SELECT COUNT() FROM Opportunity")
+            opportunity_count = opportunity_result.get('totalSize', 50) if opportunity_result else 50
+            if opportunity_count is None:
+                opportunity_count = 50
+        except Exception as e:
+            logger.warning(f"Failed to get opportunity count: {e}, using default 50")
+            opportunity_count = 50
         
         # Get org info for context
         org_info = sf_client.query("SELECT Id, Name, OrganizationType FROM Organization LIMIT 1")
