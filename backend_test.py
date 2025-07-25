@@ -976,7 +976,17 @@ def main():
     ]
     
     for test_name, test_func in tests:
-        success, response = test_func()
+        print(f"\n🔄 Running test: {test_name}")
+        try:
+            result = test_func()
+            if result is None:
+                print(f"❌ Test {test_name} returned None")
+                success, response = False, {}
+            else:
+                success, response = result
+        except Exception as e:
+            print(f"❌ Test {test_name} failed with error: {e}")
+            success, response = False, {}
     
     # Validate OAuth security implementation
     success, response = tester.validate_oauth_security()
