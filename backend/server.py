@@ -1941,7 +1941,7 @@ async def run_audit(audit_request: AuditRequest):
                 }
         
         findings_data, org_name, org_id = await loop.run_in_executor(
-            executor, run_salesforce_audit_with_salaries, access_token, instance_url, dept_salaries_dict, None
+            executor, run_salesforce_audit_with_stage_engine, access_token, instance_url, None, dept_salaries_dict, None
         )
         
         # Calculate summary
