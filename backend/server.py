@@ -348,6 +348,23 @@ def determine_business_stage(revenue: int, headcount: int) -> dict:
         dict: Stage information with stage number, name, role, etc.
     """
     
+    # Defensive input validation and logging
+    logger.debug(f"determine_business_stage called with revenue={revenue!r}, headcount={headcount!r}")
+    
+    # Guard against None values with defaults
+    if revenue is None:
+        logger.warning(f"Revenue is None, using default value 1000000")
+        revenue = 1000000
+    if headcount is None:
+        logger.warning(f"Headcount is None, using default value 50")
+        headcount = 50
+        
+    # Ensure positive integers
+    revenue = max(0, int(revenue)) if revenue is not None else 1000000
+    headcount = max(0, int(headcount)) if headcount is not None else 50
+    
+    logger.debug(f"Sanitized inputs: revenue={revenue}, headcount={headcount}")
+    
     # Handle edge cases
     if revenue == 0 and headcount == 0:
         return BUSINESS_STAGES[0]  # Stage 0: Improvise
@@ -359,40 +376,82 @@ def determine_business_stage(revenue: int, headcount: int) -> dict:
     for stage in BUSINESS_STAGES:
         score = 0
         
-        # Check revenue fit
-        if revenue >= stage["revenue_min"] and revenue <= stage["revenue_max"]:
+        # Defensive guards for stage data
+        stage_rev_min = stage.get("revenue_min", 0)
+        stage_rev_max = stage.get("revenue_max", float('inf'))
+        stage_hc_min = stage.get("headcount_min", 0)
+        stage_hc_max = stage.get("headcount_max", float('inf'))
+        
+        # Guard against None stage values
+        if stage_rev_min is None or stage_rev_max is None:
+            logger.warning(f"Stage {stage.get('stage', 'unknown')} has None revenue bounds: min={stage_rev_min}, max={stage_rev_max}")
+            continue
+        if stage_hc_min is None or stage_hc_max is None:
+            logger.warning(f"Stage {stage.get('stage', 'unknown')} has None headcount bounds: min={stage_hc_min}, max={stage_hc_max}")
+            continue
+            
+        logger.debug(f"Comparing Stage {stage.get('stage')}: revenue {revenue} vs [{stage_rev_min}, {stage_rev_max}], headcount {headcount} vs [{stage_hc_min}, {stage_hc_max}]")
+        
+        # Check revenue fit with defensive comparisons
+        if revenue >= stage_rev_min and revenue <= stage_rev_max:
             score += 2  # Perfect revenue match
-        elif revenue >= stage["revenue_min"] * 0.8 and revenue <= stage["revenue_max"] * 1.2:
+            logger.debug(f"Stage {stage.get('stage')}: Perfect revenue match (+2)")
+        elif revenue >= (stage_rev_min * 0.8) and revenue <= (stage_rev_max * 1.2):
             score += 1  # Close revenue match
+            logger.debug(f"Stage {stage.get('stage')}: Close revenue match (+1)")
             
-        # Check headcount fit  
-        if headcount >= stage["headcount_min"] and headcount <= stage["headcount_max"]:
+        # Check headcount fit with defensive comparisons
+        if headcount >= stage_hc_min and headcount <= stage_hc_max:
             score += 2  # Perfect headcount match
-        elif headcount >= stage["headcount_min"] * 0.8 and headcount <= stage["headcount_max"] * 1.2:
+            logger.debug(f"Stage {stage.get('stage')}: Perfect headcount match (+2)")
+        elif headcount >= (stage_hc_min * 0.8) and headcount <= (stage_hc_max * 1.2):
             score += 1  # Close headcount match
+            logger.debug(f"Stage {stage.get('stage')}: Close headcount match (+1)")
             
+        logger.debug(f"Stage {stage.get('stage')} total score: {score}")
+        
         if score > best_score:
             best_score = score
             best_stage = stage
     
     # If no good match found, use revenue as primary factor
     if best_stage is None:
+        logger.debug("No good match found, trying revenue-only matching")
         for stage in BUSINESS_STAGES:
-            if revenue >= stage["revenue_min"] and revenue <= stage["revenue_max"]:
+            stage_rev_min = stage.get("revenue_min", 0)
+            stage_rev_max = stage.get("revenue_max", float('inf'))
+            
+            # Guard against None values
+            if stage_rev_min is None or stage_rev_max is None:
+                continue
+                
+            if revenue >= stage_rev_min and revenue <= stage_rev_max:
+                logger.debug(f"Revenue-only match found: Stage {stage.get('stage')}")
                 best_stage = stage
                 break
                 
         # Ultimate fallback - use headcount
         if best_stage is None:
+            logger.debug("No revenue match found, trying headcount-only matching")
             for stage in BUSINESS_STAGES:
-                if headcount >= stage["headcount_min"] and headcount <= stage["headcount_max"]:
+                stage_hc_min = stage.get("headcount_min", 0)
+                stage_hc_max = stage.get("headcount_max", float('inf'))
+                
+                # Guard against None values
+                if stage_hc_min is None or stage_hc_max is None:
+                    continue
+                    
+                if headcount >= stage_hc_min and headcount <= stage_hc_max:
+                    logger.debug(f"Headcount-only match found: Stage {stage.get('stage')}")
                     best_stage = stage
                     break
                     
         # Final fallback
         if best_stage is None:
+            logger.warning("No stage match found, defaulting to Stage 2: Advertise")
             best_stage = BUSINESS_STAGES[2]  # Default to Stage 2: Advertise
     
+    logger.info(f"Stage determination result: Stage {best_stage.get('stage')} ({best_stage.get('name')}) for revenue=${revenue:,}, headcount={headcount}")
     return best_stage
 
 def classify_finding_domain(finding: dict) -> str:
