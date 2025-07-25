@@ -368,11 +368,17 @@ const Dashboard = () => {
 
   return (
     <main className="dashboard">
-      {/* 1️⃣ Connection Status Strip with ⚡︎ Indicator */}
+      {/* 1️⃣ Connection Status Strip - Clean Text Indicators */}
       <section className="connection-strip">
-        <div className="status">
-          {sessionId ? '⚡︎ Connected' : 'Not connected'}
-        </div>
+        {sessionId ? (
+          <div className="status-text status--ok">
+            Connected
+          </div>
+        ) : (
+          <div className="status-text status--alert">
+            Not Connected
+          </div>
+        )}
       </section>
 
       {/* 2️⃣ Header above the sessions list */}
