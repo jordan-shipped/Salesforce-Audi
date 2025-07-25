@@ -1206,55 +1206,130 @@ body {
 
 /* ====== PHASE 2: APPLE-GRADE STAGE ENGINE COMPONENTS ====== */
 
-/* Stage Summary Panel - Hero Component */
+/* ====== ENHANCED STAGE SUMMARY PANEL - HORMOZI STYLE ====== */
 .stage-summary-panel {
-  background: var(--color-background);
-  border: 1px solid var(--border-color);
+  background: #F5F5F7; /* Light gray background as specified */
   border-radius: var(--radius-xl);
-  padding: var(--space-8);
+  padding: 24px; /* Generous 24px padding as specified */
   margin-bottom: var(--space-8);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); /* Drop shadow as specified */
   transition: all var(--transition-normal);
 }
 
 .stage-summary-panel:hover {
-  box-shadow: var(--shadow-card-hover);
-  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
 }
 
-.stage-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-6);
+/* Header Section */
+.stage-header-section {
+  text-align: center;
+  margin-bottom: var(--space-8);
 }
 
-.stage-title {
-  font-size: var(--text-3xl);
-  font-weight: var(--font-weight-bold);
-  background: var(--gradient-cta);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.stage-title-large {
+  font-family: var(--font-family-base);
+  font-size: 20pt; /* SF Pro Semibold, 20pt as specified */
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
   line-height: 1.2;
+  margin: 0 0 var(--space-3) 0;
 }
 
-.stage-role {
+.stage-role-subtitle {
+  font-family: var(--font-family-base);
+  font-size: 16pt; /* SF Pro Regular, 16pt as specified */
+  font-weight: var(--font-weight-regular);
+  color: var(--text-secondary); /* Secondary color as specified */
+  margin: 0 0 var(--space-4) 0;
+}
+
+.stage-bottom-line-quote {
   font-size: var(--text-lg);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-secondary);
-  margin-top: var(--space-2);
-}
-
-.stage-bottom-line {
-  font-size: var(--text-base);
   color: var(--text-secondary);
   font-style: italic;
-  margin-bottom: var(--space-6);
+  margin: 0 0 var(--space-6) 0;
   padding: var(--space-4) var(--space-6);
-  background: var(--color-background-secondary);
+  background: var(--color-background);
   border-radius: var(--radius-md);
   border-left: 3px solid var(--color-blue);
+}
+
+/* Two-Column Hormozi Layout */
+.hormozi-two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  margin-top: var(--space-6);
+}
+
+.constraints-column,
+.next-steps-column {
+  background: var(--color-background);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  border: 1px solid var(--border-color-light);
+}
+
+.column-header {
+  font-family: var(--font-family-base);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4) 0;
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--color-blue);
+}
+
+.constraint-list,
+.next-steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.constraint-item,
+.next-step-item {
+  font-family: var(--font-family-base);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: var(--space-3);
+  padding-left: var(--space-5);
+  position: relative;
+}
+
+.constraint-item::before {
+  content: "•";
+  color: var(--color-red);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.next-step-item::before {
+  content: "•";
+  color: var(--color-blue);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* Responsive Design for Two-Column Layout */
+@media (max-width: 768px) {
+  .hormozi-two-column {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+  
+  .stage-title-large {
+    font-size: 18pt; /* Slightly smaller on mobile */
+  }
+  
+  .stage-role-subtitle {
+    font-size: 14pt; /* Slightly smaller on mobile */
+  }
 }
 
 .metrics-grid {
