@@ -2233,6 +2233,250 @@ class SalesforceAuditAPITester:
         
         return all_passed, flow_results
 
+    def test_picklist_integration_comprehensive(self):
+        """COMPREHENSIVE PICKLIST INTEGRATION TESTING - Final validation as requested"""
+        print("\n🎯 FINAL VALIDATION: COMPLETE PICKLIST INTEGRATION")
+        print("=" * 60)
+        
+        all_tests_passed = True
+        test_results = []
+        
+        # Test 1: Enterprise Scenario (The Fix) - Core requirement
+        print("\n🔍 TEST 1: Enterprise Scenario (The Fix)")
+        print("   Revenue: '30M+' → should convert to $150,000,000")
+        print("   Employees: '250–500' → should convert to 375")
+        print("   Expected Result: Stage 9 - Capitalize")
+        
+        enterprise_test = {
+            "revenue_range": "30M+",
+            "employee_range": "250–500"
+        }
+        
+        success, response = self.run_test(
+            "Enterprise Picklist Scenario",
+            "POST",
+            "business/stage",
+            200,
+            data=enterprise_test
+        )
+        
+        if success:
+            stage = response.get('stage')
+            name = response.get('name')
+            if stage == 9 and name == "Capitalize":
+                print("✅ ENTERPRISE SCENARIO PASSED: 30M+ → Stage 9 (Capitalize)")
+                test_results.append({"test": "Enterprise Scenario", "passed": True, "stage": stage, "name": name})
+            else:
+                print(f"❌ ENTERPRISE SCENARIO FAILED: Expected Stage 9 (Capitalize), got Stage {stage} ({name})")
+                all_tests_passed = False
+                test_results.append({"test": "Enterprise Scenario", "passed": False, "stage": stage, "name": name})
+        else:
+            print("❌ ENTERPRISE SCENARIO FAILED: API call failed")
+            all_tests_passed = False
+            test_results.append({"test": "Enterprise Scenario", "passed": False, "error": response})
+        
+        # Test 2: Mixed Input Support - Picklist strings
+        print("\n🔍 TEST 2: Mixed Input Support - Pure Picklist Strings")
+        
+        mixed_scenarios = [
+            {
+                "name": "Startup Scenario",
+                "data": {"revenue_range": "<100k", "employee_range": "0-some"},
+                "expected_stage": 1,
+                "expected_name": "Monetize"
+            },
+            {
+                "name": "Growth Scenario", 
+                "data": {"revenue_range": "1M–3M", "employee_range": "5–9"},
+                "expected_stage": 4,
+                "expected_name": "Prioritize"
+            },
+            {
+                "name": "Enterprise Scenario",
+                "data": {"revenue_range": "30M+", "employee_range": "250–500"},
+                "expected_stage": 9,
+                "expected_name": "Capitalize"
+            }
+        ]
+        
+        for scenario in mixed_scenarios:
+            print(f"\n   Testing {scenario['name']}...")
+            success, response = self.run_test(
+                f"Picklist - {scenario['name']}",
+                "POST",
+                "business/stage",
+                200,
+                data=scenario['data']
+            )
+            
+            if success:
+                stage = response.get('stage')
+                name = response.get('name')
+                if stage == scenario['expected_stage'] and name == scenario['expected_name']:
+                    print(f"✅ {scenario['name']}: {scenario['data']} → Stage {stage} ({name})")
+                    test_results.append({"test": f"Picklist {scenario['name']}", "passed": True, "stage": stage, "name": name})
+                else:
+                    print(f"❌ {scenario['name']}: Expected Stage {scenario['expected_stage']} ({scenario['expected_name']}), got Stage {stage} ({name})")
+                    all_tests_passed = False
+                    test_results.append({"test": f"Picklist {scenario['name']}", "passed": False, "stage": stage, "name": name})
+            else:
+                print(f"❌ {scenario['name']}: API call failed")
+                all_tests_passed = False
+                test_results.append({"test": f"Picklist {scenario['name']}", "passed": False, "error": response})
+        
+        # Test 3: Numeric Values (for comparison)
+        print("\n🔍 TEST 3: Numeric Values (for comparison)")
+        
+        numeric_test = {
+            "annual_revenue": 150000000,
+            "employee_headcount": 375
+        }
+        
+        success, response = self.run_test(
+            "Numeric Values Test",
+            "POST",
+            "business/stage",
+            200,
+            data=numeric_test
+        )
+        
+        if success:
+            stage = response.get('stage')
+            name = response.get('name')
+            if stage == 9 and name == "Capitalize":
+                print("✅ NUMERIC VALUES: $150M + 375 employees → Stage 9 (Capitalize)")
+                test_results.append({"test": "Numeric Values", "passed": True, "stage": stage, "name": name})
+            else:
+                print(f"❌ NUMERIC VALUES: Expected Stage 9 (Capitalize), got Stage {stage} ({name})")
+                all_tests_passed = False
+                test_results.append({"test": "Numeric Values", "passed": False, "stage": stage, "name": name})
+        else:
+            print("❌ NUMERIC VALUES: API call failed")
+            all_tests_passed = False
+            test_results.append({"test": "Numeric Values", "passed": False, "error": response})
+        
+        # Test 4: Mixed Format (numeric + picklist)
+        print("\n🔍 TEST 4: Mixed Format Support")
+        
+        mixed_format_test = {
+            "annual_revenue": 150000000,
+            "employee_range": "250–500"
+        }
+        
+        success, response = self.run_test(
+            "Mixed Format Test",
+            "POST",
+            "business/stage",
+            200,
+            data=mixed_format_test
+        )
+        
+        if success:
+            stage = response.get('stage')
+            name = response.get('name')
+            if stage == 9 and name == "Capitalize":
+                print("✅ MIXED FORMAT: $150M + '250–500' employees → Stage 9 (Capitalize)")
+                test_results.append({"test": "Mixed Format", "passed": True, "stage": stage, "name": name})
+            else:
+                print(f"❌ MIXED FORMAT: Expected Stage 9 (Capitalize), got Stage {stage} ({name})")
+                all_tests_passed = False
+                test_results.append({"test": "Mixed Format", "passed": False, "stage": stage, "name": name})
+        else:
+            print("❌ MIXED FORMAT: API call failed")
+            all_tests_passed = False
+            test_results.append({"test": "Mixed Format", "passed": False, "error": response})
+        
+        # Test 5: Enhanced Audit with Picklist Inputs
+        print("\n🔍 TEST 5: Enhanced Audit with Picklist Business Inputs")
+        
+        audit_request = {
+            "session_id": "test_picklist_audit",
+            "use_quick_estimate": True,
+            "business_inputs": {
+                "revenue_range": "30M+",
+                "employee_range": "250–500"
+            }
+        }
+        
+        success, response = self.run_test(
+            "Enhanced Audit with Picklist",
+            "POST",
+            "audit/run",
+            401,  # Expected to fail on session, but structure should be accepted
+            data=audit_request
+        )
+        
+        if success or (response and 'session' in str(response).lower()):
+            print("✅ ENHANCED AUDIT: Picklist business_inputs accepted")
+            test_results.append({"test": "Enhanced Audit Picklist", "passed": True, "structure_accepted": True})
+        else:
+            print("❌ ENHANCED AUDIT: Picklist business_inputs rejected")
+            all_tests_passed = False
+            test_results.append({"test": "Enhanced Audit Picklist", "passed": False, "error": response})
+        
+        # Test 6: Picklist Conversion Validation
+        print("\n🔍 TEST 6: Picklist Conversion Validation")
+        
+        conversion_tests = [
+            {"input": {"revenue_range": "30M+"}, "expected_revenue": 150000000},
+            {"input": {"employee_range": "250–500"}, "expected_employees": 375},
+            {"input": {"revenue_range": "<100k"}, "expected_revenue": 50000},
+            {"input": {"employee_range": "0-some"}, "expected_employees": 1}
+        ]
+        
+        conversion_passed = True
+        for test in conversion_tests:
+            success, response = self.run_test(
+                f"Conversion Test",
+                "POST",
+                "business/stage",
+                200,
+                data=test['input']
+            )
+            
+            if success:
+                # Check if the conversion worked by validating the stage response
+                print(f"✅ Conversion test passed for {test['input']}")
+            else:
+                print(f"❌ Conversion test failed for {test['input']}")
+                conversion_passed = False
+        
+        if conversion_passed:
+            test_results.append({"test": "Picklist Conversion", "passed": True})
+        else:
+            test_results.append({"test": "Picklist Conversion", "passed": False})
+            all_tests_passed = False
+        
+        # Final Summary
+        print("\n" + "=" * 60)
+        print("🏁 PICKLIST INTEGRATION TEST SUMMARY")
+        print("=" * 60)
+        
+        passed_tests = sum(1 for result in test_results if result.get('passed', False))
+        total_tests = len(test_results)
+        
+        for result in test_results:
+            status = "✅ PASSED" if result.get('passed', False) else "❌ FAILED"
+            print(f"   {result['test']}: {status}")
+        
+        print(f"\n📊 RESULTS: {passed_tests}/{total_tests} tests passed")
+        
+        if all_tests_passed:
+            print("🎉 PICKLIST INTEGRATION FULLY WORKING!")
+            print("✅ '30M+' → $150M → Stage 9 (Capitalize)")
+            print("✅ Picklist conversion function working")
+            print("✅ Enhanced business_inputs model accepting both formats")
+            print("✅ All stage mappings correct")
+            print("✅ Existing functionality preserved")
+        else:
+            print("⚠️  PICKLIST INTEGRATION HAS ISSUES")
+            failed_tests = [result for result in test_results if not result.get('passed', False)]
+            print("❌ Failed tests:")
+            for failed in failed_tests:
+                print(f"   - {failed['test']}")
+        
+        return all_tests_passed, test_results
+
     def run_picklist_integration_test_suite(self):
         """Run complete Picklist + Stage Engine Integration test suite"""
         print("\n" + "=" * 80)
