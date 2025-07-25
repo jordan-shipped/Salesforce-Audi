@@ -365,21 +365,21 @@ const Dashboard = () => {
 
   return (
     <main className="dashboard">
-      {/* 1️⃣ Connection Status Strip - Status Only, Right-Aligned */}
+      {/* 1️⃣ Connection Status Strip - Plain Text, Right-Aligned */}
       <section className="connection-strip">
         <div className="status">
-          {sessionId ? '✅ Connected to Salesforce' : '⚠️ Not connected'}
+          {sessionId ? 'Connected' : 'Not connected'}
         </div>
       </section>
 
-      {/* 2️⃣ Sessions Area - Conditional Rendering */}
+      {/* 2️⃣ Sessions Area - Grid Layout */}
       <section aria-labelledby="sessions-heading">
         <h2 id="sessions-heading" className="visually-hidden">Your Audit Sessions</h2>
         
         <div className="sessions-list">
           {/* Loading State */}
           {loading && (
-            <div className="loading-state">
+            <div className="loading-state" style={{gridColumn: '1 / -1', justifySelf: 'center'}}>
               <div className="loading-spinner-premium"></div>
               <p>Loading your audit sessions...</p>
             </div>
@@ -399,22 +399,18 @@ const Dashboard = () => {
             </div>
           )}
           
-          {/* Sessions Grid - Show when sessions exist */}
-          {!loading && sessions.length > 0 && (
-            <div className="session-grid">
-              {sessions.map((session) => (
-                <SessionCard 
-                  key={session.id}
-                  id={session.id}
-                  orgName={session.org_name}
-                  findingsCount={session.findings_count}
-                  annualSavings={session.estimated_savings?.annual_dollars || 0}
-                  date={session.created_at}
-                  onClick={() => navigate(`/audit/${session.id}`)}
-                />
-              ))}
-            </div>
-          )}
+          {/* Sessions - Render directly in grid */}
+          {!loading && sessions.length > 0 && sessions.map((session) => (
+            <SessionCard 
+              key={session.id}
+              id={session.id}
+              orgName={session.org_name}
+              findingsCount={session.findings_count}
+              annualSavings={session.estimated_savings?.annual_dollars || 0}
+              date={session.created_at}
+              onClick={() => navigate(`/audit/${session.id}`)}
+            />
+          ))}
         </div>
       </section>
 
