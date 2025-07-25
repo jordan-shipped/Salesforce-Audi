@@ -533,13 +533,15 @@ body {
   color: var(--text-primary); /* Plain black text */
 }
 
-/* 2️⃣ Sessions Header */
+/* 2️⃣ Sessions Header - Apple-Style Typography */
 .sessions-header {
-  font-family: var(--font-family-base);
-  font-size: 20px;               /* 1.25rem */
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 24px 32px 16px;        /* space above & below */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  font-size: 28px;              /* larger headline size */
+  font-weight: 600;             /* semibold for good emphasis */
+  line-height: 1.25;            /* comfortable reading */
+  letter-spacing: -0.02em;      /* slight tightening, per Apple headline style */
+  color: var(--text-primary);   /* pure black for maximum contrast */
+  margin: 32px 32px 16px;       /* more space above (2rem) and below (1rem) */
 }
 
 /* 3️⃣ Sessions Area - Premium Grid Layout */
