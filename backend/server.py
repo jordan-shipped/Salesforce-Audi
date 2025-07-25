@@ -231,7 +231,7 @@ BUSINESS_STAGES = [
     },
     {
         "stage": 9, "name": "Capitalize", "hc_range": "250–500", "rev_range": "≥100M", "role": "Chairman",
-        "headcount_min": 250, "headcount_max": 500, "revenue_min": 100000000, "revenue_max": float('inf'),
+        "headcount_min": 250, "headcount_max": 500, "revenue_min": 100000000, "revenue_max": 999999999999,
         "bottom_line": "Leverage your scale for exponential returns",
         "constraints_and_actions": [
             "Capital allocation inefficiencies (paying retail on cash)",
