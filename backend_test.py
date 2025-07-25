@@ -929,7 +929,7 @@ class SalesforceAuditAPITester:
         
         if not self.oauth_state:
             print("❌ No OAuth state captured from authorize endpoint")
-            return False
+            return False, {}
         
         # Check state format (should be UUID)
         import uuid
@@ -938,10 +938,10 @@ class SalesforceAuditAPITester:
             print("✅ OAuth state is properly formatted UUID")
         except ValueError:
             print("❌ OAuth state is not a valid UUID")
-            return False
+            return False, {}
         
         print("✅ OAuth security validation passed")
-        return True
+        return True, {"oauth_state": self.oauth_state}
 
 def main():
     print("🚀 Starting Salesforce Audit API Tests - GET /api/audit/sessions Focus")
