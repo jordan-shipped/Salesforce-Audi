@@ -563,6 +563,33 @@ body {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
+/* See More Button - Centered Below Grid */
+.see-more-btn {
+  grid-column: 1 / -1; /* span full grid width */
+  justify-self: center; /* center horizontally */
+  margin-top: 16px; /* give a little breathing room */
+}
+
+/* Dashboard Black Button Styling */
+.see-more-btn,
+.sessions-list .btn-primary {
+  background-color: #000;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.see-more-btn:hover,
+.sessions-list .btn-primary:hover {
+  background-color: #333;
+  transform: translateY(-1px);
+}
+
 .empty-icon {
   font-size: 40px; /* slightly smaller than 48px */
   margin-bottom: 24px; /* 1.5rem */
