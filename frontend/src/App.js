@@ -368,6 +368,14 @@ const Dashboard = () => {
   const visibleSessions = sessions.slice(0, visibleCount);
   const hasMore = sessions.length > visibleCount;
 
+  // Debug logging (temporary)
+  console.log('Sessions debug:', {
+    totalSessions: sessions.length,
+    visibleCount,
+    visibleSessions: visibleSessions.length,
+    hasMore
+  });
+
   return (
     <main className="dashboard">
       {/* 1️⃣ Connection Status Strip with ⚡︎ Indicator */}
