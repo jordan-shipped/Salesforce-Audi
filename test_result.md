@@ -102,49 +102,25 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implement 'Edit Assumptions' modal to allow users to customize default constants used in ROI calculations and recalculate results with updated values"
+user_problem_statement: "Complete dashboard session fetching and rendering logic to display existing audit sessions instead of always showing empty state"
 
 backend:
-  - task: "Add backend API endpoint for updating ROI assumptions"
+  - task: "Verify /api/audit/sessions endpoint functionality"
     implemented: true
-    working: true
+    working: "unknown"
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-        - working: "NA"
+        - working: "unknown"
           agent: "main"
-          comment: "Task identified. Need to add API endpoint to accept new assumptions and recalculate ROI"
-        - working: true
-          agent: "main"
-          comment: "Added /api/audit/{session_id}/update-assumptions endpoint that accepts AssumptionsUpdate model and recalculates audit results"
-        - working: true
-          agent: "testing"
-          comment: "TESTED: API endpoint is fully functional. POST /api/audit/{session_id}/update-assumptions accepts AssumptionsUpdate model with all 5 parameters (admin_rate, cleanup_time_per_field, confusion_time_per_field, reporting_efficiency, email_alert_time). Endpoint properly validates input, handles errors (404 for invalid sessions, 422 for invalid data), and successfully updates audit calculations. Tested with real session ID and confirmed assumptions are applied and stored correctly."
-
-  - task: "Add ROI recalculation with custom constants"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: "NA"
-          agent: "main"
-          comment: "Need to modify calculate_enhanced_roi_with_tasks function to accept custom constants"
-        - working: true
-          agent: "main"
-          comment: "Modified calculate_enhanced_roi_with_tasks to accept custom_assumptions parameter and updated related functions"
-        - working: true
-          agent: "testing"
-          comment: "TESTED: ROI recalculation with custom assumptions is working correctly. The calculate_enhanced_roi_with_tasks function properly accepts custom_assumptions parameter and applies them to calculations. Default values (admin_rate=40, cleanup_time_per_field=0.25, confusion_time_per_field=2, reporting_efficiency=50, email_alert_time=3) are correctly overridden when custom values provided. Integration with run_salesforce_audit_with_salaries and analyze_custom_fields functions is functional."
+          comment: "Backend endpoint exists at /api/audit/sessions (line 1438) and returns audit sessions sorted by created_at desc. Need to test if it works correctly and returns proper session data format."
 
 frontend:
-  - task: "Create EditAssumptionsModal component"
+  - task: "Fix API endpoint mismatch in Dashboard loadSessions function"
     implemented: true
-    working: true
+    working: "unknown"
     file: "frontend/src/App.js"
     stuck_count: 0
     priority: "high"
@@ -152,45 +128,38 @@ frontend:
     status_history:
         - working: false
           agent: "main"
-          comment: "Modal component exists but not yet integrated with backend API. Need to add state management and API calls"
-        - working: true
+          comment: "Dashboard was calling /api/audit-sessions but backend endpoint is /api/audit/sessions - mismatch found"
+        - working: "unknown"
           agent: "main"
-          comment: "Modal component is complete and functional with all necessary form fields"
+          comment: "Fixed API endpoint call from '/api/audit-sessions' to '/api/audit/sessions' to match backend endpoint"
 
-  - task: "Integrate EditAssumptionsModal with AuditResults page"
+  - task: "Complete Dashboard session fetching and conditional rendering logic"
     implemented: true
-    working: true
+    working: "unknown"
     file: "frontend/src/App.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
-        - working: "NA"
+        - working: "unknown"
           agent: "main"
-          comment: "Need to add button and state management to show modal in AuditResults component"
-        - working: true
-          agent: "main"
-          comment: "Added state management, Edit Assumptions button, handleUpdateAssumptions function, and integrated modal with loading overlay"
+          comment: "Dashboard already has useState for connected/sessions/loading, useEffect for fetching sessions, conditional rendering for empty vs grid state, and SessionCard component. Logic appears complete but needs testing to verify it works correctly."
 
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 0
+  version: "2.0"
+  test_sequence: 1
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Test complete Edit Assumptions functionality"
-    - "Test backend API endpoint"
-    - "Test frontend integration"
+    - "Verify /api/audit/sessions endpoint functionality"
+    - "Test Dashboard session fetching and rendering"
+    - "Test conditional rendering between empty state and session grid"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
-      message: "Starting implementation of Edit Assumptions modal. Identified existing modal component but needs backend integration and proper integration with audit results page. Current ROI calculation system uses constants in calculate_enhanced_roi_with_tasks function."
-    - agent: "main"
-      message: "IMPLEMENTATION COMPLETE: Successfully implemented complete Edit Assumptions functionality. Backend now has /api/audit/{session_id}/update-assumptions endpoint that accepts custom assumptions and recalculates ROI. Frontend has integrated EditAssumptionsModal with AuditResults page including state management and loading feedback. Ready for testing."
-    - agent: "testing"
-      message: "BACKEND TESTING COMPLETE: Comprehensive testing of Edit Assumptions functionality completed. API endpoint structure is working correctly, AssumptionsUpdate model validation is functional, and the endpoint properly handles custom assumptions. The endpoint accepts all assumption parameters (admin_rate, cleanup_time_per_field, confusion_time_per_field, reporting_efficiency, email_alert_time) and successfully updates audit calculations. Error handling for invalid sessions and malformed data is working properly. The functionality is ready for production use."
+      message: "Found API endpoint mismatch - frontend was calling /api/audit-sessions but backend has /api/audit/sessions. Fixed the frontend API call. Dashboard component already has complete logic for session fetching and conditional rendering, but needs testing to verify it works correctly."
