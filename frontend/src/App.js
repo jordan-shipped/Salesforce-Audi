@@ -758,44 +758,64 @@ const Dashboard = () => {
     setShowOrgProfile(false);
     
     try {
+      console.log('🔍 Starting audit with session_id:', sessionId);
+      console.log('💼 Business inputs:', businessInputs);
+      
       // Add business inputs to the audit request
       const enhancedRequest = {
         ...auditRequest,
+        session_id: sessionId, // Ensure session_id is included
         business_inputs: businessInputs
       };
       
-      console.log('Running audit with enhanced request:', enhancedRequest);
+      console.log('🚀 Sending audit request:', enhancedRequest);
       
-      const response = await axios.post(`${API}/audit/run`, enhancedRequest);
+      const response = await axios.post(`${API}/audit/run`, enhancedRequest, {
+        timeout: 30000 // 30 second timeout
+      });
       
-      console.log('Audit response:', response.data);
+      console.log('✅ Audit response received:', response.data);
       
       // Check if we got a valid session ID
       if (response.data && response.data.session_id) {
+        console.log('🎯 Got audit session ID:', response.data.session_id);
+        
         // Wait a moment for database to update, then refresh sessions
         setTimeout(async () => {
+          console.log('🔄 Refreshing sessions list...');
           await loadSessions();
-        }, 1000);
+        }, 2000);
         
         // Navigate to results with new session ID
+        console.log('🧭 Navigating to results page...');
         navigate(`/audit/${response.data.session_id}`);
       } else {
-        console.error('No session_id in response:', response.data);
+        console.error('❌ No session_id in response:', response.data);
         alert('Audit completed but no session ID returned. Please check the audit history.');
       }
       
     } catch (error) {
-      console.error('Audit failed:', error);
+      console.error('💥 Audit failed with error:', error);
       
       // More detailed error handling
       if (error.response) {
-        console.error('Error response:', error.response.data);
-        alert(`Audit failed: ${error.response.data?.detail || error.response.data?.message || 'Unknown server error'}`);
+        console.error('📝 Error response status:', error.response.status);
+        console.error('📝 Error response data:', error.response.data);
+        
+        if (error.response.status === 401) {
+          alert('Authentication expired. Please reconnect to Salesforce and try again.');
+          // Clear invalid session
+          localStorage.removeItem('salesforce_session_id');
+          setSessionId(null);
+          setConnected(false);
+        } else {
+          alert(`Audit failed: ${error.response.data?.detail || error.response.data?.message || 'Unknown server error'}`);
+        }
       } else if (error.request) {
-        console.error('Error request:', error.request);
+        console.error('📝 Error request:', error.request);
         alert('Audit failed: Network error. Please check your connection.');
       } else {
-        console.error('Error message:', error.message);
+        console.error('📝 Error message:', error.message);
         alert(`Audit failed: ${error.message}`);
       }
     } finally {
