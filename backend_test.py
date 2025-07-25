@@ -815,7 +815,113 @@ class SalesforceAuditAPITester:
         else:
             print("\n❌ Some error handling scenarios failed!")
         
-        return error_handling_passed, test_cases
+    def test_audit_sessions_endpoint_comprehensive(self):
+        """Comprehensive test of the audit sessions endpoint functionality"""
+        print("\n🔍 Comprehensive Audit Sessions Endpoint Testing...")
+        
+        # Test 1: Basic endpoint availability
+        success, response = self.run_test(
+            "Audit Sessions - Basic Availability",
+            "GET",
+            "audit/sessions",
+            200
+        )
+        
+        if not success:
+            print("❌ Basic endpoint test failed")
+            return False, response
+        
+        # Test 2: Response structure validation
+        print("\n📊 Validating response structure...")
+        if not isinstance(response, list):
+            print("❌ Response must be an array")
+            return False, response
+        
+        print(f"✅ Response is array with {len(response)} sessions")
+        
+        # Test 3: Frontend compatibility check
+        print("\n🔍 Checking frontend compatibility...")
+        frontend_required_fields = ['id', 'org_name', 'findings_count', 'estimated_savings', 'created_at']
+        
+        if len(response) > 0:
+            session = response[0]
+            missing_fields = []
+            
+            for field in frontend_required_fields:
+                if field not in session:
+                    missing_fields.append(field)
+                else:
+                    print(f"✅ {field}: {session[field]}")
+            
+            if missing_fields:
+                print(f"❌ Missing frontend required fields: {missing_fields}")
+                return False, response
+            
+            # Validate estimated_savings.annual_dollars specifically
+            savings = session.get('estimated_savings', {})
+            if not isinstance(savings, dict) or 'annual_dollars' not in savings:
+                print(f"❌ estimated_savings must have 'annual_dollars' field. Got: {savings}")
+                return False, response
+            
+            print(f"✅ estimated_savings.annual_dollars: {savings['annual_dollars']}")
+            
+        else:
+            print("ℹ️ No sessions to validate structure (empty database)")
+        
+        # Test 4: Sorting validation
+        if len(response) > 1:
+            print("\n🔍 Validating created_at descending sort...")
+            dates = []
+            for session in response:
+                created_at = session.get('created_at')
+                if created_at:
+                    try:
+                        if isinstance(created_at, str):
+                            dt = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                        else:
+                            dt = created_at
+                        dates.append(dt)
+                    except Exception as e:
+                        print(f"⚠️ Date parsing issue: {e}")
+                        continue
+            
+            # Check if dates are in descending order
+            is_sorted = all(dates[i] >= dates[i+1] for i in range(len(dates)-1))
+            if is_sorted:
+                print("✅ Sessions properly sorted by created_at descending")
+            else:
+                print("❌ Sessions not properly sorted")
+                return False, response
+        
+        # Test 5: Error handling
+        print("\n🔍 Testing error handling...")
+        
+        # Test with invalid endpoint variations
+        invalid_endpoints = [
+            "audit/session",  # Wrong path
+            "audit/sessions/",  # Trailing slash
+            "audit/sessions?invalid=param"  # Invalid query param
+        ]
+        
+        for endpoint in invalid_endpoints:
+            try:
+                url = f"{self.api_url}/{endpoint}"
+                resp = requests.get(url, timeout=5)
+                if endpoint == "audit/sessions?" or "invalid=param" in endpoint:
+                    # Query params should still work
+                    if resp.status_code != 200:
+                        print(f"⚠️ Query param handling: {endpoint} returned {resp.status_code}")
+                else:
+                    # Other invalid paths should return 404
+                    if resp.status_code == 404:
+                        print(f"✅ Correctly handles invalid path: {endpoint}")
+                    else:
+                        print(f"⚠️ Unexpected response for {endpoint}: {resp.status_code}")
+            except Exception as e:
+                print(f"⚠️ Error testing {endpoint}: {e}")
+        
+        print("✅ Comprehensive audit sessions endpoint testing completed")
+        return True, response
 
     def validate_oauth_security(self):
         """Validate OAuth security implementation"""
