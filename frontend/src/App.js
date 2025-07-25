@@ -226,13 +226,9 @@ const SessionCard = ({ id, orgName, findingsCount, annualSavings, date, onClick 
     return `$${Math.round(amount).toLocaleString()}`;
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
+  const dt = new Date(date);
+  const formattedDate = dt.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+  const formattedTime = dt.toLocaleTimeString(undefined, { hour:'numeric', minute:'2-digit' });
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -257,7 +253,10 @@ const SessionCard = ({ id, orgName, findingsCount, annualSavings, date, onClick 
           </span>
         </p>
       </div>
-      <p className="session-date">{formatDate(date)}</p>
+      <div className="session-timestamp">
+        <p className="session-date">{formattedDate}</p>
+        <p className="session-time">{formattedTime}</p>
+      </div>
     </div>
   );
 };
