@@ -1100,9 +1100,9 @@ body {
   box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3); /* gradient glow */
 }
 
-/* Features Section - Compact Above-the-Fold Layout */
+/* Features Section - Added Breathing Room */
 .features {
-  padding: 2rem 0 3rem 0; /* Reduced padding for compact layout */
+  padding: 4rem 0; /* increased from 3rem - more expansive feel */
   background: var(--bg-page);
 }
 
@@ -1110,17 +1110,24 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
-  display: flex;
-  gap: 1.5rem; /* Reduced gap */
+}
+
+.features .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem; /* increased gap for more air */
   justify-content: center;
 }
 
 .feature-card {
   background: var(--bg-page);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 1.5rem; /* Reduced padding */
-  width: 260px; /* Slightly smaller width */
+  /* Multi-layer Apple-style shadow */
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.1),
+    0 8px 16px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  width: 260px;
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid var(--divider);
@@ -1128,7 +1135,10 @@ body {
 
 .feature-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  /* Enhanced multi-layer shadow on hover */
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.1),
+    0 12px 24px rgba(0,0,0,0.08);
 }
 
 .feature-card .icon {
