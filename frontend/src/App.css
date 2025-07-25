@@ -533,15 +533,23 @@ body {
   color: var(--text-primary); /* Plain black text */
 }
 
-/* 2️⃣ Sessions Area - Premium Grid Layout */
+/* 2️⃣ Sessions Header */
+.sessions-header {
+  font-family: var(--font-family-base);
+  font-size: 20px;               /* 1.25rem */
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 24px 32px 16px;        /* space above & below */
+}
+
+/* 3️⃣ Sessions Area - Premium Grid Layout */
 .sessions-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 32px; /* 2rem between cards */
-  padding: 32px; /* 2rem around the grid */
+  padding: 0 32px 32px; /* no top padding (header handles that) */
   box-sizing: border-box;
   background: var(--bg-page);
-  min-height: calc(100vh - 88px); /* subtract strip height */
 }
 
 /* Premium Empty-State Card - Centered in Grid */
