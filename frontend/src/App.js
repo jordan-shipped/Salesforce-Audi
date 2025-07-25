@@ -797,10 +797,12 @@ const Dashboard = () => {
     } catch (error) {
       console.error('💥 Audit failed with error:', error);
       
-      // More detailed error handling
+      // Enhanced error handling for different error types
       if (error.response) {
         console.error('📝 Error response status:', error.response.status);
         console.error('📝 Error response data:', error.response.data);
+        
+        const errorDetail = error.response.data?.detail || error.response.data?.message || 'Unknown server error';
         
         if (error.response.status === 401) {
           alert('Authentication expired. Please reconnect to Salesforce and try again.');
@@ -808,15 +810,29 @@ const Dashboard = () => {
           localStorage.removeItem('salesforce_session_id');
           setSessionId(null);
           setConnected(false);
+        } else if (error.response.status === 500) {
+          // Server error - show user-friendly message
+          console.error('🚨 Server error details:', errorDetail);
+          alert(`Oops! Something went wrong on our end. Our team has been notified.\n\nTechnical details: ${errorDetail.substring(0, 100)}...`);
         } else {
-          alert(`Audit failed: ${error.response.data?.detail || error.response.data?.message || 'Unknown server error'}`);
+          alert(`Audit failed: ${errorDetail}`);
         }
       } else if (error.request) {
         console.error('📝 Error request:', error.request);
-        alert('Audit failed: Network error. Please check your connection.');
+        alert('Network error: Unable to reach the server. Please check your connection and try again.');
+      } else if (error.code === 'ECONNABORTED') {
+        console.error('📝 Request timeout');
+        alert('The audit is taking longer than expected. Please try again or contact support if this persists.');
       } else {
         console.error('📝 Error message:', error.message);
-        alert(`Audit failed: ${error.message}`);
+        
+        // Check for specific error patterns
+        if (error.message.includes('NoneType') || error.message.includes('not supported between instances')) {
+          console.error('🚨 NONE COMPARISON ERROR DETECTED:', error.message);
+          alert(`We detected a data processing issue. Our team has been notified.\n\nError: ${error.message}`);
+        } else {
+          alert(`Audit failed: ${error.message}`);
+        }
       }
     } finally {
       setRunning(false);
