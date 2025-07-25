@@ -364,12 +364,16 @@ const Dashboard = () => {
     return `$${Math.round(amount).toLocaleString()}`;
   };
 
+  // Sessions to show right now
+  const visibleSessions = sessions.slice(0, visibleCount);
+  const hasMore = sessions.length > visibleCount;
+
   return (
     <main className="dashboard">
-      {/* 1️⃣ Connection Status Strip - Plain Text, Right-Aligned */}
+      {/* 1️⃣ Connection Status Strip with ⚡︎ Indicator */}
       <section className="connection-strip">
         <div className="status">
-          {sessionId ? 'Connected' : 'Not connected'}
+          {sessionId ? '⚡︎ Connected' : 'Not connected'}
         </div>
       </section>
 
@@ -400,8 +404,8 @@ const Dashboard = () => {
             </div>
           )}
           
-          {/* Sessions - Render directly in grid */}
-          {!loading && sessions.length > 0 && sessions.map((session) => (
+          {/* Sessions - Show only visible sessions (first 4, then more) */}
+          {!loading && sessions.length > 0 && visibleSessions.map((session) => (
             <SessionCard 
               key={session.id}
               id={session.id}
@@ -412,6 +416,16 @@ const Dashboard = () => {
               onClick={() => navigate(`/audit/${session.id}`)}
             />
           ))}
+          
+          {/* See More Button - Show if there are more sessions */}
+          {!loading && hasMore && (
+            <button
+              className="btn-primary see-more-btn"
+              onClick={() => setVisibleCount(vc => vc + 4)}
+            >
+              See More
+            </button>
+          )}
         </div>
       </section>
 
