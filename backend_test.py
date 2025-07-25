@@ -60,60 +60,107 @@ class SalesforceAuditAPITester:
         return self.run_test("Root API Endpoint", "GET", "", 200)
 
     def test_oauth_authorize(self):
-        """Test OAuth authorization endpoint"""
-        success, response = self.run_test(
-            "OAuth Authorize",
-            "GET", 
-            "oauth/authorize",
-            200
-        )
+        """Test OAuth authorization endpoint - should return 302 redirect instead of JSON"""
+        print(f"\n🔍 Testing OAuth Authorize endpoint for 302 redirect...")
+        print(f"   URL: {self.api_url}/oauth/authorize")
         
-        if success and 'authorization_url' in response:
-            auth_url = response['authorization_url']
-            self.oauth_state = response.get('state')
+        self.tests_run += 1
+        
+        try:
+            # Make request without following redirects
+            response = requests.get(f"{self.api_url}/oauth/authorize", allow_redirects=False, timeout=10)
             
-            # Validate the authorization URL structure
-            print(f"\n🔍 Validating OAuth URL structure...")
-            print(f"   Auth URL: {auth_url}")
+            print(f"   Status: {response.status_code}")
             
-            # Parse URL components
-            parsed_url = urlparse(auth_url)
-            query_params = parse_qs(parsed_url.query)
-            
-            # Expected URL structure validation
-            expected_base = "https://login.salesforce.com/services/oauth2/authorize"
-            if not auth_url.startswith(expected_base):
-                print(f"❌ Invalid base URL. Expected: {expected_base}")
-                return False, response
-            
-            # Check required parameters
-            required_params = ['client_id', 'redirect_uri', 'scope', 'state', 'response_type']
-            for param in required_params:
-                if param not in query_params:
-                    print(f"❌ Missing required parameter: {param}")
-                    return False, response
-            
-            # Validate specific parameter values
-            if query_params.get('client_id', [''])[0] != '3MVG9BBZP0d0A9KAyOOqhXjeH9PXBsXSaw7NsQ7JhgWkUthSAKSLSWXboNRXlYhTjzVqV9Ja223CMpkekeQ7o':
-                print(f"❌ Invalid client_id")
-                return False, response
-            
-            expected_callback = "https://52c7eec7-1a32-4b8f-a7f9-3aa075155b2c.preview.emergentagent.com/oauth/callback"
-            if query_params.get('redirect_uri', [''])[0] != expected_callback:
-                print(f"❌ Invalid redirect_uri")
-                return False, response
-            
-            if query_params.get('scope', [''])[0] != 'api refresh_token':
-                print(f"❌ Invalid scope")
-                return False, response
-            
-            if query_params.get('response_type', [''])[0] != 'code':
-                print(f"❌ Invalid response_type")
-                return False, response
-            
-            print("✅ OAuth URL structure validation passed")
-            
-        return success, response
+            # Check if it returns 302 redirect (the fix)
+            if response.status_code == 302:
+                self.tests_passed += 1
+                print("✅ Passed - Returns 302 redirect (OAuth fix working!)")
+                
+                # Get the redirect URL from Location header
+                redirect_url = response.headers.get('Location')
+                if not redirect_url:
+                    print("❌ Missing Location header in 302 response")
+                    return False, {}
+                
+                print(f"   Redirect URL: {redirect_url}")
+                
+                # Validate the redirect URL structure
+                print(f"\n🔍 Validating OAuth redirect URL structure...")
+                
+                # Parse URL components
+                parsed_url = urlparse(redirect_url)
+                query_params = parse_qs(parsed_url.query)
+                
+                # Expected URL structure validation
+                expected_base = "https://login.salesforce.com/services/oauth2/authorize"
+                if not redirect_url.startswith(expected_base):
+                    print(f"❌ Invalid base URL. Expected: {expected_base}")
+                    return False, {}
+                
+                # Check required OAuth parameters
+                required_params = ['client_id', 'redirect_uri', 'scope', 'state', 'response_type']
+                for param in required_params:
+                    if param not in query_params:
+                        print(f"❌ Missing required parameter: {param}")
+                        return False, {}
+                    else:
+                        print(f"✅ Found parameter: {param} = {query_params[param][0]}")
+                
+                # Validate specific parameter values
+                if query_params.get('client_id', [''])[0] != '3MVG9BBZP0d0A9KAyOOqhXjeH9PXBsXSaw7NsQ7JhgWkUthSAKSLSWXboNRXlYhTjzVqV9Ja223CMpkekeQ7o':
+                    print(f"❌ Invalid client_id")
+                    return False, {}
+                
+                expected_callback = "https://52c7eec7-1a32-4b8f-a7f9-3aa075155b2c.preview.emergentagent.com/api/oauth/callback"
+                if query_params.get('redirect_uri', [''])[0] != expected_callback:
+                    print(f"❌ Invalid redirect_uri. Expected: {expected_callback}")
+                    return False, {}
+                
+                if query_params.get('scope', [''])[0] != 'api refresh_token':
+                    print(f"❌ Invalid scope")
+                    return False, {}
+                
+                if query_params.get('response_type', [''])[0] != 'code':
+                    print(f"❌ Invalid response_type")
+                    return False, {}
+                
+                # Store state for security validation
+                self.oauth_state = query_params.get('state', [''])[0]
+                
+                print("✅ OAuth URL structure validation passed")
+                print("✅ OAuth authorization fix verified - endpoint now redirects instead of returning JSON!")
+                
+                return True, {
+                    'redirect_url': redirect_url,
+                    'state': self.oauth_state,
+                    'status': 'redirect_working'
+                }
+                
+            elif response.status_code == 200:
+                # This would be the old behavior (returning JSON)
+                print("❌ Failed - Still returning 200 JSON instead of 302 redirect")
+                print("❌ OAuth fix not working - endpoint should redirect to Salesforce")
+                try:
+                    json_response = response.json()
+                    print(f"   JSON Response: {json.dumps(json_response, indent=2)[:300]}...")
+                except:
+                    print(f"   Response text: {response.text[:300]}...")
+                return False, {}
+                
+            else:
+                print(f"❌ Failed - Unexpected status code {response.status_code}")
+                print(f"   Expected: 302 (redirect) or 200 (old JSON behavior)")
+                try:
+                    error_data = response.json()
+                    print(f"   Error: {error_data}")
+                except:
+                    print(f"   Error: {response.text}")
+                return False, {}
+
+        except Exception as e:
+            print(f"❌ Failed - Error: {str(e)}")
+            return False, {}
 
     def test_oauth_callback_invalid_state(self):
         """Test OAuth callback with invalid state"""
