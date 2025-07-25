@@ -1439,17 +1439,29 @@ async def debug_oauth_sessions():
 async def get_audit_sessions():
     """Get all audit sessions"""
     try:
-        sessions = await db.audit_sessions.find().sort("created_at", -1).to_list(50)
+        sessions = await db.audit_sessions.find().to_list(50)
         result = []
         for session in sessions:
             session_data = convert_objectid(session)
-            # Convert datetime string back if needed
-            if isinstance(session_data.get('created_at'), str):
+            # Normalize created_at to datetime object for sorting
+            created_at = session_data.get('created_at')
+            if isinstance(created_at, str):
                 try:
-                    session_data['created_at'] = datetime.fromisoformat(session_data['created_at'])
+                    session_data['created_at'] = datetime.fromisoformat(created_at)
                 except:
                     session_data['created_at'] = datetime.utcnow()
+            elif not isinstance(created_at, datetime):
+                session_data['created_at'] = datetime.utcnow()
             result.append(session_data)
+        
+        # Sort by created_at descending in Python
+        result.sort(key=lambda x: x['created_at'], reverse=True)
+        
+        # Convert datetime back to ISO string for JSON serialization
+        for session in result:
+            if isinstance(session['created_at'], datetime):
+                session['created_at'] = session['created_at'].isoformat()
+        
         return result
     except Exception as e:
         logger.error(f"Error in get_audit_sessions: {str(e)}")
