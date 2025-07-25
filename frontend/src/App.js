@@ -1156,22 +1156,59 @@ const AuditResults = () => {
   const [openFindings, setOpenFindings] = useState(new Set());
   const [selectedDomain, setSelectedDomain] = useState('All');
   const [selectedPriority, setSelectedPriority] = useState('All');
+  const [auditStatus, setAuditStatus] = useState('loading');
 
   useEffect(() => {
     loadAuditData();
   }, [sessionId]);
+
+  // Polling effect for processing audits
+  useEffect(() => {
+    let pollInterval;
+    
+    if (auditStatus === 'processing') {
+      pollInterval = setInterval(async () => {
+        console.log('🔄 Polling for audit completion...');
+        await loadAuditData();
+      }, 3000); // Poll every 3 seconds
+    }
+    
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [auditStatus, sessionId]);
 
   const loadAuditData = async () => {
     try {
       console.log('🔍 Loading audit data for session:', sessionId);
       const response = await axios.get(`${API}/audit/${sessionId}`);
       console.log('✅ Audit data loaded successfully:', response.data);
-      setAuditData(response.data);
+      
+      const data = response.data;
+      const status = data.status || 'completed';
+      
+      setAuditStatus(status);
+      setAuditData(data);
+      
+      // Only stop loading if we have a final status
+      if (status === 'completed' || status === 'error') {
+        setLoading(false);
+      }
+      
     } catch (error) {
       console.error('❌ Failed to load audit data:', error);
       console.error('❌ Session ID:', sessionId);
       console.error('❌ Error details:', error.response?.data);
-    } finally {
+      
+      if (error.response?.status === 404) {
+        // Audit never existed - redirect to dashboard
+        window.location.href = '/dashboard';
+        return;
+      }
+      
+      setAuditStatus('error');
       setLoading(false);
     }
   };
