@@ -914,7 +914,7 @@ const OAuthCallback = () => {
         ) : (
           <>
             <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold text-gray-900">Successfully Connected!</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Connection Successful</h2>
             <p className="mt-2 text-gray-600">Redirecting to dashboard...</p>
           </>
         )}
