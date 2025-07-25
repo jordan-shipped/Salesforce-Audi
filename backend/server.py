@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
 import uuid
 from datetime import datetime, timedelta
+import traceback
 import json
 import random
 from bson import ObjectId
