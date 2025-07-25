@@ -291,6 +291,10 @@ const Dashboard = () => {
       setSessionId(newSessionId);
       setConnected(true);
       setShowToast(true); // Show success toast
+      
+      // Auto-hide toast after 3 seconds
+      setTimeout(() => setShowToast(false), 3000);
+      
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
