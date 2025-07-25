@@ -613,6 +613,9 @@ body {
   border-radius: 6px; /* slightly sharper, more Apple-like */
   padding: 6px 14px; /* tighter padding */
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px; /* small gap between icon and text */
   transition: background 0.2s ease, transform 0.1s ease, opacity 0.1s ease;
 }
 
@@ -623,6 +626,12 @@ body {
 .new-audit:active {
   transform: scale(0.98); /* micro-interaction: brief scale down */
   opacity: 0.8; /* slight opacity reduction */
+}
+
+.new-audit-icon {
+  font-size: 12px; /* slightly smaller than text for balance */
+  font-weight: 400; /* lighter weight for the symbol */
+  line-height: 1;
 }
 
 /* 2.5️⃣ Apple-Style View Mode Tabs */
