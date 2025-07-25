@@ -296,7 +296,7 @@ const Dashboard = () => {
   const loadSessions = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/audit-sessions`);
+      const response = await axios.get(`${API}/audit/sessions`);
       console.log('Sessions response:', response.data); // Debug log
       setSessions(response.data || []);
     } catch (error) {
