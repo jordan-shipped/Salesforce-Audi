@@ -1898,10 +1898,10 @@ async def salesforce_oauth_callback(request: Request, code: str = Query(...), st
 
 @api_router.post("/business/stage")
 async def get_business_stage(business_inputs: BusinessInputs):
-    """Get business stage information based on revenue and headcount"""
+    """Get business stage information based on revenue and headcount (supports both numeric and picklist inputs)"""
     try:
-        revenue = business_inputs.annual_revenue if business_inputs.annual_revenue is not None else 1000000
-        headcount = business_inputs.employee_headcount if business_inputs.employee_headcount is not None else 50
+        # Convert picklist selections to numeric values if needed
+        revenue, headcount = convert_picklist_to_numeric(business_inputs)
         
         business_stage = determine_business_stage(revenue, headcount)
         
@@ -1915,7 +1915,9 @@ async def get_business_stage(business_inputs: BusinessInputs):
             "constraints_and_actions": business_stage['constraints_and_actions'],
             "inputs": {
                 "annual_revenue": revenue,
-                "employee_headcount": headcount
+                "employee_headcount": headcount,
+                "revenue_range": business_inputs.revenue_range,
+                "employee_range": business_inputs.employee_range
             }
         }
         
