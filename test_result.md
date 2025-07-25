@@ -166,3 +166,5 @@ test_plan:
 agent_communication:
     - agent: "main"
       message: "Found API endpoint mismatch - frontend was calling /api/audit-sessions but backend has /api/audit/sessions. Fixed the frontend API call. Dashboard component already has complete logic for session fetching and conditional rendering, but needs testing to verify it works correctly."
+    - agent: "testing"
+      message: "BACKEND TESTING COMPLETED: GET /api/audit/sessions endpoint is mostly functional but has a critical sorting issue. The endpoint returns correct data structure with all required fields (id, org_name, findings_count, estimated_savings.annual_dollars, created_at) but sessions are NOT sorted by created_at descending as expected. Found 32 sessions in database. Main agent needs to fix the sorting logic in the database query at line 1442 in server.py - the sort() method may not be working correctly."
