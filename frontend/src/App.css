@@ -715,6 +715,29 @@ body {
   border: 0;
 }
 
+/* Dashboard-only override - Force Solid SF Blue */
+.dashboard .btn-primary {
+  /* Remove any gradient background */
+  background: var(--color-accent) !important;
+  /* Ensure text stays white */  
+  color: #FFFFFF !important;
+  /* No gradient shadows or overlays */
+  box-shadow: none !important;
+  /* Consistent sizing and spacing */
+  padding: 12px 24px !important;
+  font-size: 14px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  transition: background-color 0.2s ease, transform 0.2s ease !important;
+}
+
+.dashboard .btn-primary:hover {
+  background: var(--color-accent-hover) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: none !important;
+}
+
 /* Enhanced Loading States */
 .loading-state {
   display: flex;
