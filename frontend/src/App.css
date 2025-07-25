@@ -874,8 +874,8 @@ body {
   min-height: auto !important;
   max-width: none !important;
 
-  /* 3. Pill‑shape, padding, font to match other CTAs */
-  padding: 12px 24px !important;     /* 0.75rem top/bottom, 1.5rem sides */
+  /* 3. Wider pill‑shape padding to match first screenshot */
+  padding: 10px 32px !important;     /* Less vertical, more horizontal padding */
   font-size: 14px !important;        /* 0.875rem */
   line-height: 1.2 !important;
   border-radius: 8px !important;
