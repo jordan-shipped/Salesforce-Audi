@@ -105,6 +105,21 @@
 user_problem_statement: "Implement Phase 1 of Alex Hormozi Stage Engine for Salesforce Audit - Core stage mapping logic, enhanced ROI calculations, domain classification, and priority scoring while maintaining existing UI"
 
 backend:
+  - task: "Implement comprehensive picklist + stage engine integration"
+    implemented: true
+    working: false
+    file: "backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Implemented picklist-based business inputs with stage engine integration for Apple-grade StageSummaryPanel"
+        - working: false
+          agent: "testing"
+          comment: "PICKLIST INTEGRATION TESTING COMPLETED - CRITICAL ISSUE FOUND: ❌ Enterprise scenario mapping failure: 30M+ revenue ($50M) + 250-500 employees (375) maps to Stage 7 (Categorize) instead of expected Stage 9 (Capitalize). Root cause: $50M falls into Stage 7 range (20M-50M) rather than Stage 9 range (≥100M). Picklist conversion '30M+' → $50M needs adjustment to reach Stage 9. ✅ SUCCESSFUL COMPONENTS: Enhanced business_inputs accepts both picklist strings and numeric values, Apple-grade StageSummaryPanel data structure properly defined, constraints_and_actions arrays properly structured, all existing stage engine functionality maintained. ✅ SPECIFIC SUCCESSES: Startup scenario (<100k → $50K, 0-some → 1) correctly maps to Stage 1 (Monetize), Growth scenario (1M-3M → $2M, 5-9 → 7) correctly maps to Stage 4 (Prioritize). RECOMMENDATION: Adjust picklist conversion for '30M+' from $50M to $100M+ to properly reach Stage 9."
+
   - task: "Implement Stage 0-9 business mapping logic with Alex Hormozi stages"
     implemented: true
     working: true
@@ -119,6 +134,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "STAGE MAPPING VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) All 6 test scenarios map correctly to expected stages (Stage 0: $0/0 employees → Improvise, Stage 2: $300K/3 employees → Advertise, Stage 4: $3.5M/7 employees → Prioritize, Stage 9: $150M/300 employees → Capitalize, etc.), 2) POST /api/business/stage endpoint accepts BusinessInputs model correctly, 3) Response includes all required fields (stage, name, role, headcount_range, revenue_range, bottom_line, constraints_and_actions), 4) Edge case handling works (revenue=0, headcount=0 properly maps to Stage 0), 5) Scoring algorithm correctly prioritizes both revenue and headcount factors. Fixed minor issue with 0 values being treated as falsy. Stage mapping logic is fully functional and ready for production."
+        - working: true
+          agent: "testing"
+          comment: "RE-VERIFIED WITH PICKLIST INTEGRATION: Stage mapping core functionality remains working correctly. All 10 stages (0-9) properly configured and accessible. Stage mapping algorithm works correctly for most scenarios but has edge case issue with enterprise-level mappings where $50M revenue maps to Stage 7 instead of Stage 9. This is a picklist conversion issue, not a core stage mapping problem."
           
   - task: "Add BusinessInputs model and update AuditRequest to accept revenue/headcount"
     implemented: true
