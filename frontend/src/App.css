@@ -861,40 +861,34 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* ======================
-   See More Button Reset
-   ====================== */
-
-/* Target exactly the "See More" button inside your sessions list */
+/* ─── See More Button Reset & Styling ─── */
 .sessions-list .see-more-btn {
-  /* 1. Span the grid for centering */
+  /* 1. Span the grid so we can center it */
   grid-column: 1 / -1;
   justify-self: center;
-  
-  /* 2. Reset any prior fixed sizing */
+
+  /* 2. Reset any prior fixed‑size overrides */
   width: auto !important;
   height: auto !important;
   min-width: auto !important;
+  min-height: auto !important;
   max-width: none !important;
-  
-  /* 3. Use the same padding & font as your standard btn-primary */
-  padding: 12px 24px !important;   /* 0.75rem / 1.5rem */
-  font-size: 14px !important;      /* 0.875rem */
-  line-height: 1.2 !important;
-  
-  /* 4. Keep it inline‑block so it wraps to content */
-  display: inline-block !important;
-  
-  /* 5. Preserve your pill shape */
-  border-radius: 8px !important;
 
-  /* 6. Apply the standard solid‑black Dashboard style */
+  /* 3. Pill‑shape, padding, font to match other CTAs */
+  padding: 12px 24px !important;     /* 0.75rem top/bottom, 1.5rem sides */
+  font-size: 14px !important;        /* 0.875rem */
+  line-height: 1.2 !important;
+  border-radius: 8px !important;
+  display: inline-block !important;
+  margin-top: 32px !important;
+
+  /* 4. Solid black background, white text */
   background-color: #000 !important;
   color: #fff !important;
-  box-shadow: none !important;
   border: none !important;
-  
-  /* 7. Hover state */
+  box-shadow: none !important;
+
+  /* 5. Hover state: simple darken + lift */
   transition: background-color 0.2s ease, transform 0.1s ease !important;
 }
 .sessions-list .see-more-btn:hover {
