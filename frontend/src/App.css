@@ -232,14 +232,16 @@
 }
 
 /* ===============================================
-   Truly Apple-Grade "Choose Your Audit" Modal
+   Native Apple-Grade "Choose Your Audit" Modal
    =============================================== */
 
-/* Modal Overlay */
+/* Native Material Backdrop */
 .choose-audit-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,12 +249,21 @@
   padding: 24px;
 }
 
-/* Modal Container */
+/* Respect "Reduce Transparency" setting */
+@media (prefers-reduced-transparency: reduce) {
+  .choose-audit-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Modal Container - Perfect 20px Radius */
 .choose-audit-modal {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  padding: 32px;
+  padding: 24px;
   width: 100%;
   max-width: 480px;
   max-height: 90vh;
@@ -271,7 +282,7 @@
   }
 }
 
-/* Entrance Animation */
+/* Entrance Animation - Respect "Reduce Motion" */
 @keyframes fadeUpScale {
   from {
     opacity: 0;
@@ -283,17 +294,27 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .choose-audit-modal {
+    animation: fadeIn 200ms ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
 /* Minimalist Close Control */
 .choose-audit-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 8px;
+  right: 8px;
   background: none;
   border: none;
   color: #6E6E73;
   cursor: pointer;
-  padding: 14px;
-  margin: -14px;
+  padding: 8px;
   border-radius: 8px;
   transition: color 0.15s ease;
 }
@@ -307,23 +328,26 @@
   outline-offset: 2px;
 }
 
-/* Title - Apple Typography */
+/* Title - Perfect Apple Typography */
 .choose-audit-title {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   font-size: 22px;
   font-weight: 700;
   line-height: 28px;
   color: #1C1C1E;
-  margin: 0 0 32px 0;
+  margin: 0 0 20px 0;
+  text-align: center;
 }
 
-/* Native SF-Style Segmented Control */
+/* Native macOS Segmented Control - Perfect Harmonization */
 .segmented-control {
   display: flex;
-  background: #F2F2F7;
-  border-radius: 8px;
-  padding: 2px;
-  margin-bottom: 24px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 0;
+  margin-bottom: 16px;
+  height: 32px;
+  gap: 2px;
   position: relative;
 }
 
@@ -331,25 +355,30 @@
   flex: 1;
   background: none;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 10px;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: #1C1C1E;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   position: relative;
   z-index: 1;
+  height: 28px;
+  margin: 2px;
 }
 
 .segment.selected {
   background: white;
   color: #007AFF;
+  border: 1px solid #007AFF;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 1px;
+  border-radius: 11px;
 }
 
 .segment:hover:not(.selected) {
+  background: rgba(0, 0, 0, 0.05);
   color: #007AFF;
 }
 
@@ -358,7 +387,7 @@
   outline-offset: 2px;
 }
 
-/* Detail Pane - Progressive Disclosure */
+/* Detail Pane - Perfect Slide-Fade Animation */
 .detail-pane {
   min-height: 60px;
   margin-bottom: 24px;
@@ -366,13 +395,13 @@
 
 .quick-detail,
 .custom-detail {
-  animation: crossFade 200ms ease-out;
+  animation: slideDetailFade 200ms ease-in-out;
 }
 
-@keyframes crossFade {
+@keyframes slideDetailFade {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-4px);
   }
   to {
     opacity: 1;
@@ -380,7 +409,14 @@
   }
 }
 
-/* Quick Detail Text */
+@media (prefers-reduced-motion: reduce) {
+  .quick-detail,
+  .custom-detail {
+    animation: fadeIn 200ms ease-out;
+  }
+}
+
+/* Body Text - Perfect Line Length */
 .detail-text {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   font-size: 15px;
@@ -389,32 +425,38 @@
   color: #6E6E73;
   margin: 0;
   text-align: center;
-  padding: 20px 0;
+  padding: 16px 0;
+  max-width: 24ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Custom Detail - Salary Fields */
 .salary-fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .salary-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
+/* Form Labels - Perfect Hierarchy */
 .field-label {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
-  color: #1C1C1E;
+  color: #6E6E73;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .salary-field-input {
-  height: 48px;
-  padding: 0 16px;
+  height: 44px;
+  padding: 0 12px;
   border: 1px solid #D1D1D6;
   border-radius: 8px;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
@@ -439,17 +481,17 @@
 .audit-button-container {
   margin-top: 24px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
   .audit-button-container {
-    margin-top: 16px;
+    margin-top: 24px;
     justify-content: stretch;
   }
 }
 
-/* Primary Button - systemBlue Gradient */
+/* Perfect systemBlue Button */
 .audit-start-button-primary {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   font-size: 16px;
@@ -458,9 +500,10 @@
   background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
   border: none;
   border-radius: 12px;
-  padding: 14px 24px;
+  height: 44px;
+  padding: 0 24px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.24);
   transition: all 0.15s ease;
   min-width: 140px;
 }
@@ -473,17 +516,28 @@
 
 .audit-start-button-primary:hover {
   transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.24);
 }
 
 .audit-start-button-primary:active {
   transform: scale(0.98);
 }
 
+.audit-start-button-primary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.24);
+}
+
 .audit-start-button-primary:focus {
   outline: 2px solid #007AFF;
   outline-offset: 2px;
 }
+
+/* ===============================================
+   Truly Apple-Grade OrgProfileModal Enhancements
+   =============================================== */
 
 /* ===============================================
    Apple-Grade "Choose Your Audit" Modal
