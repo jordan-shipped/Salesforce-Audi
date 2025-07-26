@@ -1725,19 +1725,20 @@ const AuditResults = () => {
     <div className="PageContainer">
       {/* Header */}
       <div className="Header">
-        <Link to="/dashboard">
-          <ButtonText>
-            <ArrowLeft size={16} />
-            Back to Dashboard
-          </ButtonText>
+        <Link to="/dashboard" className="BackButton">
+          <ArrowLeft size={16} />
+          Back
         </Link>
         <div className="HeaderActions">
-          <ButtonOutline onClick={() => setShowEditAssumptions(true)}>
+          <button 
+            onClick={() => setShowEditAssumptions(true)}
+            className="apple-btn-outline"
+          >
             Edit Assumptions
-          </ButtonOutline>
-          <ButtonPrimary onClick={generatePDF}>
+          </button>
+          <button onClick={generatePDF} className="apple-btn-primary">
             Export PDF
-          </ButtonPrimary>
+          </button>
         </div>
       </div>
 
