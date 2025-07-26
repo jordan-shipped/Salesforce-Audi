@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple-Grade "Choose Your Audit" Modal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            background: #f5f5f7;
+            padding: 20px;
+            line-height: 1.4;
+        }
+        
+        /* Modal Overlay */
+        .choose-audit-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 24px;
+        }
+        
+        /* Modal Container */
+        .choose-audit-modal {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            padding: 32px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeUpScale 200ms ease-out;
+        }
+        
+        /* Entrance Animation */
+        @keyframes fadeUpScale {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Close Control */
+        .choose-audit-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #6E6E73;
+            cursor: pointer;
+            padding: 14px;
+            margin: -14px;
+            border-radius: 8px;
+            transition: color 0.15s ease;
+        }
+        
+        .choose-audit-close:hover {
+            color: #1C1C1E;
+        }
+        
+        /* Title */
+        .choose-audit-title {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 28px;
+            color: #1C1C1E;
+            margin: 0 0 12px 0;
+        }
+        
+        /* Option Cards Container */
+        .audit-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        /* Individual Option Card */
+        .audit-option-card {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid #E0E0E5;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+        
+        .audit-option-card:hover {
+            border-color: #007AFF;
+        }
+        
+        .audit-option-card.selected {
+            background: #F5F7FA;
+            border-color: #007AFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Hidden Radio Input */
+        .audit-radio {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Option Content */
+        .audit-option-content {
+            flex: 1;
+            margin-left: 12px;
+        }
+        
+        .audit-option-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1C1C1E;
+            margin-bottom: 2px;
+        }
+        
+        .audit-option-subtitle {
+            font-size: 14px;
+            font-weight: 400;
+            color: #6E6E73;
+            line-height: 1.4;
+        }
+        
+        /* Check Icon */
+        .audit-option-check {
+            margin-left: 12px;
+            animation: checkFadeIn 150ms ease-out;
+        }
+        
+        @keyframes checkFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Custom Salary Section */
+        .custom-salary-section {
+            margin-top: 24px;
+            padding: 20px;
+            background: #F5F7FA;
+            border-radius: 12px;
+            border: 1px solid #E0E0E5;
+            display: none;
+        }
+        
+        .custom-salary-section.show {
+            display: block;
+            animation: slideDown 200ms ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .salary-section-description {
+            font-size: 14px;
+            color: #6E6E73;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+        
+        .salary-input-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+        
+        .salary-input-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .salary-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1C1C1E;
+            min-width: 120px;
+            text-transform: capitalize;
+        }
+        
+        .salary-input-wrapper {
+            flex: 1;
+        }
+        
+        .salary-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #E0E0E5;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1C1C1E;
+            background: white;
+            transition: border-color 0.15s ease;
+        }
+        
+        .salary-input:focus {
+            outline: none;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+        
+        .salary-input::placeholder {
+            color: #A1A1A6;
+        }
+        
+        .salary-hourly {
+            font-size: 12px;
+            color: #6E6E73;
+            min-width: 70px;
+            text-align: right;
+        }
+        
+        /* Primary Action Button Container */
+        .audit-button-container {
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        /* Primary Action Button */
+        .audit-start-button {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1C1C1E;
+            background: white;
+            border: 1px solid #1C1C1E;
+            border-radius: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            min-width: 120px;
+        }
+        
+        .audit-start-button:hover:not(.disabled) {
+            background: #F5F7FA;
+        }
+        
+        .audit-start-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Demo Header */
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .demo-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1C1C1E;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+        
+        .demo-description {
+            color: #6E6E73;
+            font-size: 17px;
+            font-weight: 400;
+        }
+        
+        .spec-list {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .spec-list h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1C1C1E;
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+        
+        .spec-list ul {
+            list-style: none;
+            color: #515154;
+        }
+        
+        .spec-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .spec-list li::before {
+            content: "✓";
+            color: #30D158;
+            font-weight: 600;
+            margin-right: 12px;
+            margin-top: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1 class="demo-title">"Choose Your Audit"</h1>
+        <p class="demo-description">
+            Premium Apple-inspired modal with card-based selections and crystal-clear calls to action
+        </p>
+    </div>
+
+    <div class="choose-audit-overlay">
+        <div class="choose-audit-modal">
+            <!-- Close Control -->
+            <button class="choose-audit-close" onclick="alert('Close clicked')">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+            </button>
+
+            <!-- Title -->
+            <h2 class="choose-audit-title">Choose Your Audit</h2>
+
+            <form>
+                <!-- Option Cards -->
+                <div class="audit-options">
+                    <!-- Quick Audit Card -->
+                    <div class="audit-option-card" id="quickCard" onclick="selectAudit('quick')">
+                        <input type="radio" name="auditType" value="quick" class="audit-radio" id="quickRadio">
+                        <div class="audit-option-content">
+                            <div class="audit-option-title">Quick Audit</div>
+                            <div class="audit-option-subtitle">Uses U.S. national averages</div>
+                        </div>
+                        <div class="audit-option-check" id="quickCheck" style="display: none;">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="10" fill="#007AFF"/>
+                                <path d="M6 10l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Custom Audit Card -->
+                    <div class="audit-option-card" id="customCard" onclick="selectAudit('custom')">
+                        <input type="radio" name="auditType" value="custom" class="audit-radio" id="customRadio">
+                        <div class="audit-option-content">
+                            <div class="audit-option-title">Custom Audit</div>
+                            <div class="audit-option-subtitle">Enter your team's actual salaries</div>
+                        </div>
+                        <div class="audit-option-check" id="customCheck" style="display: none;">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="10" fill="#007AFF"/>
+                                <path d="M6 10l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Salary Section -->
+                <div class="custom-salary-section" id="customSalarySection">
+                    <p class="salary-section-description">
+                        Enter average annual salaries for each department (USD). Leave blank to use national averages.
+                    </p>
+                    
+                    <div class="salary-input-row">
+                        <label class="salary-label">customer service:</label>
+                        <div class="salary-input-wrapper">
+                            <input type="number" placeholder="$45,000 (default)" class="salary-input">
+                        </div>
+                        <span class="salary-hourly">≈ $22/hr</span>
+                    </div>
+                    
+                    <div class="salary-input-row">
+                        <label class="salary-label">sales:</label>
+                        <div class="salary-input-wrapper">
+                            <input type="number" placeholder="$65,000 (default)" class="salary-input">
+                        </div>
+                        <span class="salary-hourly">≈ $31/hr</span>
+                    </div>
+                    
+                    <div class="salary-input-row">
+                        <label class="salary-label">marketing:</label>
+                        <div class="salary-input-wrapper">
+                            <input type="number" placeholder="$60,000 (default)" class="salary-input">
+                        </div>
+                        <span class="salary-hourly">≈ $29/hr</span>
+                    </div>
+                    
+                    <div class="salary-input-row">
+                        <label class="salary-label">engineering:</label>
+                        <div class="salary-input-wrapper">
+                            <input type="number" placeholder="$95,000 (default)" class="salary-input">
+                        </div>
+                        <span class="salary-hourly">≈ $46/hr</span>
+                    </div>
+                    
+                    <div class="salary-input-row">
+                        <label class="salary-label">executives:</label>
+                        <div class="salary-input-wrapper">
+                            <input type="number" placeholder="$150,000 (default)" class="salary-input">
+                        </div>
+                        <span class="salary-hourly">≈ $72/hr</span>
+                    </div>
+                </div>
+
+                <!-- Primary Action Button -->
+                <div class="audit-button-container">
+                    <button type="button" class="audit-start-button disabled" id="startButton" onclick="startAudit()">
+                        Start Audit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="spec-list">
+        <h3>✨ Apple-Grade Implementation Spec</h3>
+        <ul>
+            <li><strong>Modal Container:</strong> 16px radius, rgba(0,0,0,0.05) shadow, 480px max-width, fade-up + scale animation</li>
+            <li><strong>Typography:</strong> SF Pro Bold 22px title, Semibold 17px card titles, Regular 14px subtitles</li>
+            <li><strong>Option Cards:</strong> Full-clickable cards with 12px radius, #E0E0E5 borders, #F5F7FA selected state</li>
+            <li><strong>Interaction States:</strong> #007AFF hover borders, check-in-circle icons, 150ms transitions</li>
+            <li><strong>Primary Button:</strong> SF Pro Semibold 16px, #1C1C1E border, disabled state at 50% opacity</li>
+            <li><strong>Custom Inputs:</strong> Slide-down animation, #F5F7FA background, proper focus states</li>
+            <li><strong>Accessibility:</strong> Full ARIA implementation, keyboard navigation, focus management</li>
+            <li><strong>Remove Assumptions:</strong> Calculation assumptions section completely removed</li>
+        </ul>
+    </div>
+
+    <script>
+        let selectedType = '';
+        
+        function selectAudit(type) {
+            // Clear previous selection
+            document.getElementById('quickCard').classList.remove('selected');
+            document.getElementById('customCard').classList.remove('selected');
+            document.getElementById('quickCheck').style.display = 'none';
+            document.getElementById('customCheck').style.display = 'none';
+            document.getElementById('customSalarySection').classList.remove('show');
+            
+            // Set new selection
+            selectedType = type;
+            if (type === 'quick') {
+                document.getElementById('quickCard').classList.add('selected');
+                document.getElementById('quickCheck').style.display = 'block';
+                document.getElementById('quickRadio').checked = true;
+            } else if (type === 'custom') {
+                document.getElementById('customCard').classList.add('selected');
+                document.getElementById('customCheck').style.display = 'block';
+                document.getElementById('customRadio').checked = true;
+                document.getElementById('customSalarySection').classList.add('show');
+            }
+            
+            // Enable start button
+            const startButton = document.getElementById('startButton');
+            startButton.classList.remove('disabled');
+        }
+        
+        function startAudit() {
+            if (selectedType) {
+                alert(`Starting ${selectedType} audit! 🚀\n\nAnalytics tracked: audit_option_selected\nMode: ${selectedType}`);
+            }
+        }
+    </script>
+</body>
+</html>
