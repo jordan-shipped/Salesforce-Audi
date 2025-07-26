@@ -771,7 +771,7 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
         aria-labelledby="choose-audit-title"
         aria-modal="true"
       >
-        {/* Close Control */}
+        {/* Minimalist Close Control */}
         <button 
           onClick={onClose} 
           className="choose-audit-close"
@@ -782,114 +782,67 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
           </svg>
         </button>
 
-        {/* Title */}
+        {/* Title - Apple Typography */}
         <h2 id="choose-audit-title" className="choose-audit-title">
           Choose Your Audit
         </h2>
 
         <form onSubmit={handleSubmit}>
-          {/* Option Cards */}
-          <div className="audit-options">
-            {/* Quick Audit Card */}
-            <div 
-              className={`audit-option-card ${selectedAuditType === 'quick' ? 'selected' : ''}`}
-              onClick={() => handleCardClick('quick')}
-              onKeyDown={(e) => handleKeyDown(e, 'quick')}
-              tabIndex="0"
-              role="radio"
-              aria-checked={selectedAuditType === 'quick'}
+          {/* Native SF-Style Segmented Control */}
+          <div className="segmented-control">
+            <button
+              type="button"
+              className={`segment ${auditMode === 'quick' ? 'selected' : ''}`}
+              onClick={() => handleSegmentChange('quick')}
             >
-              <input
-                type="radio"
-                name="auditType"
-                value="quick"
-                checked={selectedAuditType === 'quick'}
-                onChange={() => handleCardClick('quick')}
-                className="audit-radio"
-                tabIndex="-1"
-              />
-              <div className="audit-option-content">
-                <div className="audit-option-title">Quick Audit</div>
-                <div className="audit-option-subtitle">Uses U.S. national averages</div>
-              </div>
-              {selectedAuditType === 'quick' && (
-                <div className="audit-option-check">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <circle cx="10" cy="10" r="10" fill="#007AFF"/>
-                    <path d="M6 10l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-              )}
-            </div>
-
-            {/* Custom Audit Card */}
-            <div 
-              className={`audit-option-card ${selectedAuditType === 'custom' ? 'selected' : ''}`}
-              onClick={() => handleCardClick('custom')}
-              onKeyDown={(e) => handleKeyDown(e, 'custom')}
-              tabIndex="0"
-              role="radio"
-              aria-checked={selectedAuditType === 'custom'}
+              Quick
+            </button>
+            <button
+              type="button"
+              className={`segment ${auditMode === 'custom' ? 'selected' : ''}`}
+              onClick={() => handleSegmentChange('custom')}
             >
-              <input
-                type="radio"
-                name="auditType"
-                value="custom"
-                checked={selectedAuditType === 'custom'}
-                onChange={() => handleCardClick('custom')}
-                className="audit-radio"
-                tabIndex="-1"
-              />
-              <div className="audit-option-content">
-                <div className="audit-option-title">Custom Audit</div>
-                <div className="audit-option-subtitle">Enter your team's actual salaries</div>
-              </div>
-              {selectedAuditType === 'custom' && (
-                <div className="audit-option-check">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <circle cx="10" cy="10" r="10" fill="#007AFF"/>
-                    <path d="M6 10l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-              )}
-            </div>
+              Custom
+            </button>
           </div>
 
-          {/* Custom Salary Inputs - Only show when custom is selected */}
-          {selectedAuditType === 'custom' && (
-            <div className="custom-salary-section">
-              <p className="salary-section-description">
-                Enter average annual salaries for each department (USD). Leave blank to use national averages.
-              </p>
-              
-              {Object.entries(defaultSalaries).map(([dept, defaultValue]) => (
-                <div key={dept} className="salary-input-row">
-                  <label className="salary-label">
-                    {dept.replace('_', ' ')}:
-                  </label>
-                  <div className="salary-input-wrapper">
-                    <input
-                      type="number"
-                      placeholder={`$${defaultValue.toLocaleString()} (default)`}
-                      value={departmentSalaries[dept] || ''}
-                      onChange={(e) => handleSalaryChange(dept, e.target.value)}
-                      className="salary-input"
-                    />
-                  </div>
-                  <span className="salary-hourly">
-                    ≈ ${Math.round((departmentSalaries[dept] || defaultValue) / 2080)}/hr
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* Contextual Content - Progressive Disclosure */}
+          <div className="detail-pane">
+            {auditMode === 'quick' && (
+              <div className="quick-detail" key="quick">
+                <p className="detail-text">
+                  We'll use U.S. national salary averages for your hourly-rate calculations.
+                </p>
+              </div>
+            )}
 
-          {/* Primary Action Button */}
+            {auditMode === 'custom' && (
+              <div className="custom-detail" key="custom">
+                <div className="salary-fields">
+                  {Object.entries(defaultSalaries).map(([dept, defaultValue]) => (
+                    <div key={dept} className="salary-field">
+                      <label className="field-label">
+                        {dept.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </label>
+                      <input
+                        type="number"
+                        placeholder={`$${defaultValue.toLocaleString()}`}
+                        value={departmentSalaries[dept] || ''}
+                        onChange={(e) => handleSalaryChange(dept, e.target.value)}
+                        className="salary-field-input"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Primary Button - systemBlue Gradient */}
           <div className="audit-button-container">
             <button
               type="submit"
-              className={`audit-start-button ${!selectedAuditType ? 'disabled' : ''}`}
-              disabled={!selectedAuditType}
+              className="audit-start-button-primary"
             >
               Start Audit
             </button>
