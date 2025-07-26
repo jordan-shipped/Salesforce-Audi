@@ -7,7 +7,7 @@ import './App.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Landing Page Component - Above the Fold, No Scrolling
+// Landing Page Component - Apple-Grade Design System
 const LandingPage = () => {
   const [showPreAuditModal, setShowPreAuditModal] = useState(false);
   const { hasBusinessInfo, saveBusinessInfo } = useBusinessInfo();
@@ -33,46 +33,48 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="landing-page">
-      <div className="max-w-5xl mx-auto p-8 space-y-16">
-        {/* Hero Section - Apple-Grade */}
-        <section className="text-center space-y-6">
-          <h1 className="text-4xl font-bold text-gray-900">
-            Optimize Your Salesforce
-          </h1>
-          <h2 className="text-5xl font-extrabold">
-            <span className="gradient-text">Like Never Before</span>
-          </h2>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed">
-            Discover hidden inefficiencies, automate manual processes, and unlock substantial cost savings 
-            with our AI-powered Salesforce audit tool.
-          </p>
-          <button 
-            onClick={handleStartFreeAudit} 
-            className="px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-          >
-            Start Free Audit
-          </button>
+    <div className="LandingPageWrapper">
+      <div className="LandingPageContent">
+        {/* Hero Section */}
+        <section className="HeroSection">
+          <div className="HeroContent">
+            <h1 className="HeroTitle">Optimize Your Salesforce</h1>
+            <h2 className="HeroSubtitle">
+              <span className="PrimaryGradientText">Like Never Before</span>
+            </h2>
+            <p className="HeroCopy">
+              Discover hidden inefficiencies, automate manual processes, and unlock 
+              substantial cost savings with our AI-powered Salesforce audit tool.
+            </p>
+            <button 
+              onClick={handleStartFreeAudit} 
+              className="HeroCTA apple-btn-primary"
+            >
+              Start Free Audit
+            </button>
+          </div>
         </section>
 
-        {/* Features Grid - Premium Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <FeatureCard
-            icon="⚡︎"
-            title="Instant Analysis"
-            description="Complete Salesforce audit in under 60 seconds. No setup, no waiting."
-          />
-          <FeatureCard
-            icon="🤖"
-            title="Smart Insights"
-            description="AI-powered recommendations tailored to your business size and industry."
-          />
-          <FeatureCard
-            icon="📄"
-            title="Actionable Reports"
-            description="Detailed PDF reports with step-by-step implementation guidance."
-          />
-        </section>
+        {/* Features Grid */}
+        <div className="FeaturesGrid">
+          <div className="apple-card FeatureCard">
+            <Bolt className="FeatureIcon" />
+            <h3 className="FeatureTitle">Instant Analysis</h3>
+            <p className="FeatureDescription">Complete Salesforce audit in under 60 seconds. No setup, no waiting.</p>
+          </div>
+          
+          <div className="apple-card FeatureCard">
+            <ChartPie className="FeatureIcon" />
+            <h3 className="FeatureTitle">Smart Insights</h3>
+            <p className="FeatureDescription">AI-powered recommendations tailored to your business size and industry.</p>
+          </div>
+          
+          <div className="apple-card FeatureCard">
+            <FileText className="FeatureIcon" />
+            <h3 className="FeatureTitle">Actionable Reports</h3>
+            <p className="FeatureDescription">Professional PDF reports with prioritized recommendations and guidance.</p>
+          </div>
+        </div>
       </div>
 
       {/* PreAudit Modal */}
