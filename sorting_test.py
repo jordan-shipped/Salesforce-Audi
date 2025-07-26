@@ -12,7 +12,7 @@ import sys
 def test_sessions_sorting():
     """Test that sessions are properly sorted by created_at descending"""
     
-    base_url = "https://f7d85829-0100-4d00-b60e-d0a6bd56fc03.preview.emergentagent.com"
+    base_url = "https://b2051006-bc7d-406b-b13e-7f361c5d4220.preview.emergentagent.com"
     api_url = f"{base_url}/api"
     
     print("🔍 Testing GET /api/audit/sessions sorting functionality")
@@ -116,7 +116,7 @@ def test_sessions_sorting():
 def test_data_structure_compatibility():
     """Test that all sessions have the required fields for frontend compatibility"""
     
-    base_url = "https://f7d85829-0100-4d00-b60e-d0a6bd56fc03.preview.emergentagent.com"
+    base_url = "https://b2051006-bc7d-406b-b13e-7f361c5d4220.preview.emergentagent.com"
     api_url = f"{base_url}/api"
     
     print("\n🔍 Testing frontend data structure compatibility")
