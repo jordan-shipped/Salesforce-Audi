@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implement Phase 1 of Alex Hormozi Stage Engine for Salesforce Audit - Core stage mapping logic, enhanced ROI calculations, domain classification, and priority scoring while maintaining existing UI"
+user_problem_statement: "Complete the integration of the PreAuditModal component into the App.js and the OAuth flow. The OAuthCallback component needs to be updated to check for existing businessInfo in the session and redirect to the PreAuditModal if it's missing. Ensure existing 'New Audit' or 'Quick/Custom' paths auto-prefill inputs from the session context."
 
 backend:
   - task: "Implement comprehensive picklist + stage engine integration"
