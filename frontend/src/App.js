@@ -891,6 +891,7 @@ const Dashboard = () => {
   const [showOrgProfile, setShowOrgProfile] = useState(false);
   const [showBusinessInput, setShowBusinessInput] = useState(false);
   const [businessInputs, setBusinessInputs] = useState(null);
+  const { businessInfo, hasBusinessInfo } = useBusinessInfo();
   const navigate = useNavigate();
 
   // Load sessions when connected
