@@ -1982,13 +1982,13 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.85); /* backgroundMaterial blur */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: var(--z-modal);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(25px); /* NSVisualEffectView .windowBackground style */
+  -webkit-backdrop-filter: blur(25px);
 }
 
 .pre-audit-modal {
