@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple-Grade "Choose Your Audit" Modal</title>
+    <title>Truly Apple-Grade "Choose Your Audit"</title>
     <style>
         * {
             margin: 0;
@@ -56,7 +56,7 @@
             }
         }
         
-        /* Close Control */
+        /* Minimalist Close Control */
         .choose-audit-close {
             position: absolute;
             top: 16px;
@@ -75,109 +75,65 @@
             color: #1C1C1E;
         }
         
-        /* Title */
+        /* Title - Apple Typography */
         .choose-audit-title {
             font-size: 22px;
             font-weight: 700;
             line-height: 28px;
             color: #1C1C1E;
-            margin: 0 0 12px 0;
+            margin: 0 0 32px 0;
         }
         
-        /* Option Cards Container */
-        .audit-options {
+        /* Native SF-Style Segmented Control */
+        .segmented-control {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
+            background: #F2F2F7;
+            border-radius: 8px;
+            padding: 2px;
             margin-bottom: 24px;
-        }
-        
-        /* Individual Option Card */
-        .audit-option-card {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            border: 1px solid #E0E0E5;
-            border-radius: 12px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.15s ease;
             position: relative;
         }
         
-        .audit-option-card:hover {
-            border-color: #007AFF;
-        }
-        
-        .audit-option-card.selected {
-            background: #F5F7FA;
-            border-color: #007AFF;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-        
-        /* Hidden Radio Input */
-        .audit-radio {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        /* Option Content */
-        .audit-option-content {
+        .segment {
             flex: 1;
-            margin-left: 12px;
-        }
-        
-        .audit-option-title {
-            font-size: 17px;
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 15px;
             font-weight: 600;
             color: #1C1C1E;
-            margin-bottom: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 1;
         }
         
-        .audit-option-subtitle {
-            font-size: 14px;
-            font-weight: 400;
-            color: #6E6E73;
-            line-height: 1.4;
+        .segment.selected {
+            background: white;
+            color: #007AFF;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
-        /* Check Icon */
-        .audit-option-check {
-            margin-left: 12px;
-            animation: checkFadeIn 150ms ease-out;
+        .segment:hover:not(.selected) {
+            color: #007AFF;
         }
         
-        @keyframes checkFadeIn {
+        /* Detail Pane - Progressive Disclosure */
+        .detail-pane {
+            min-height: 60px;
+            margin-bottom: 24px;
+        }
+        
+        .quick-detail,
+        .custom-detail {
+            animation: crossFade 200ms ease-out;
+        }
+        
+        @keyframes crossFade {
             from {
                 opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        /* Custom Salary Section */
-        .custom-salary-section {
-            margin-top: 24px;
-            padding: 20px;
-            background: #F5F7FA;
-            border-radius: 12px;
-            border: 1px solid #E0E0E5;
-            display: none;
-        }
-        
-        .custom-salary-section.show {
-            display: block;
-            animation: slideDown 200ms ease-out;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-8px);
             }
             to {
                 opacity: 1;
@@ -185,92 +141,87 @@
             }
         }
         
-        .salary-section-description {
-            font-size: 14px;
+        /* Quick Detail Text */
+        .detail-text {
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 20px;
             color: #6E6E73;
-            margin-bottom: 16px;
-            line-height: 1.4;
+            margin: 0;
+            text-align: center;
+            padding: 20px 0;
         }
         
-        .salary-input-row {
+        /* Custom Detail - Salary Fields */
+        .salary-fields {
             display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            gap: 12px;
+            flex-direction: column;
+            gap: 16px;
         }
         
-        .salary-input-row:last-child {
-            margin-bottom: 0;
+        .salary-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         
-        .salary-label {
-            font-size: 14px;
+        .field-label {
+            font-size: 15px;
             font-weight: 500;
             color: #1C1C1E;
-            min-width: 120px;
-            text-transform: capitalize;
         }
         
-        .salary-input-wrapper {
-            flex: 1;
-        }
-        
-        .salary-input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #E0E0E5;
+        .salary-field-input {
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid #D1D1D6;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             color: #1C1C1E;
             background: white;
-            transition: border-color 0.15s ease;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
         
-        .salary-input:focus {
+        .salary-field-input:focus {
             outline: none;
             border-color: #007AFF;
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
         }
         
-        .salary-input::placeholder {
+        .salary-field-input::placeholder {
             color: #A1A1A6;
+            font-weight: 400;
         }
         
-        .salary-hourly {
-            font-size: 12px;
-            color: #6E6E73;
-            min-width: 70px;
-            text-align: right;
-        }
-        
-        /* Primary Action Button Container */
+        /* Primary Button Container */
         .audit-button-container {
             margin-top: 24px;
             display: flex;
             justify-content: flex-end;
         }
         
-        /* Primary Action Button */
-        .audit-start-button {
+        /* Primary Button - systemBlue Gradient */
+        .audit-start-button-primary {
             font-size: 16px;
             font-weight: 600;
-            color: #1C1C1E;
-            background: white;
-            border: 1px solid #1C1C1E;
+            color: white;
+            background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
+            border: none;
             border-radius: 12px;
-            padding: 14px 16px;
+            padding: 14px 24px;
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
             transition: all 0.15s ease;
-            min-width: 120px;
+            min-width: 140px;
         }
         
-        .audit-start-button:hover:not(.disabled) {
-            background: #F5F7FA;
+        .audit-start-button-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
         }
         
-        .audit-start-button.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .audit-start-button-primary:active {
+            transform: scale(0.98);
         }
         
         /* Demo Header */
@@ -297,7 +248,7 @@
             font-weight: 400;
         }
         
-        .spec-list {
+        .refinement-list {
             background: white;
             border-radius: 16px;
             padding: 32px;
@@ -305,7 +256,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         
-        .spec-list h3 {
+        .refinement-list h3 {
             font-size: 22px;
             font-weight: 700;
             color: #1C1C1E;
@@ -313,12 +264,12 @@
             letter-spacing: -0.01em;
         }
         
-        .spec-list ul {
+        .refinement-list ul {
             list-style: none;
             color: #515154;
         }
         
-        .spec-list li {
+        .refinement-list li {
             margin-bottom: 12px;
             display: flex;
             align-items: flex-start;
@@ -326,7 +277,7 @@
             line-height: 1.6;
         }
         
-        .spec-list li::before {
+        .refinement-list li::before {
             content: "✓";
             color: #30D158;
             font-weight: 600;
@@ -337,108 +288,72 @@
 </head>
 <body>
     <div class="demo-header">
-        <h1 class="demo-title">"Choose Your Audit"</h1>
+        <h1 class="demo-title">Truly Apple-Grade Modal</h1>
         <p class="demo-description">
-            Premium Apple-inspired modal with card-based selections and crystal-clear calls to action
+            Native SF segmented control + progressive disclosure = authentically Apple
         </p>
     </div>
 
     <div class="choose-audit-overlay">
         <div class="choose-audit-modal">
-            <!-- Close Control -->
-            <button class="choose-audit-close" onclick="alert('Close clicked')">
+            <!-- Minimalist Close Control -->
+            <button class="choose-audit-close">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                 </svg>
             </button>
 
-            <!-- Title -->
+            <!-- Title - Apple Typography -->
             <h2 class="choose-audit-title">Choose Your Audit</h2>
 
             <form>
-                <!-- Option Cards -->
-                <div class="audit-options">
-                    <!-- Quick Audit Card -->
-                    <div class="audit-option-card" id="quickCard" onclick="selectAudit('quick')">
-                        <input type="radio" name="auditType" value="quick" class="audit-radio" id="quickRadio">
-                        <div class="audit-option-content">
-                            <div class="audit-option-title">Quick Audit</div>
-                            <div class="audit-option-subtitle">Uses U.S. national averages</div>
-                        </div>
-                        <div class="audit-option-check" id="quickCheck" style="display: none;">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <circle cx="10" cy="10" r="10" fill="#007AFF"/>
-                                <path d="M6 10l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                        </div>
+                <!-- Native SF-Style Segmented Control -->
+                <div class="segmented-control">
+                    <button type="button" class="segment selected" id="quickSegment" onclick="switchMode('quick')">
+                        Quick
+                    </button>
+                    <button type="button" class="segment" id="customSegment" onclick="switchMode('custom')">
+                        Custom
+                    </button>
+                </div>
+
+                <!-- Contextual Content - Progressive Disclosure -->
+                <div class="detail-pane">
+                    <div class="quick-detail" id="quickDetail">
+                        <p class="detail-text">
+                            We'll use U.S. national salary averages for your hourly-rate calculations.
+                        </p>
                     </div>
 
-                    <!-- Custom Audit Card -->
-                    <div class="audit-option-card" id="customCard" onclick="selectAudit('custom')">
-                        <input type="radio" name="auditType" value="custom" class="audit-radio" id="customRadio">
-                        <div class="audit-option-content">
-                            <div class="audit-option-title">Custom Audit</div>
-                            <div class="audit-option-subtitle">Enter your team's actual salaries</div>
-                        </div>
-                        <div class="audit-option-check" id="customCheck" style="display: none;">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <circle cx="10" cy="10" r="10" fill="#007AFF"/>
-                                <path d="M6 10l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
+                    <div class="custom-detail" id="customDetail" style="display: none;">
+                        <div class="salary-fields">
+                            <div class="salary-field">
+                                <label class="field-label">Customer Service</label>
+                                <input type="number" placeholder="$45,000" class="salary-field-input">
+                            </div>
+                            <div class="salary-field">
+                                <label class="field-label">Sales</label>
+                                <input type="number" placeholder="$65,000" class="salary-field-input">
+                            </div>
+                            <div class="salary-field">
+                                <label class="field-label">Marketing</label>
+                                <input type="number" placeholder="$60,000" class="salary-field-input">
+                            </div>
+                            <div class="salary-field">
+                                <label class="field-label">Engineering</label>
+                                <input type="number" placeholder="$95,000" class="salary-field-input">
+                            </div>
+                            <div class="salary-field">
+                                <label class="field-label">Executives</label>
+                                <input type="number" placeholder="$150,000" class="salary-field-input">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Custom Salary Section -->
-                <div class="custom-salary-section" id="customSalarySection">
-                    <p class="salary-section-description">
-                        Enter average annual salaries for each department (USD). Leave blank to use national averages.
-                    </p>
-                    
-                    <div class="salary-input-row">
-                        <label class="salary-label">customer service:</label>
-                        <div class="salary-input-wrapper">
-                            <input type="number" placeholder="$45,000 (default)" class="salary-input">
-                        </div>
-                        <span class="salary-hourly">≈ $22/hr</span>
-                    </div>
-                    
-                    <div class="salary-input-row">
-                        <label class="salary-label">sales:</label>
-                        <div class="salary-input-wrapper">
-                            <input type="number" placeholder="$65,000 (default)" class="salary-input">
-                        </div>
-                        <span class="salary-hourly">≈ $31/hr</span>
-                    </div>
-                    
-                    <div class="salary-input-row">
-                        <label class="salary-label">marketing:</label>
-                        <div class="salary-input-wrapper">
-                            <input type="number" placeholder="$60,000 (default)" class="salary-input">
-                        </div>
-                        <span class="salary-hourly">≈ $29/hr</span>
-                    </div>
-                    
-                    <div class="salary-input-row">
-                        <label class="salary-label">engineering:</label>
-                        <div class="salary-input-wrapper">
-                            <input type="number" placeholder="$95,000 (default)" class="salary-input">
-                        </div>
-                        <span class="salary-hourly">≈ $46/hr</span>
-                    </div>
-                    
-                    <div class="salary-input-row">
-                        <label class="salary-label">executives:</label>
-                        <div class="salary-input-wrapper">
-                            <input type="number" placeholder="$150,000 (default)" class="salary-input">
-                        </div>
-                        <span class="salary-hourly">≈ $72/hr</span>
-                    </div>
-                </div>
-
-                <!-- Primary Action Button -->
+                <!-- Primary Button - systemBlue Gradient -->
                 <div class="audit-button-container">
-                    <button type="button" class="audit-start-button disabled" id="startButton" onclick="startAudit()">
+                    <button type="button" class="audit-start-button-primary" onclick="startAudit()">
                         Start Audit
                     </button>
                 </div>
@@ -446,53 +361,44 @@
         </div>
     </div>
 
-    <div class="spec-list">
-        <h3>✨ Apple-Grade Implementation Spec</h3>
+    <div class="refinement-list">
+        <h3>✨ Native Apple Pattern Implementation</h3>
         <ul>
-            <li><strong>Modal Container:</strong> 16px radius, rgba(0,0,0,0.05) shadow, 480px max-width, fade-up + scale animation</li>
-            <li><strong>Typography:</strong> SF Pro Bold 22px title, Semibold 17px card titles, Regular 14px subtitles</li>
-            <li><strong>Option Cards:</strong> Full-clickable cards with 12px radius, #E0E0E5 borders, #F5F7FA selected state</li>
-            <li><strong>Interaction States:</strong> #007AFF hover borders, check-in-circle icons, 150ms transitions</li>
-            <li><strong>Primary Button:</strong> SF Pro Semibold 16px, #1C1C1E border, disabled state at 50% opacity</li>
-            <li><strong>Custom Inputs:</strong> Slide-down animation, #F5F7FA background, proper focus states</li>
-            <li><strong>Accessibility:</strong> Full ARIA implementation, keyboard navigation, focus management</li>
-            <li><strong>Remove Assumptions:</strong> Calculation assumptions section completely removed</li>
+            <li><strong>Segmented Control:</strong> Native SF-style with #F2F2F7 background, white selected state, proper shadows</li>
+            <li><strong>Progressive Disclosure:</strong> Single detail pane showing contextual content with 200ms cross-fade</li>
+            <li><strong>Typography:</strong> SF Pro Bold 22pt title, Semibold 15pt segments, Regular 15pt body text</li>
+            <li><strong>systemBlue Gradient:</strong> #007AFF → #5AC8FA with proper shadow and 1.03 scale hover</li>
+            <li><strong>Apple Spacing:</strong> 32px title margin, 24px section margins (8px multiples)</li>
+            <li><strong>Text Fields:</strong> 48px height, proper focus states, #007AFF borders</li>
+            <li><strong>Motion:</strong> Mode switch cross-fade, button hover scale, entrance fade-up animation</li>
+            <li><strong>Clean Design:</strong> No tooltips, no session IDs, minimalist #6E6E73 close icon</li>
         </ul>
     </div>
 
     <script>
-        let selectedType = '';
+        let currentMode = 'quick';
         
-        function selectAudit(type) {
-            // Clear previous selection
-            document.getElementById('quickCard').classList.remove('selected');
-            document.getElementById('customCard').classList.remove('selected');
-            document.getElementById('quickCheck').style.display = 'none';
-            document.getElementById('customCheck').style.display = 'none';
-            document.getElementById('customSalarySection').classList.remove('show');
+        function switchMode(mode) {
+            // Update segmented control
+            document.getElementById('quickSegment').classList.remove('selected');
+            document.getElementById('customSegment').classList.remove('selected');
             
-            // Set new selection
-            selectedType = type;
-            if (type === 'quick') {
-                document.getElementById('quickCard').classList.add('selected');
-                document.getElementById('quickCheck').style.display = 'block';
-                document.getElementById('quickRadio').checked = true;
-            } else if (type === 'custom') {
-                document.getElementById('customCard').classList.add('selected');
-                document.getElementById('customCheck').style.display = 'block';
-                document.getElementById('customRadio').checked = true;
-                document.getElementById('customSalarySection').classList.add('show');
+            if (mode === 'quick') {
+                document.getElementById('quickSegment').classList.add('selected');
+                document.getElementById('quickDetail').style.display = 'block';
+                document.getElementById('customDetail').style.display = 'none';
+            } else {
+                document.getElementById('customSegment').classList.add('selected');
+                document.getElementById('quickDetail').style.display = 'none';
+                document.getElementById('customDetail').style.display = 'block';
             }
             
-            // Enable start button
-            const startButton = document.getElementById('startButton');
-            startButton.classList.remove('disabled');
+            currentMode = mode;
+            console.log('Mode switched to:', mode);
         }
         
         function startAudit() {
-            if (selectedType) {
-                alert(`Starting ${selectedType} audit! 🚀\n\nAnalytics tracked: audit_option_selected\nMode: ${selectedType}`);
-            }
+            alert(`Starting ${currentMode} audit! 🚀\n\nNative Apple pattern:\n• Segmented control selection\n• Progressive disclosure\n• systemBlue gradient button\n• Subtle motion & shadows`);
         }
     </script>
 </body>
