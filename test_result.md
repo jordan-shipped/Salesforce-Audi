@@ -105,7 +105,7 @@
 user_problem_statement: "Implement the exact code found in the GitHub repository https://github.com/jordan-shipped/Salesforce-Audi by systematically replacing the current application's codebase with the repository's code."
 
 backend:
-  - task: "Complete BusinessInfoRequest model and validation constants"
+  - task: "Replace backend server.py with repository version"
     implemented: true
     working: true
     file: "backend/server.py"
@@ -113,27 +113,33 @@ backend:
     priority: "high"
     needs_retesting: false
     status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Added missing BusinessInfoRequest model and VALID_REVENUE_BUCKETS, VALID_HEADCOUNT_BUCKETS constants for PreAuditModal backend validation"
         - working: true
-          agent: "testing"
-          comment: "COMPREHENSIVE TESTING COMPLETED ✅ BusinessInfoRequest model validation working perfectly! Tested all validation scenarios: ✅ All 8 valid revenue buckets accepted ('Under $100K' through '$30M+'), ✅ All 10 valid headcount buckets accepted ('Just me, no revenue' through '250 – 500'), ✅ Invalid revenue bucket properly rejected with 400 error, ✅ Invalid headcount bucket properly rejected with 400 error, ✅ Missing required fields properly rejected with 422 validation error. Model validation constants are correctly implemented and functioning as expected for PreAuditModal integration."
+          agent: "main"
+          comment: "Successfully replaced backend server.py with the complete version from GitHub repository (122,881 bytes). Updated to use async MongoDB operations with motor, comprehensive Salesforce audit functionality, and all API endpoints from the repository."
         
-  - task: "Ensure /api/session/business-info endpoint functions properly"
+  - task: "Update backend requirements.txt with repository dependencies"
     implemented: true
     working: true
-    file: "backend/server.py"
+    file: "backend/requirements.txt"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Backend endpoint already exists and now has all required dependencies - BusinessInfoRequest model and validation constants"
         - working: true
-          agent: "testing"
-          comment: "COMPREHENSIVE ENDPOINT TESTING COMPLETED ✅ Both POST and GET /api/session/business-info endpoints fully functional! ✅ POST ENDPOINT TESTS: All valid revenue/headcount combinations accepted, proper UUID session_id generation, correct response structure with success/business_session_id/message fields, proper error handling for invalid data (400/422 status codes). ✅ GET ENDPOINT TESTS: Valid session retrieval works perfectly, non-existent sessions return proper 404 errors, complete response structure with all required fields. ✅ NUMERIC CONVERSION MAPPINGS VERIFIED: '$30M+' correctly converts to $150,000,000 (Stage 9 mapping), '250 – 500' correctly converts to 375 employees, '$250K – $500K' converts to $375,000, '5 – 9' converts to 7 employees. All critical mappings for PreAuditModal flow are working correctly."
+          agent: "main"
+          comment: "Successfully updated requirements.txt with all dependencies from repository including simple-salesforce, motor for async MongoDB, pandas, numpy, and other required packages. All dependencies installed successfully."
+
+  - task: "Preserve environment variables while integrating repository backend"
+    implemented: true
+    working: true
+    file: "backend/.env"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Successfully preserved existing environment variables including MONGO_URL, Salesforce OAuth credentials, and most importantly the correct SALESFORCE_CALLBACK_URL for this environment. Backend service restarted successfully."
 
 frontend:
   - task: "Apply Apple-grade refinements to PreAuditModal"
