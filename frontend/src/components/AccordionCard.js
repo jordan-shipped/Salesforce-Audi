@@ -7,6 +7,7 @@ const AccordionCard = ({
   cost,
   details,
   implementation,
+  children,
   isExpanded: controlledExpanded,
   onToggle,
   className = ''
