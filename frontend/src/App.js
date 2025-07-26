@@ -87,17 +87,6 @@ const LandingPage = () => {
   );
 };
 
-// Apple-Grade Feature Card Component
-const FeatureCard = ({ icon, title, description }) => {
-  return (
-    <div className="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 space-y-4 border border-gray-100">
-      <div className="text-2xl text-center">{icon}</div>
-      <h3 className="text-xl font-semibold text-gray-900 text-center">{title}</h3>
-      <p className="text-gray-600 text-center leading-relaxed">{description}</p>
-    </div>
-  );
-};
-
 // Stage Summary Panel Component - Apple-Grade Hormozi Style
 const StageSummaryPanel = ({ businessStage, summary }) => {
   if (!businessStage) return null;
