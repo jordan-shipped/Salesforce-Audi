@@ -1636,67 +1636,158 @@ const AuditResults = () => {
 
   const { summary, findings, business_stage } = auditData;
   const filteredFindings = getFilteredFindings();
-  const uniqueDomains = getUniqueDomains();
+  
+  // Mock business stage data - in real app this would come from backend
+  const getStageData = (businessStage) => {
+    const stageMap = {
+      1: { 
+        name: "Start", 
+        role: "Founder", 
+        motto: "Get your first paying customer",
+        constraints: [
+          "Pick one service offering and stick to it",
+          "Focus on solving one problem extremely well", 
+          "Talk to customers daily, fix issues immediately"
+        ],
+        nextSteps: [
+          "Create a simple one-page website",
+          "Set up basic accounting with QuickBooks"
+        ]
+      },
+      2: { 
+        name: "Scale", 
+        role: "Manager", 
+        motto: "Build sustainable systems",
+        constraints: [
+          "Hire slowly and fire quickly",
+          "Document all processes and procedures",
+          "Focus on profit margins over growth"
+        ],
+        nextSteps: [
+          "Implement customer support systems",
+          "Create employee training materials"
+        ]
+      },
+      3: { 
+        name: "Stabilize", 
+        role: "Trainer", 
+        motto: "Put stable systems in place",
+        constraints: [
+          "Pick your single biggest customer pain & fix it",
+          "Build trust with consistent content & follow-up",
+          "Standardize on one platform, secure data"
+        ],
+        nextSteps: [
+          "Create an employee handbook & clear roles",
+          "Implement P&L statements & basic insurance"
+        ]
+      }
+    };
+    return stageMap[businessStage] || stageMap[3];
+  };
+
+  const stageData = getStageData(business_stage?.stage || 3);
+  const stageStats = {
+    timeSaved: `${summary?.monthly_hours_saved || 36.8} h/mo`,
+    roi: `$${summary?.annual_roi_total?.toLocaleString() || '23,082'} /yr`,
+    findings: filteredFindings.length
+  };
+
+  // Transform findings for AccordionCard
+  const transformedFindings = filteredFindings.map(finding => ({
+    id: finding.id,
+    domain: finding.domain,
+    title: finding.title,
+    cost: `$${finding.annual_cost?.toLocaleString() || '0'}/yr`,
+    priority: finding.impact || 'Medium',
+    details: {
+      description: finding.description,
+      breakdown: finding.breakdown || [],
+      implementation: finding.implementation || finding.solution
+    }
+  }));
+
+  const handleFilterChange = ({ domain, priority }) => {
+    setSelectedDomain(domain);
+    setSelectedPriority(priority);
+  };
 
   return (
-    <main className="audit-results app-container">
-      {/* Ultra-Clean Header */}
-      <header className="header">
-        <Link to="/" className="logo gradient">SalesAudit Pro</Link>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <button onClick={() => setShowEditAssumptions(true)} className="btn-outline">
+    <div className="PageContainer">
+      {/* Header */}
+      <div className="Header">
+        <Link to="/dashboard">
+          <ButtonText>
+            <ArrowLeft size={16} />
+            Back to Dashboard
+          </ButtonText>
+        </Link>
+        <div className="HeaderActions">
+          <ButtonOutline onClick={() => setShowEditAssumptions(true)}>
             Edit Assumptions
-          </button>
-          <button onClick={generatePDF} className="btn-primary">
+          </ButtonOutline>
+          <ButtonPrimary onClick={generatePDF}>
             Export PDF
-          </button>
-        </div>
-      </header>
-
-      <div className="dashboard-content">
-        {/* Stage Summary Panel */}
-        {business_stage && (
-          <StageSummaryPanel 
-            businessStage={business_stage} 
-            summary={summary}
-          />
-        )}
-
-        {/* Priority Filter Bar */}
-        <PriorityFilterBar
-          selectedDomain={selectedDomain}
-          onDomainChange={setSelectedDomain}
-          selectedPriority={selectedPriority}
-          onPriorityChange={setSelectedPriority}
-          domains={uniqueDomains}
-          findings={findings}
-        />
-
-        {/* Findings Section */}
-        <div className="findings-section">
-          {filteredFindings.length === 0 ? (
-            <div className="empty-card premium">
-              <div className="empty-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="21 21l-4.35-4.35"></path>
-                </svg>
-              </div>
-              <h2 className="empty-title">No findings match your filters</h2>
-              <p className="empty-sub">Try adjusting your domain or priority filters.</p>
-            </div>
-          ) : (
-            filteredFindings.map((finding) => (
-              <FindingAccordion
-                key={finding.id}
-                finding={finding}
-                isExpanded={openFindings.has(finding.id)}
-                onToggle={() => toggleFinding(finding.id)}
-              />
-            ))
-          )}
+          </ButtonPrimary>
         </div>
       </div>
+
+      {/* Stage Summary Panel */}
+      <StageSummaryPanel
+        stage={business_stage?.stage || 3}
+        name={stageData.name}
+        role={stageData.role}
+        motto={stageData.motto}
+        stats={stageStats}
+        constraints={stageData.constraints}
+        nextSteps={stageData.nextSteps}
+      />
+
+      {/* Filters Bar */}
+      <FiltersBar
+        domains={['All', ...uniqueDomains]}
+        priorities={['All', 'High', 'Medium', 'Low']}
+        selectedDomain={selectedDomain}
+        selectedPriority={selectedPriority}
+        onFilterChange={handleFilterChange}
+      />
+
+      {/* Findings Grid */}
+      {transformedFindings.length === 0 ? (
+        <div style={{ 
+          textAlign: 'center', 
+          padding: 'var(--space-xxl)',
+          color: 'var(--color-text-secondary)'
+        }}>
+          <h3>No findings match your filters</h3>
+          <p>Try adjusting your domain or priority filters.</p>
+        </div>
+      ) : (
+        <div className="FindingsGrid">
+          {transformedFindings.map(finding => (
+            <AccordionCard
+              key={finding.id}
+              domain={finding.domain}
+              title={finding.title}
+              cost={finding.cost}
+              priority={finding.priority}
+              details={finding.details}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Edit Assumptions Modal */}
+      {showEditAssumptions && (
+        <EditAssumptionsModal
+          isOpen={showEditAssumptions}
+          onClose={() => setShowEditAssumptions(false)}
+          onUpdate={handleUpdateAssumptions}
+          assumptions={auditData?.assumptions}
+        />
+      )}
+    </div>
+  );
 
       {/* Edit Assumptions Modal */}
       <EditAssumptionsModal
