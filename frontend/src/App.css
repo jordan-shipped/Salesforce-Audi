@@ -2367,28 +2367,26 @@ body {
 
 /* ====== APPLE-GRADE LANDING PAGE ====== */
 
-/* ====== APPLE-GRADE LANDING PAGE ====== */
+/* ====== APPLE-GRADE LANDING PAGE - DESIGN TOKENS ====== */
 
-/* Layout & Spacing */
+/* Landing Page Layout */
 .LandingPageWrapper {
   background: var(--color-background);
   min-height: 100vh;
-  padding: var(--space-lg); /* Page padding on left/right */
 }
 
 .LandingPageContent {
-  max-width: 1200px; /* Max-width wrapper */
-  margin: 0 auto; /* Center content */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--layout-gutter);
 }
 
-/* Hero Section */
+/* Hero Section - Design Token Driven */
 .HeroSection {
   background: var(--color-background);
-  padding: var(--space-xxl) var(--space-lg); /* 48px top/bottom, 24px left/right */
+  padding-top: 80px;
+  padding-bottom: 80px;
   text-align: center;
-  border-radius: var(--radius-lg); /* 16px */
-  box-shadow: var(--shadow-default);
-  margin-bottom: var(--space-xl); /* Hero bottom margin */
 }
 
 .HeroContent {
@@ -2397,118 +2395,107 @@ body {
 }
 
 .HeroTitle {
-  font-family: var(--font-family);
-  font-size: var(--type-h1); /* 34pt */
-  font-weight: var(--font-weight-bold); /* 700 */
-  line-height: 1.2;
-  margin-bottom: var(--space-sm); /* 8px */
+  font-family: var(--font-h1-family);
+  font-size: var(--font-h1-size);
+  font-weight: var(--font-h1-weight);
+  line-height: var(--font-h1-line-height);
   color: var(--color-text-primary);
+  margin: 0 0 16px 0;
 }
 
 .HeroSubtitle {
-  font-family: var(--font-family);
-  font-size: var(--type-h1); /* Same 34pt, but 600 weight */
-  font-weight: var(--font-weight-semibold); /* 600 */
-  margin-bottom: var(--space-md); /* 16px */
+  font-family: var(--font-h1-family);
+  font-size: var(--font-h1-size);
+  font-weight: var(--font-h1-weight);
+  line-height: var(--font-h1-line-height);
   color: var(--color-text-primary);
+  margin-bottom: 16px;
 }
 
 .PrimaryGradientText {
-  background: linear-gradient(90deg, #0060DF 0%, #00C6FF 100%);
+  background: linear-gradient(90deg, #007AFF 0%, #007AFF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .HeroCopy {
-  font-family: var(--font-family);
-  font-size: var(--type-bodyLarge); /* 17pt */
-  line-height: 1.4;
+  font-family: var(--font-body-family);
+  font-size: var(--font-body-size);
+  font-weight: var(--font-body-weight);
+  line-height: var(--font-body-line-height);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-xl); /* 32px */
   max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 32px;
 }
 
 .HeroCTA {
-  padding: var(--space-sm) var(--space-xl); /* 8px 32px */
-  font-size: var(--type-bodyLarge); /* 17pt */
-  font-weight: var(--font-weight-semibold);
+  margin-top: 32px;
 }
 
-/* Features Grid */
+/* Features Grid - Using Design Tokens */
 .FeaturesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--space-lg); /* 24px */
-  margin-top: var(--space-md); /* 16px - bring cards up closer under hero */
-  padding: 0 var(--space-lg); /* 24px left/right */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--layout-gutter);
+  margin-top: var(--layout-section-spacing);
+  padding: 0 var(--layout-gutter);
 }
 
 .FeatureCard {
-  background: var(--color-surface-light);
-  padding: var(--space-md); /* 16px */
-  border-radius: var(--radius-lg); /* 16px */
-  box-shadow: var(--shadow-default);
-  text-align: center;
-  transition: all var(--transition-fast);
-}
-
-.FeatureCard:hover {
-  box-shadow: var(--shadow-elevated);
-  transform: translateY(-1px);
+  max-width: 280px;
+  margin: 0 auto;
 }
 
 .FeatureIcon {
-  width: 32px;
-  height: 32px;
-  margin: 0 auto var(--space-sm); /* 8px bottom */
-  color: var(--color-primary-blue);
+  width: 24px;
+  height: 24px;
+  color: var(--color-accent-blue);
   display: block;
+  margin: 0 auto 8px;
 }
 
 .FeatureTitle {
-  font-family: var(--font-family);
-  font-size: var(--type-bodyLarge); /* 17pt */
-  font-weight: var(--font-weight-semibold); /* 600 */
-  margin-bottom: var(--space-xs); /* 4px */
+  font-family: var(--font-h3-family);
+  font-size: var(--font-h3-size);
+  font-weight: var(--font-h3-weight);
+  line-height: var(--font-h3-line-height);
   color: var(--color-text-primary);
+  text-align: center;
+  margin: 0 0 8px 0;
 }
 
 .FeatureDescription {
-  font-family: var(--font-family);
-  font-size: var(--type-caption); /* 13pt */
-  line-height: 1.4;
-  color: var(--color-text-secondary);
-  margin: 0;
+  font-family: var(--font-body-family);
+  font-size: var(--font-body-size);
+  font-weight: var(--font-body-weight);
+  line-height: var(--font-body-line-height);
+  color: var(--color-text-primary);
+  text-align: center;
+  max-width: 240px;
+  margin: 0 auto;
 }
 
 /* Mobile Responsive */
-@media (max-width: 600px) {
-  .LandingPageWrapper {
-    padding: var(--space-md); /* Reduced padding on mobile */
-  }
-  
+@media (max-width: 768px) {
   .HeroSection {
-    padding: var(--space-lg) var(--space-md); /* Reduced padding on mobile */
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
   
   .HeroTitle,
   .HeroSubtitle {
-    font-size: var(--type-h2); /* 28pt on mobile */
-  }
-  
-  .HeroCopy {
-    font-size: var(--type-bodyRegular); /* 15pt on mobile */
-    max-width: 100%; /* Full width on mobile */
+    font-size: var(--font-h2-size);
+    line-height: var(--font-h2-line-height);
   }
   
   .FeaturesGrid {
-    grid-template-columns: 1fr; /* Single column on mobile */
-    padding: 0; /* No side padding on mobile */
+    grid-template-columns: 1fr;
+    margin-top: 32px;
   }
 }
+
+/* ====== APPLE MINIMALIST DESIGN TOKENS ====== */
 
 /* ====== APPLE-GRADE DESIGN SYSTEM COMPONENTS ====== */
 
