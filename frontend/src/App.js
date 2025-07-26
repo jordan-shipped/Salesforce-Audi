@@ -1636,6 +1636,7 @@ const AuditResults = () => {
 
   const { summary, findings, business_stage } = auditData;
   const filteredFindings = getFilteredFindings();
+  const uniqueDomains = getUniqueDomains();
   
   // Mock business stage data - in real app this would come from backend
   const getStageData = (businessStage) => {
