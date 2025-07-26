@@ -840,39 +840,32 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
             </div>
           )}
 
-          {/* Collapsible Calculation Assumptions - Apple-Grade Accordion */}
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={() => setShowAssumptions(!showAssumptions)}
-              className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              <span className={`mr-2 transform transition-transform ${showAssumptions ? 'rotate-90' : ''}`}>▸</span>
-              <span className="font-medium">Calculation assumptions</span>
-            </button>
-            
-            {showAssumptions && (
-              <div className="mt-3 p-4 bg-gray-50 rounded-lg">
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li>• Admin cleanup rate: $40/hour (U.S. average Salesforce admin)</li>
-                  <li>• Custom field cleanup time: 15 minutes per field</li>
-                  <li>• User confusion time: 2 minutes per user per field per month</li>
-                  <li>• Salaries converted to hourly rate (÷ 2,080 hours/year)</li>
-                </ul>
-              </div>
-            )}
+          {/* Apple-Grade Accordion for Calculation Assumptions */}
+          <button
+            type="button"
+            onClick={() => setShowAssumptions(!showAssumptions)}
+            className="accordion-button-apple"
+          >
+            <span className={`accordion-arrow-apple ${showAssumptions ? 'expanded' : ''}`}>▸</span>
+            Calculation assumptions
+          </button>
+          
+          <div className={`accordion-content-apple ${showAssumptions ? 'expanded' : ''}`}>
+            <ul className="assumption-list-apple">
+              <li>Admin cleanup rate: $40/hour (U.S. average Salesforce admin)</li>
+              <li>Custom field cleanup time: 15 minutes per field</li>
+              <li>User confusion time: 2 minutes per user per field per month</li>
+              <li>Salaries converted to hourly rate (÷ 2,080 hours/year)</li>
+            </ul>
           </div>
 
-          {/* Refined Primary Button - No Cancel Button */}
+          {/* Apple-Grade Primary Button - No Cancel */}
           <div className="flex justify-end mt-6">
             <button
               type="submit"
-              className="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
+              className="start-audit-button-apple"
             >
               Start Audit
-              <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
             </button>
           </div>
         </form>
