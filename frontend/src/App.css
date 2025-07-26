@@ -2088,27 +2088,31 @@ body {
 }
 
 .form-select {
-  height: 48px; /* Picklist height = 48px as specified */
+  height: 44px; /* Height: 44px */
   font-family: var(--font-family-base);
-  font-size: 17px; /* SF Pro Regular 17px as specified */
+  font-size: 15pt; /* Placeholder text: SF Pro Regular, 15pt */
   font-weight: var(--font-weight-regular);
   color: var(--text-primary);
   background: var(--color-background);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border: 1px solid rgba(0,0,0,0.15); /* Border: 1px solid rgba(0,0,0,0.15) */
+  border-radius: 12px; /* Corner radius: 12px */
   padding: 0 var(--space-4);
   transition: all var(--transition-fast);
   appearance: none;
   background-image: url("data:image/svg+xml;charset=utf-8,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 12px center;
   background-repeat: no-repeat;
-  background-size: 16px;
+  background-size: 12pt; /* SF Symbol chevron.down, 12pt, 50% opacity */
   padding-right: 40px;
+}
+
+.form-select::placeholder {
+  opacity: 0.5; /* 50% opacity */
 }
 
 .form-select:focus {
   outline: none;
-  border-color: #007AFF; /* Blue underline on focus as specified */
+  border: 2px solid #007AFF; /* on focus, 2px solid systemBlue */
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
 }
 
