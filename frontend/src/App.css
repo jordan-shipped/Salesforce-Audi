@@ -2080,12 +2080,12 @@ body {
 
 .form-label {
   font-family: var(--font-family-base);
-  font-size: 13pt; /* SF Pro Medium, 13pt, uppercase tracking +10% */
+  font-size: 13pt; /* SF Pro Medium, 13pt */
   font-weight: var(--font-weight-medium);
-  color: var(--text-primary);
-  margin-bottom: var(--space-3);
-  text-transform: uppercase;
-  letter-spacing: 0.1em; /* tracking +10% */
+  color: #000000; /* 100% opacity */
+  margin-bottom: 8px; /* 8px below each label before its picker */
+  text-transform: uppercase; /* Uppercase labels */
+  letter-spacing: 0.1em; /* letter‑spacing +10% */
 }
 
 .form-select {
