@@ -232,46 +232,48 @@
 }
 
 /* ===============================================
-   Apple-Grade Org Profile Modal Enhancements
+   Truly Apple-Grade OrgProfileModal Enhancements
    =============================================== */
 
-/* Info Icon Styling */
+/* SF Symbol-style Info Icon - Deferred Tooltip */
 .info-icon {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 16px;
   height: 16px;
-  background-color: #6b7280;
-  color: white;
-  border-radius: 50%;
-  text-align: center;
-  font-size: 12px;
-  line-height: 16px;
+  margin-left: 8px;
+  color: #6E6E6E;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
   cursor: help;
-  transition: all 0.2s ease;
+  position: relative;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .info-icon:hover {
-  background-color: #3b82f6;
-  transform: scale(1.1);
+  opacity: 1;
 }
 
-/* Tooltip Styling */
+/* Deferred Tooltip - Hidden by Default */
 .info-tooltip {
   position: absolute;
-  bottom: 100%;
+  bottom: 120%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #1f2937;
+  background-color: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 400;
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.2s ease;
-  z-index: 10;
-  margin-bottom: 5px;
+  transition: opacity 0.1s ease, visibility 0.1s ease;
+  z-index: 1000;
+  pointer-events: none;
 }
 
 .info-tooltip::after {
@@ -281,38 +283,178 @@
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid transparent;
-  border-top-color: #1f2937;
+  border-top-color: rgba(0, 0, 0, 0.8);
 }
 
-.group:hover .info-tooltip {
+/* Show tooltip only on parent hover */
+.info-icon:hover .info-tooltip {
   opacity: 1;
   visibility: visible;
 }
 
-/* Radio Button Styling */
-.group input[type="radio"] {
-  accent-color: #3b82f6;
-  width: 16px;
-  height: 16px;
+/* Apple-Grade Radio Group - Light, Airy, Minimal */
+.radio-group-apple {
+  border-bottom: 1px solid #E5E5EA;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  margin-bottom: 24px;
 }
 
-.group:hover input[type="radio"] {
-  accent-color: #2563eb;
+.radio-row-apple {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-radius: 8px;
+  margin-bottom: 0;
 }
 
-/* Accordion Arrow Animation */
-.transform {
-  transition: transform 0.2s ease;
+.radio-row-apple:hover {
+  background-color: #F2F2F7;
 }
 
-/* Enhanced Button Styling */
-button[type="submit"] {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+.radio-row-apple:last-child {
+  margin-bottom: 0;
 }
 
-button[type="submit"]:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+/* Custom SF Symbol Radio Buttons */
+.radio-input-apple {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-right: 16px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.1s ease;
+}
+
+.radio-input-apple::before {
+  content: '○';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #C7C7CC;
+  font-size: 20px;
+  font-weight: 300;
+  transition: all 0.1s ease;
+}
+
+.radio-input-apple:checked::before {
+  content: '●';
+  color: #007AFF;
+  font-weight: 500;
+}
+
+/* Apple Typography */
+.radio-label-apple {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1D1D1F;
+  cursor: pointer;
+  flex: 1;
+}
+
+/* Apple-Grade Primary Button */
+.start-audit-button-apple {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease;
+}
+
+.start-audit-button-apple:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
+}
+
+.start-audit-button-apple:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Apple-Grade Accordion */
+.accordion-button-apple {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #6E6E6E;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+  transition: color 0.15s ease;
+}
+
+.accordion-button-apple:hover {
+  color: #1D1D1F;
+}
+
+.accordion-arrow-apple {
+  margin-right: 8px;
+  transition: transform 0.2s ease;
+  font-size: 12px;
+}
+
+.accordion-arrow-apple.expanded {
+  transform: rotate(90deg);
+}
+
+.accordion-content-apple {
+  background-color: #F2F2F7;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  max-height: 0;
+  opacity: 0;
+}
+
+.accordion-content-apple.expanded {
+  max-height: 200px;
+  opacity: 1;
+}
+
+.assumption-list-apple {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: #1D1D1F;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.assumption-list-apple li {
+  margin-bottom: 8px;
+  position: relative;
+  padding-left: 16px;
+}
+
+.assumption-list-apple li::before {
+  content: "•";
+  color: #007AFF;
+  font-weight: 600;
+  position: absolute;
+  left: 0;
 }
 
 /* ===============================================
