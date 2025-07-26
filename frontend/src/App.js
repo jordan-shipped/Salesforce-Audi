@@ -820,30 +820,39 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
             </div>
           )}
 
-          {/* Assumptions Summary */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">Calculation Assumptions:</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Admin cleanup rate: $40/hour (U.S. average Salesforce admin)</li>
-              <li>• Custom field cleanup time: 15 minutes per field</li>
-              <li>• User confusion time: 2 minutes per user per field per month</li>
-              <li>• Salaries converted to hourly rate (÷ 2,080 hours/year)</li>
-            </ul>
-          </div>
-
-          <div className="flex justify-end space-x-4 mt-6">
+          {/* Collapsible Calculation Assumptions - Apple-Grade Accordion */}
+          <div className="mt-6">
             <button
               type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+              onClick={() => setShowAssumptions(!showAssumptions)}
+              className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
             >
-              Cancel
+              <span className={`mr-2 transform transition-transform ${showAssumptions ? 'rotate-90' : ''}`}>▸</span>
+              <span className="font-medium">Calculation assumptions</span>
             </button>
+            
+            {showAssumptions && (
+              <div className="mt-3 p-4 bg-gray-50 rounded-lg">
+                <ul className="text-sm text-gray-700 space-y-1">
+                  <li>• Admin cleanup rate: $40/hour (U.S. average Salesforce admin)</li>
+                  <li>• Custom field cleanup time: 15 minutes per field</li>
+                  <li>• User confusion time: 2 minutes per user per field per month</li>
+                  <li>• Salaries converted to hourly rate (÷ 2,080 hours/year)</li>
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Refined Primary Button - No Cancel Button */}
+          <div className="flex justify-end mt-6">
             <button
               type="submit"
-              className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              className="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors"
             >
-              {useQuickEstimate ? '🚀 Quick Audit' : '📊 Custom Audit'}
+              Start Audit
+              <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </form>
