@@ -136,7 +136,7 @@ backend:
           comment: "COMPREHENSIVE ENDPOINT TESTING COMPLETED ✅ Both POST and GET /api/session/business-info endpoints fully functional! ✅ POST ENDPOINT TESTS: All valid revenue/headcount combinations accepted, proper UUID session_id generation, correct response structure with success/business_session_id/message fields, proper error handling for invalid data (400/422 status codes). ✅ GET ENDPOINT TESTS: Valid session retrieval works perfectly, non-existent sessions return proper 404 errors, complete response structure with all required fields. ✅ NUMERIC CONVERSION MAPPINGS VERIFIED: '$30M+' correctly converts to $150,000,000 (Stage 9 mapping), '250 – 500' correctly converts to 375 employees, '$250K – $500K' converts to $375,000, '5 – 9' converts to 7 employees. All critical mappings for PreAuditModal flow are working correctly."
 
 frontend:
-  - task: "Remove dashboard-level business info form"
+  - task: "Remove Session ID from modal header"
     implemented: true
     working: true
     file: "frontend/src/App.js" 
@@ -146,33 +146,45 @@ frontend:
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Successfully removed BusinessInputForm from dashboard. Cleaned JSX and removed state variables (showBusinessInput, businessInputs, handleBusinessInputSubmit). Dashboard now shows only 'Audit History' header and 'New Audit' button."
+          comment: "Successfully removed Session ID display from OrgProfileModal header. Header now shows only 'Org Profile' title and close button for cleaner, focused appearance."
 
-  - task: "Wire 'New Audit' button to open OrgProfileModal directly"
+  - task: "Simplify radio labels with info icons and tooltips"
     implemented: true
     working: true
-    file: "frontend/src/App.js"
+    file: "frontend/src/App.js, frontend/src/App.css"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Updated handleNewAudit() to call setShowOrgProfile(true) directly instead of setShowBusinessInput(true). New Audit button now skips business input form and opens OrgProfileModal immediately."
+          comment: "Updated radio buttons to clean labels ('Quick Estimate', 'Custom Estimate') with subtle ⓘ info icons. Added hover tooltips showing 'Uses U.S. national averages' and 'Enter your team's salaries'. Removed cluttering parenthetical text."
 
-  - task: "Update runAuditWithProfile to use businessInfo from context"
+  - task: "Collapse calculation assumptions into accordion"
     implemented: true
     working: true  
-    file: "frontend/src/App.js"
+    file: "frontend/src/App.js, frontend/src/App.css"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Modified runAuditWithProfile to pull businessInfo from BusinessInfoProvider context instead of local state. Added mapping logic to convert PreAuditModal format (revenue_bucket/headcount_bucket) to BusinessInputs format (annual_revenue/employee_headcount) with proper numeric conversion."
+          comment: "Replaced blue assumptions panel with collapsible accordion. Added '▸ Calculation assumptions' button that smoothly expands to show light background panel with bullet points. Keeps details off-screen until requested."
 
-  - task: "Verify clean dashboard layout without duplicate forms"
+  - task: "Refine primary button and remove emoji"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js, frontend/src/App.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Changed button text to 'Start Audit' with clean right-arrow SVG icon. Removed emoji (🚀, 📊). Enhanced button styling with better shadows, hover effects, and transform animation for premium feel."
+
+  - task: "Remove Cancel button for Apple-style dismissal"
     implemented: true
     working: true
     file: "frontend/src/App.js"
@@ -182,7 +194,7 @@ frontend:
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Screenshots confirmed: Dashboard no longer shows business input form, displays only 'Audit History' section and 'New Audit' button. Clean Apple-grade layout maintained with proper spacing."
+          comment: "Eliminated Cancel button entirely. Users dismiss modal via close icon (×) or click outside, following Apple-style modal patterns. Button container now shows only single 'Start Audit' primary action."
 
 metadata:
   created_by: "main_agent"
