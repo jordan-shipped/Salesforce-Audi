@@ -130,17 +130,53 @@ backend:
           comment: "Backend endpoint already exists and now has all required dependencies - BusinessInfoRequest model and validation constants"
 
 frontend:
-  - task: "Maintain existing UI while backend implements stage engine"
+  - task: "Complete PreAuditModal integration with landing page flow"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js" 
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Updated landing page to properly integrate PreAuditModal with BusinessInfoProvider context. Modal shows when business info is missing, saves to context and localStorage, then redirects to OAuth flow."
+
+  - task: "Update OAuthCallback to check business info and redirect appropriately"
     implemented: true
     working: true
     file: "frontend/src/App.js"
     stuck_count: 0
-    priority: "low"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
-        - working: true
+        - working: "unknown"
           agent: "main"
-          comment: "No changes made to frontend - keeping existing UI intact as requested for Phase 1. All current functionality should continue working with enhanced backend."
+          comment: "Updated OAuthCallback component to check hasBusinessInfo from context. If missing, shows PreAuditModal overlaid on success message. If present, proceeds to dashboard. Ensures business info is always collected."
+
+  - task: "Enhance BusinessInputForm to auto-prefill from stored business info"
+    implemented: true
+    working: true  
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Modified BusinessInputForm to use BusinessInfo context for prefilling. Added mapping between backend format (used in PreAuditModal) and frontend format (used in BusinessInputForm) to ensure seamless data flow."
+
+  - task: "Ensure BusinessInfoProvider context integration is complete"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "unknown"
+          agent: "main"
+          comment: "Verified BusinessInfoProvider wraps the entire App. Updated Dashboard to use businessInfo and hasBusinessInfo from context. All components now have access to stored business information."
 
 metadata:
   created_by: "main_agent"
