@@ -9,5 +9,11 @@ export { default as StageSummaryPanel } from './StageSummaryPanel';
 export { default as AccordionCard } from './AccordionCard';
 export { default as FiltersBar } from './FiltersBar';
 
+// Audit Results Components
+export { default as MetricsDashboard } from './MetricsDashboard';
+export { default as BusinessContext } from './BusinessContext';
+export { default as StrategicOverview } from './StrategicOverview';
+export { default as FindingDetails } from './FindingDetails';
+
 // Design tokens for direct usage
 export * from '../designTokens';
