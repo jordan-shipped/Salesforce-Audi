@@ -2137,23 +2137,23 @@ body {
 }
 
 .btn-save-connect {
-  height: 44px; /* Height 44px */
+  height: 44px; /* Height: 44px */
   font-family: var(--font-family-base);
-  font-size: 17pt; /* Font: SF Pro Semibold 17pt */
+  font-size: 17pt; /* SF Pro Semibold, 17pt */
   font-weight: var(--font-weight-semibold);
   color: var(--text-inverse);
-  background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%); /* Gradient background: systemBlue → systemBlue with 20% lighter blue */
+  background: linear-gradient(90deg, #006AF5, #00C6FF); /* Specific gradient */
   border: none;
-  border-radius: 12px; /* radius=12px */
+  border-radius: 12px;
   cursor: pointer;
   transition: all var(--transition-fast);
-  margin-top: 24px; /* Inputs → button: 24px */
-  padding: 0 20px; /* Horizontal padding 20px */
-  box-shadow: rgba(0, 122, 255, 0.24) 0px 4px 16px; /* Shadow: rgba(0,0,0,0.1) 0 4px 16px on the button */
+  margin-top: 32px; /* Between fields & button: 32px */
+  padding: 0 24px; /* Padding: 0 24px */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08); /* Base shadow */
 }
 
 .btn-save-connect:hover {
-  box-shadow: rgba(0, 122, 255, 0.3) 0px 6px 20px; /* On hover (desktop): raise shadow to 0 6px 20px */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12); /* Hover: elevate shadow */
   transform: scale(1.02); /* and scale to 1.02 */
 }
 
@@ -2162,10 +2162,11 @@ body {
 }
 
 .btn-save-connect:disabled {
-  background: var(--gray-400);
+  background: rgba(0,0,0,0.05); /* Disable state background */
+  color: rgba(0,0,0,0.3); /* Disable state color */
   cursor: not-allowed;
   transform: none;
-  opacity: 0.6;
+  box-shadow: none;
 }
 
 /* Responsive - Stacked on mobile */
