@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Remove the dashboard‐level business info form and wire 'New Audit' → onboarding flow. Clean up dashboard to remove duplicate business input form and ensure 'New Audit' button opens OrgProfileModal directly without showing picklists again."
+user_problem_statement: "Implement Apple-grade OrgProfileModal refinements: Remove Session ID, simplify radio labels with info icons, collapse calculation assumptions into accordion, refine primary button (no emoji, arrow icon), and remove Cancel button for premium feel."
 
 backend:
   - task: "Complete BusinessInfoRequest model and validation constants"
