@@ -750,39 +750,44 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        {/* Header with only title and close button */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Org Profile</h2>
-          <div className="text-right">
-            <div className="text-xs text-gray-500">Session: {sessionId ? sessionId.substring(0, 8) + '...' : 'None'}</div>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-              <span className="text-2xl">×</span>
-            </button>
-          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <span className="text-2xl">×</span>
+          </button>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Quick vs Custom Toggle */}
+          {/* Simplified Radio Group with Info Icons */}
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center space-x-4">
-              <label className="flex items-center">
+            <div className="space-y-3">
+              <label className="flex items-center group cursor-pointer">
                 <input
                   type="radio"
                   checked={useQuickEstimate}
                   onChange={() => setUseQuickEstimate(true)}
-                  className="mr-2"
+                  className="mr-3"
                 />
                 <span className="font-medium">Quick Estimate</span>
-                <span className="text-sm text-gray-500 ml-2">(Uses U.S. national averages)</span>
+                <div className="relative ml-2">
+                  <span className="info-icon group-hover:text-blue-600" title="Uses U.S. national averages">ⓘ</span>
+                  <div className="info-tooltip">Uses U.S. national averages</div>
+                </div>
               </label>
-              <label className="flex items-center">
+              
+              <label className="flex items-center group cursor-pointer">
                 <input
                   type="radio"
                   checked={!useQuickEstimate}
                   onChange={() => setUseQuickEstimate(false)}
-                  className="mr-2"
+                  className="mr-3"
                 />
                 <span className="font-medium">Custom Estimate</span>
-                <span className="text-sm text-gray-500 ml-2">(Enter your team's salaries)</span>
+                <div className="relative ml-2">
+                  <span className="info-icon group-hover:text-blue-600" title="Enter your team's salaries">ⓘ</span>
+                  <div className="info-tooltip">Enter your team's salaries</div>
+                </div>
               </label>
             </div>
           </div>
