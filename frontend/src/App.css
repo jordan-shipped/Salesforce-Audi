@@ -232,7 +232,7 @@
 }
 
 /* ===============================================
-   Apple-Grade "Choose Your Audit" Modal
+   Truly Apple-Grade "Choose Your Audit" Modal
    =============================================== */
 
 /* Modal Overlay */
@@ -283,7 +283,7 @@
   }
 }
 
-/* Close Control */
+/* Minimalist Close Control */
 .choose-audit-close {
   position: absolute;
   top: 16px;
@@ -292,7 +292,7 @@
   border: none;
   color: #6E6E73;
   cursor: pointer;
-  padding: 14px; /* 44px touch target */
+  padding: 14px;
   margin: -14px;
   border-radius: 8px;
   transition: color 0.15s ease;
@@ -307,170 +307,135 @@
   outline-offset: 2px;
 }
 
-/* Title */
+/* Title - Apple Typography */
 .choose-audit-title {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   font-size: 22px;
   font-weight: 700;
   line-height: 28px;
   color: #1C1C1E;
-  margin: 0 0 12px 0;
+  margin: 0 0 32px 0;
 }
 
-/* Option Cards Container */
-.audit-options {
+/* Native SF-Style Segmented Control */
+.segmented-control {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  background: #F2F2F7;
+  border-radius: 8px;
+  padding: 2px;
   margin-bottom: 24px;
-}
-
-/* Individual Option Card */
-.audit-option-card {
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  border: 1px solid #E0E0E5;
-  border-radius: 12px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.15s ease;
   position: relative;
 }
 
-.audit-option-card:hover {
-  border-color: #007AFF;
+.segment {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1C1C1E;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
-.audit-option-card.selected {
-  background: #F5F7FA;
-  border-color: #007AFF;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.segment.selected {
+  background: white;
+  color: #007AFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.audit-option-card:focus {
+.segment:hover:not(.selected) {
+  color: #007AFF;
+}
+
+.segment:focus {
   outline: 2px solid #007AFF;
   outline-offset: 2px;
 }
 
-/* Hidden Radio Input */
-.audit-radio {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+/* Detail Pane - Progressive Disclosure */
+.detail-pane {
+  min-height: 60px;
+  margin-bottom: 24px;
 }
 
-/* Option Content */
-.audit-option-content {
-  flex: 1;
-  margin-left: 12px;
+.quick-detail,
+.custom-detail {
+  animation: crossFade 200ms ease-out;
 }
 
-.audit-option-title {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  font-size: 17px;
-  font-weight: 600;
-  color: #1C1C1E;
-  margin-bottom: 2px;
-}
-
-.audit-option-subtitle {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: #6E6E73;
-  line-height: 1.4;
-}
-
-/* Check Icon */
-.audit-option-check {
-  margin-left: 12px;
-  animation: checkFadeIn 150ms ease-out;
-}
-
-@keyframes checkFadeIn {
+@keyframes crossFade {
   from {
     opacity: 0;
-    transform: scale(0.8);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
-/* Custom Salary Section */
-.custom-salary-section {
-  margin-top: 24px;
-  padding: 20px;
-  background: #F5F7FA;
-  border-radius: 12px;
-  border: 1px solid #E0E0E5;
-}
-
-.salary-section-description {
+/* Quick Detail Text */
+.detail-text {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
   color: #6E6E73;
-  margin-bottom: 16px;
-  line-height: 1.4;
+  margin: 0;
+  text-align: center;
+  padding: 20px 0;
 }
 
-.salary-input-row {
+/* Custom Detail - Salary Fields */
+.salary-fields {
   display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  gap: 12px;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.salary-input-row:last-child {
-  margin-bottom: 0;
+.salary-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.salary-label {
+.field-label {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   color: #1C1C1E;
-  min-width: 120px;
-  text-transform: capitalize;
 }
 
-.salary-input-wrapper {
-  flex: 1;
-}
-
-.salary-input {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #E0E0E5;
+.salary-field-input {
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid #D1D1D6;
   border-radius: 8px;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   color: #1C1C1E;
   background: white;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.salary-input:focus {
+.salary-field-input:focus {
   outline: none;
   border-color: #007AFF;
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
 }
 
-.salary-input::placeholder {
+.salary-field-input::placeholder {
   color: #A1A1A6;
+  font-weight: 400;
 }
 
-.salary-hourly {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  font-size: 12px;
-  color: #6E6E73;
-  min-width: 70px;
-  text-align: right;
-}
-
-/* Primary Action Button Container */
+/* Primary Button Container */
 .audit-button-container {
   margin-top: 24px;
   display: flex;
@@ -484,40 +449,45 @@
   }
 }
 
-/* Primary Action Button */
-.audit-start-button {
+/* Primary Button - systemBlue Gradient */
+.audit-start-button-primary {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #1C1C1E;
-  background: white;
-  border: 1px solid #1C1C1E;
+  color: white;
+  background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
+  border: none;
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 14px 24px;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
   transition: all 0.15s ease;
-  min-width: 120px;
+  min-width: 140px;
 }
 
 @media (max-width: 768px) {
-  .audit-start-button {
+  .audit-start-button-primary {
     width: 100%;
   }
 }
 
-.audit-start-button:hover:not(.disabled) {
-  background: #F5F7FA;
+.audit-start-button-primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
 }
 
-.audit-start-button:focus {
+.audit-start-button-primary:active {
+  transform: scale(0.98);
+}
+
+.audit-start-button-primary:focus {
   outline: 2px solid #007AFF;
   outline-offset: 2px;
 }
 
-.audit-start-button.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+/* ===============================================
+   Apple-Grade "Choose Your Audit" Modal
+   =============================================== */
 
 /* ===============================================
    Truly Apple-Grade OrgProfileModal Enhancements
