@@ -2068,8 +2068,9 @@ body {
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Side by side on desktop */
-  gap: 16px; /* Inputs (side by side): 16px gutter */
+  grid-template-columns: 1fr 1fr;
+  gap: 16px; /* Between fields: 16px horizontally */
+  margin-bottom: 24px; /* 24px vertically between field rows */
 }
 
 .form-group {
