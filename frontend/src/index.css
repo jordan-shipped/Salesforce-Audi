@@ -65,6 +65,7 @@
   --border-color: #E5E5E5;
   --border-color-light: #F0F0F0;
   --border-color-strong: #D1D1D1;
+  --border-divider: #3C3C434D; /* Borders / dividers: #3C3C434D (30% opacity) */
   
   /* Apple-Style Shadows */
   --shadow-button: 0 1px 3px rgba(0, 0, 0, 0.12);
