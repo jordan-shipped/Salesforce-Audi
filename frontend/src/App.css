@@ -2132,22 +2132,24 @@ body {
 }
 
 .btn-save-connect {
-  height: 48px;
+  height: 44px; /* Height 44px */
   font-family: var(--font-family-base);
-  font-size: 17px; /* SF Pro Semibold 17px as specified */
+  font-size: 17pt; /* Font: SF Pro Semibold 17pt */
   font-weight: var(--font-weight-semibold);
   color: var(--text-inverse);
-  background: #007AFF; /* fill= #007AFF as specified */
+  background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%); /* Gradient background: systemBlue → systemBlue with 20% lighter blue */
   border: none;
-  border-radius: 12px; /* radius=12px as specified */
+  border-radius: 12px; /* radius=12px */
   cursor: pointer;
   transition: all var(--transition-fast);
-  margin-top: 40px; /* 40px between form & button as specified */
+  margin-top: 24px; /* Inputs → button: 24px */
+  padding: 0 20px; /* Horizontal padding 20px */
+  box-shadow: rgba(0, 122, 255, 0.24) 0px 4px 16px; /* Shadow: rgba(0,0,0,0.1) 0 4px 16px on the button */
 }
 
 .btn-save-connect:hover {
-  background: #0056CC;
-  transform: scale(1.02);
+  box-shadow: rgba(0, 122, 255, 0.3) 0px 6px 20px; /* On hover (desktop): raise shadow to 0 6px 20px */
+  transform: scale(1.02); /* and scale to 1.02 */
 }
 
 .btn-save-connect:active {
@@ -2158,6 +2160,7 @@ body {
   background: var(--gray-400);
   cursor: not-allowed;
   transform: none;
+  opacity: 0.6;
 }
 
 /* Responsive - Stacked on mobile */
