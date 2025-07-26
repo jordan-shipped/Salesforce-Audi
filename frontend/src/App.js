@@ -773,91 +773,120 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-        {/* Clean Header - No Session ID */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Org Profile</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <span className="text-2xl">×</span>
-          </button>
-        </div>
+    <div className="choose-audit-overlay" onClick={onClose}>
+      <div 
+        className="choose-audit-modal" 
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-labelledby="choose-audit-title"
+        aria-modal="true"
+      >
+        {/* Close Control */}
+        <button 
+          onClick={onClose} 
+          className="choose-audit-close"
+          aria-label="Close audit options"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </button>
+
+        {/* Title */}
+        <h2 id="choose-audit-title" className="choose-audit-title">
+          Choose Your Audit
+        </h2>
 
         <form onSubmit={handleSubmit}>
-          {/* Apple-Grade Radio Group - Light, Airy, Minimal */}
-          <div className="radio-group-apple">
+          {/* Option Cards */}
+          <div className="audit-options">
+            {/* Quick Audit Card */}
             <div 
-              className="radio-row-apple"
-              onClick={() => setUseQuickEstimate(true)}
+              className={`audit-option-card ${selectedAuditType === 'quick' ? 'selected' : ''}`}
+              onClick={() => handleCardClick('quick')}
+              onKeyDown={(e) => handleKeyDown(e, 'quick')}
+              tabIndex="0"
+              role="radio"
+              aria-checked={selectedAuditType === 'quick'}
             >
               <input
                 type="radio"
-                className="radio-input-apple"
-                checked={useQuickEstimate}
-                onChange={() => setUseQuickEstimate(true)}
-                id="quick-estimate"
+                name="auditType"
+                value="quick"
+                checked={selectedAuditType === 'quick'}
+                onChange={() => handleCardClick('quick')}
+                className="audit-radio"
+                tabIndex="-1"
               />
-              <label htmlFor="quick-estimate" className="radio-label-apple">
-                Quick Estimate
-              </label>
-              <span 
-                className="info-icon" 
-                aria-label="Uses U.S. national averages"
-                role="button"
-                tabIndex="0"
-              >
-                ○
-                <div className="info-tooltip">Uses U.S. national averages</div>
-              </span>
+              <div className="audit-option-content">
+                <div className="audit-option-title">Quick Audit</div>
+                <div className="audit-option-subtitle">Uses U.S. national averages</div>
+              </div>
+              {selectedAuditType === 'quick' && (
+                <div className="audit-option-check">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <circle cx="10" cy="10" r="10" fill="#007AFF"/>
+                    <path d="M6 10l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              )}
             </div>
-            
+
+            {/* Custom Audit Card */}
             <div 
-              className="radio-row-apple"
-              onClick={() => setUseQuickEstimate(false)}
+              className={`audit-option-card ${selectedAuditType === 'custom' ? 'selected' : ''}`}
+              onClick={() => handleCardClick('custom')}
+              onKeyDown={(e) => handleKeyDown(e, 'custom')}
+              tabIndex="0"
+              role="radio"
+              aria-checked={selectedAuditType === 'custom'}
             >
               <input
                 type="radio"
-                className="radio-input-apple"
-                checked={!useQuickEstimate}
-                onChange={() => setUseQuickEstimate(false)}
-                id="custom-estimate"
+                name="auditType"
+                value="custom"
+                checked={selectedAuditType === 'custom'}
+                onChange={() => handleCardClick('custom')}
+                className="audit-radio"
+                tabIndex="-1"
               />
-              <label htmlFor="custom-estimate" className="radio-label-apple">
-                Custom Estimate
-              </label>
-              <span 
-                className="info-icon" 
-                aria-label="Enter your team's salaries"
-                role="button"
-                tabIndex="0"
-              >
-                ○
-                <div className="info-tooltip">Enter your team's salaries</div>
-              </span>
+              <div className="audit-option-content">
+                <div className="audit-option-title">Custom Audit</div>
+                <div className="audit-option-subtitle">Enter your team's actual salaries</div>
+              </div>
+              {selectedAuditType === 'custom' && (
+                <div className="audit-option-check">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <circle cx="10" cy="10" r="10" fill="#007AFF"/>
+                    <path d="M6 10l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              )}
             </div>
           </div>
 
-          {!useQuickEstimate && (
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600 mb-4">
+          {/* Custom Salary Inputs - Only show when custom is selected */}
+          {selectedAuditType === 'custom' && (
+            <div className="custom-salary-section">
+              <p className="salary-section-description">
                 Enter average annual salaries for each department (USD). Leave blank to use national averages.
               </p>
               
               {Object.entries(defaultSalaries).map(([dept, defaultValue]) => (
-                <div key={dept} className="flex items-center space-x-4">
-                  <label className="w-32 text-sm font-medium text-gray-700 capitalize">
+                <div key={dept} className="salary-input-row">
+                  <label className="salary-label">
                     {dept.replace('_', ' ')}:
                   </label>
-                  <div className="flex-1">
+                  <div className="salary-input-wrapper">
                     <input
                       type="number"
                       placeholder={`$${defaultValue.toLocaleString()} (default)`}
                       value={departmentSalaries[dept] || ''}
                       onChange={(e) => handleSalaryChange(dept, e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="salary-input"
                     />
                   </div>
-                  <span className="text-sm text-gray-500 w-20">
+                  <span className="salary-hourly">
                     ≈ ${Math.round((departmentSalaries[dept] || defaultValue) / 2080)}/hr
                   </span>
                 </div>
@@ -865,30 +894,12 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
             </div>
           )}
 
-          {/* Apple-Grade Accordion for Calculation Assumptions */}
-          <button
-            type="button"
-            onClick={() => setShowAssumptions(!showAssumptions)}
-            className="accordion-button-apple"
-          >
-            <span className={`accordion-arrow-apple ${showAssumptions ? 'expanded' : ''}`}>▸</span>
-            Calculation assumptions
-          </button>
-          
-          <div className={`accordion-content-apple ${showAssumptions ? 'expanded' : ''}`}>
-            <ul className="assumption-list-apple">
-              <li>Admin cleanup rate: $40/hour (U.S. average Salesforce admin)</li>
-              <li>Custom field cleanup time: 15 minutes per field</li>
-              <li>User confusion time: 2 minutes per user per field per month</li>
-              <li>Salaries converted to hourly rate (÷ 2,080 hours/year)</li>
-            </ul>
-          </div>
-
-          {/* Apple-Grade Primary Button - No Cancel */}
-          <div className="flex justify-end mt-6">
+          {/* Primary Action Button */}
+          <div className="audit-button-container">
             <button
               type="submit"
-              className="start-audit-button-apple"
+              className={`audit-start-button ${!selectedAuditType ? 'disabled' : ''}`}
+              disabled={!selectedAuditType}
             >
               Start Audit
             </button>
