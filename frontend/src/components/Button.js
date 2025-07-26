@@ -12,10 +12,7 @@ const Button = ({
   ...props 
 }) => {
   const baseStyles = {
-    fontFamily: typography.fontFamily,
-    fontSize: typography.bodyLarge.size,
-    lineHeight: typography.bodyLarge.lineHeight,
-    fontWeight: typography.weights.regular,
+    fontFamily: 'var(--font-family)',
     border: 'none',
     cursor: disabled ? 'not-allowed' : 'pointer',
     transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
@@ -23,79 +20,44 @@ const Button = ({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
+    gap: '8px',
+    borderRadius: '8px', // var(--space-8)
   };
 
   const variants = {
     primary: {
-      background: colors.primaryGradient,
-      color: colors.textOnPrimary,
-      padding: `${spacing.sm} ${spacing.lg}`, // 12px vertical, 24px horizontal
-      borderRadius: radius.sm,
-      boxShadow: shadow.default,
+      height: '28px',
+      fontSize: '14pt', // var(--type-body)
+      fontWeight: '500', // var(--font-weight-medium)
+      color: '#FFFFFF',
+      background: '#007AFF', // var(--color-accent)
+      padding: '0 16px', // var(--space-16)
       ':hover': {
-        opacity: 0.95,
-        transform: 'scale(1.02)',
-      },
-      ':active': {
-        transform: 'scale(0.98)',
-      },
-    },
-    secondary: {
-      background: colors.surfaceLight,
-      border: `1px solid ${colors.border}`,
-      color: colors.textPrimary,
-      padding: `${spacing.sm} ${spacing.lg}`,
-      borderRadius: radius.sm,
-      boxShadow: 'none',
-      ':hover': {
-        background: colors.border,
+        background: '#0056CC',
       },
     },
     outline: {
-      background: 'transparent',
-      border: `1px solid ${colors.primaryBlue}`,
-      color: colors.primaryBlue,
-      padding: `${spacing.sm} ${spacing.lg}`,
-      borderRadius: radius.sm,
+      height: '28px',
+      fontSize: '14pt', // var(--type-body)
+      fontWeight: '400', // var(--font-weight-regular)
+      color: '#1C1C1E', // var(--color-text-black)
+      background: '#FFFFFF',
+      border: '1px solid #D2D2D7', // var(--border-card)
+      padding: '0 16px',
       ':hover': {
-        background: colors.primaryBlue,
-        color: colors.textOnPrimary,
+        background: '#F5F5F7',
       },
     },
     text: {
+      height: 'auto',
+      fontSize: '16pt',
+      fontWeight: '400',
+      color: '#3A3A3C', // var(--color-text-grey-600)
       background: 'transparent',
-      color: colors.primaryBlue,
-      padding: `${spacing.sm} ${spacing.md}`,
-      border: 'none',
-      borderRadius: radius.sm,
+      padding: '8px',
       ':hover': {
-        background: colors.surfaceLight,
+        background: '#F5F5F7',
       },
-    },
-    ghost: {
-      background: 'transparent',
-      color: colors.primaryBlue,
-      padding: `${spacing.sm} ${spacing.md}`,
-      border: 'none',
-      borderRadius: radius.sm,
-      ':hover': {
-        background: colors.surfaceLight,
-      },
-    },
-  };
-
-  const sizes = {
-    small: {
-      fontSize: typography.bodyRegular.size,
-      padding: `${spacing.xs} ${spacing.md}`, // 4px 16px
-    },
-    default: {
-      // Uses variant defaults
-    },
-    large: {
-      fontSize: typography.bodyLarge.size,
-      padding: `${spacing.md} ${spacing.xl}`, // 16px 32px
     },
   };
 
@@ -106,12 +68,10 @@ const Button = ({
   } : {};
 
   const variantStyles = variants[variant] || variants.primary;
-  const sizeStyles = sizes[size] || sizes.default;
   
   const combinedStyles = {
     ...baseStyles,
     ...variantStyles,
-    ...sizeStyles,
     ...disabledStyles,
   };
 
@@ -124,21 +84,10 @@ const Button = ({
       disabled={disabled}
       onMouseEnter={(e) => {
         if (!disabled && variantStyles[':hover']) {
-          Object.assign(e.target.style, variantStyles[':hover']);
+          Object.assign(e.target.style, { ...combinedStyles, ...variantStyles[':hover'] });
         }
       }}
       onMouseLeave={(e) => {
-        if (!disabled) {
-          // Reset to base styles
-          Object.assign(e.target.style, combinedStyles);
-        }
-      }}
-      onMouseDown={(e) => {
-        if (!disabled && variantStyles[':active']) {
-          Object.assign(e.target.style, variantStyles[':active']);
-        }
-      }}
-      onMouseUp={(e) => {
         if (!disabled) {
           Object.assign(e.target.style, combinedStyles);
         }
@@ -152,9 +101,7 @@ const Button = ({
 
 // Export additional variants as named exports
 export const ButtonPrimary = (props) => <Button variant="primary" {...props} />;
-export const ButtonSecondary = (props) => <Button variant="secondary" {...props} />;
 export const ButtonOutline = (props) => <Button variant="outline" {...props} />;
 export const ButtonText = (props) => <Button variant="text" {...props} />;
-export const ButtonGhost = (props) => <Button variant="ghost" {...props} />;
 
 export default Button;
