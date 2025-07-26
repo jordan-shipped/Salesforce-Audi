@@ -1954,47 +1954,67 @@ body {
 }
 
 /* ====== PRE-AUDIT MODAL - APPLE-GRADE STYLING ====== */
-/* ====== APPLE-GRADE AUDIT RESULTS COMPONENTS ====== */
+/* ====== APPLE MINIMALIST AUDIT RESULTS ====== */
 
-/* PageContainer Layout */
+/* Page Container - Clean Foundation */
 .PageContainer {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--space-lg);
-  background: var(--color-surface-light);
+  padding: var(--space-24);
+  background: var(--color-background-page);
   min-height: 100vh;
 }
 
-/* Header */
+/* Header - Minimal & Functional */
 .Header {
-  height: 64px;
-  padding: 0 var(--space-lg);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
-  margin: calc(-1 * var(--space-lg)) calc(-1 * var(--space-lg)) var(--space-lg);
+  padding: 0 0 var(--space-32) 0;
+  border: none;
+  background: transparent;
 }
 
 .HeaderActions {
   display: flex;
-  gap: var(--space-md);
+  gap: var(--space-16);
   align-items: center;
 }
 
-/* StageSummaryPanel */
+/* Back Button - Discrete */
+.BackButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-family: var(--font-family);
+  font-size: 16pt;
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-grey-600);
+  text-decoration: none;
+  padding: var(--space-8);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--space-8);
+  transition: background-color var(--transition-fast);
+}
+
+.BackButton:hover {
+  background: var(--color-surface-light);
+}
+
+/* StageSummaryPanel - Clean & Focused */
 .StageSummaryPanel {
-  background: var(--color-surface-extra-light);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-default);
-  padding: var(--space-lg);
-  margin: var(--space-lg) 0;
+  background: var(--color-background-card);
+  border: var(--border-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-24);
+  margin-bottom: var(--space-32);
 }
 
 .StageHeader {
   text-align: center;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-24);
 }
 
 .StageTag {
@@ -2002,50 +2022,51 @@ body {
   font-family: var(--font-family);
   font-size: var(--type-caption);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-primary-blue);
-  margin-bottom: var(--space-xs);
+  color: var(--color-accent);
+  margin-bottom: var(--space-8);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .StageTitle {
   font-family: var(--font-family);
-  font-size: var(--type-h2);
-  font-weight: var(--font-weight-bold);
+  font-size: var(--type-h1);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--type-h1-leading);
+  color: var(--color-text-black);
   margin: 0;
-  color: var(--color-text-primary);
-  line-height: var(--line-height-section);
 }
 
 .StageRole {
   font-family: var(--font-family);
-  font-size: var(--type-bodySmall);
-  color: var(--color-text-secondary);
+  font-size: var(--type-body);
+  color: var(--color-text-grey-600);
   display: block;
-  margin: var(--space-xs) 0;
+  margin: var(--space-8) 0;
 }
 
 .StageMotto {
   font-family: var(--font-family);
-  font-size: var(--type-bodySmall);
+  font-size: var(--type-body);
   font-style: italic;
-  color: var(--color-text-secondary);
-  margin: var(--space-xs) 0 0 0;
+  color: var(--color-text-grey-600);
+  margin: var(--space-4) 0 0 0;
 }
 
+/* Stats Cards - Minimal Design */
 .StageStats {
   display: flex;
   justify-content: space-evenly;
-  margin: var(--space-md) 0;
-  gap: var(--space-sm);
+  gap: var(--space-16);
+  margin: var(--space-24) 0;
 }
 
 .StatCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: var(--space-sm) var(--space-md);
+  background: var(--color-background-card);
+  border: var(--border-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-16);
   text-align: center;
-  box-shadow: var(--shadow-subtle);
   flex: 1;
   min-width: 120px;
 }
@@ -2053,21 +2074,26 @@ body {
 .StatLabel {
   font-family: var(--font-family);
   font-size: var(--type-caption);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-grey-300);
+  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .StatValue {
   font-family: var(--font-family);
-  font-size: var(--type-bodyLarge);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  font-size: var(--type-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--type-h2-leading);
+  color: var(--color-text-black);
 }
 
+/* Stage Details - Two Column Clean Layout */
 .StageDetails {
   display: flex;
-  gap: var(--space-lg);
-  margin-top: var(--space-lg);
+  gap: var(--space-32);
+  margin-top: var(--space-24);
 }
 
 .StageDetailsSection {
@@ -2076,43 +2102,53 @@ body {
 
 .StageDetails h3 {
   font-family: var(--font-family);
-  font-size: var(--type-bodyMedium);
+  font-size: var(--type-body);
   font-weight: var(--font-weight-semibold);
-  margin: 0 0 var(--space-xs) 0;
-  color: var(--color-text-primary);
+  margin: 0 0 var(--space-12) 0;
+  color: var(--color-text-black);
 }
 
 .StageDetails ul {
   list-style: disc inside;
-  color: var(--color-text-secondary);
-  line-height: 1.4;
+  color: var(--color-text-grey-600);
+  line-height: var(--type-body-leading);
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
-  font-size: var(--type-bodyRegular);
+  font-size: var(--type-body);
 }
 
 .StageDetails li {
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-8);
 }
 
-/* FiltersBar */
+/* FiltersBar - Left-aligned Under Summary */
 .FiltersBar {
   display: flex;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  gap: var(--space-32);
+  margin-bottom: var(--space-32);
   align-items: end;
 }
 
 .FilterSelect {
-  min-width: 160px;
+  max-width: 200px;
 }
 
-/* FindingsGrid */
+.FilterSelect .apple-select-label {
+  font-family: var(--font-family);
+  font-size: var(--type-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-grey-300);
+  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* FindingsGrid - Clean 8px Grid */
 .FindingsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-md);
+  gap: var(--space-24);
 }
 
 @media (min-width: 600px) {
@@ -2127,17 +2163,16 @@ body {
   }
 }
 
-/* AccordionCard */
+/* AccordionCard - Pure White Minimalism */
 .AccordionCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-subtle);
-  padding: var(--space-md);
-  transition: all var(--transition-fast);
+  background: var(--color-background-card);
+  border: var(--border-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-16);
+  transition: box-shadow var(--transition-fast);
 }
 
 .AccordionCard:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
 
@@ -2147,124 +2182,150 @@ body {
   align-items: center;
   cursor: pointer;
   outline: none;
-  border-radius: var(--radius-sm);
-  padding: var(--space-xs);
-  margin: calc(-1 * var(--space-xs));
+  border-radius: var(--space-8);
+  padding: var(--space-8);
+  margin: calc(-1 * var(--space-8));
 }
 
 .AccordionHeader:focus {
-  outline: 2px solid var(--color-focus);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
 .AccordionHeaderLeft {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-12);
   flex: 1;
-  min-width: 0; /* Prevent text overflow */
+  min-width: 0;
 }
 
 .AccordionHeaderRight {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-12);
   flex-shrink: 0;
 }
 
+/* Domain Badge - Single Accent Color */
 .DomainBadge {
   font-family: var(--font-family);
   font-size: var(--type-caption);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-on-primary);
-  background: var(--color-primary-blue);
-  border-radius: var(--radius-sm);
-  padding: 2px 6px;
+  color: var(--color-accent);
+  background: var(--color-accent-30);
+  border-radius: var(--space-8);
+  padding: var(--space-4) var(--space-8);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
+/* Finding Title - Clean Typography */
 .Title {
   font-family: var(--font-family);
-  font-size: var(--type-bodyRegular);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
-  line-height: 1.3;
+  font-size: var(--type-body-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-black);
+  line-height: var(--type-body-medium-leading);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
+/* Cost - Accent Color Only */
 .Cost {
   font-family: var(--font-family);
-  font-size: var(--type-bodyRegular);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-primary-blue);
+  font-size: var(--type-body-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-accent);
   white-space: nowrap;
 }
 
+/* Priority Pill - Single Grey Treatment */
 .PriorityPill {
   font-family: var(--font-family);
   font-size: var(--type-caption);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-on-secondary);
-  background: var(--color-priority-medium);
-  border-radius: var(--radius-sm);
-  padding: 2px 6px;
+  color: var(--color-text-grey-600);
+  background: var(--color-text-grey-300);
+  border-radius: var(--space-8);
+  padding: var(--space-4) var(--space-8);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  opacity: 0.8;
 }
 
 .ExpandIcon {
   display: flex;
   align-items: center;
-  color: var(--color-text-secondary);
-  margin-left: var(--space-xs);
+  color: var(--color-text-grey-300);
+  margin-left: var(--space-8);
 }
 
+/* Accordion Content - Subtle */
 .AccordionContent {
-  margin-top: var(--space-sm);
+  margin-top: var(--space-16);
   font-family: var(--font-family);
-  font-size: var(--type-caption);
-  color: var(--color-text-secondary);
-  line-height: 1.4;
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--color-border);
+  font-size: var(--type-body);
+  color: var(--color-text-grey-600);
+  line-height: var(--type-body-leading);
+  padding-top: var(--space-16);
+  border-top: var(--border-card);
 }
 
 .AccordionContent p {
-  margin: 0 0 var(--space-sm) 0;
+  margin: 0 0 var(--space-12) 0;
 }
 
 .AccordionContent h4 {
   font-family: var(--font-family);
-  font-size: var(--type-bodyRegular);
+  font-size: var(--type-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-black);
+  margin: var(--space-16) 0 var(--space-8) 0;
+}
+
+/* Buttons - Apple Standard Heights */
+.apple-btn-outline {
+  height: 28px;
+  font-family: var(--font-family);
+  font-size: var(--type-body);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-black);
+  background: var(--color-background-card);
+  border: var(--border-card);
+  border-radius: var(--space-8);
+  padding: 0 var(--space-16);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.apple-btn-primary {
+  height: 28px;
+  font-family: var(--font-family);
+  font-size: var(--type-body);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
-  margin: var(--space-sm) 0 var(--space-xs) 0;
+  color: var(--color-text-on-primary);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--space-8);
+  padding: 0 var(--space-16);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.DetailsBreakdown ul,
-.AccordionContent ul {
-  margin: 0;
-  padding-left: var(--space-md);
-}
-
-.DetailsBreakdown li,
-.AccordionContent li {
-  margin-bottom: var(--space-xs);
-}
-
-/* Mobile Responsive */
+/* Mobile Responsive - Maintain 8px Grid */
 @media (max-width: 768px) {
   .PageContainer {
-    padding: var(--space-md);
+    padding: var(--space-16);
   }
   
   .Header {
-    height: auto;
-    padding: var(--space-md);
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-16);
     align-items: stretch;
   }
   
@@ -2274,35 +2335,37 @@ body {
   
   .StageStats {
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: var(--space-12);
   }
   
   .StageDetails {
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-24);
   }
   
   .FiltersBar {
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: var(--space-16);
   }
   
   .FilterSelect {
-    min-width: auto;
+    max-width: 100%;
   }
   
   .AccordionHeaderLeft {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-xs);
+    gap: var(--space-8);
   }
   
   .AccordionHeaderRight {
     flex-direction: column;
     align-items: flex-end;
-    gap: var(--space-xs);
+    gap: var(--space-8);
   }
 }
+
+/* ====== APPLE-GRADE LANDING PAGE ====== */
 
 /* ====== APPLE-GRADE LANDING PAGE ====== */
 
