@@ -984,12 +984,6 @@ const Dashboard = () => {
     setShowOrgProfile(true);
   };
 
-  const handleBusinessInputSubmit = (inputs) => {
-    setBusinessInputs(inputs);
-    setShowBusinessInput(false);
-    setShowOrgProfile(true);
-  };
-
   const runAuditWithProfile = async (auditRequest) => {
     setRunning(true);
     setShowOrgProfile(false);
