@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from 'reac
 import { Bolt, ChartPie, FileText, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 import './App.css';
+import AuditResults from './components/pages/AuditResults';
 import { 
   StageSummaryPanel as NewStageSummaryPanel, 
   AccordionCard, 
