@@ -19,7 +19,9 @@
   --type-h2: 28pt;                   /* Section/H2 */
   --type-h3: 22pt;                   /* Modal Title/H3 */
   --type-bodyLarge: 17pt;            /* Body Large */
+  --type-bodyMedium: 16pt;           /* Body Medium */
   --type-bodyRegular: 15pt;          /* Body Regular */
+  --type-bodySmall: 14pt;            /* Body Small */
   --type-caption: 13pt;              /* Caption */
   
   --font-size-hero: 34pt;        /* H1 / Hero */
