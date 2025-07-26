@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Apple-Grade Design System - Phase 2 Enhanced Tokens */
+/* Apple-Grade Design System - Unified Token System */
 :root {
   /* Typography - SF Pro System */
-  --font-family-base: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  --font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-family-mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace;
   
   /* Font Weights */
@@ -14,94 +14,59 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   
-  /* Font Sizes - Apple Typography Scale */
-  --text-xs: 0.75rem;    /* 12px */
-  --text-sm: 0.875rem;   /* 14px */
-  --text-base: 1rem;     /* 16px */
-  --text-lg: 1.125rem;   /* 18px */
-  --text-xl: 1.25rem;    /* 20px */
-  --text-2xl: 1.5rem;    /* 24px */
-  --text-3xl: 1.875rem;  /* 30px */
-  --text-4xl: 2.25rem;   /* 36px */
+  /* Typography Scale - Apple Standard */
+  --font-size-hero: 34pt;        /* H1 / Hero */
+  --font-size-section: 28pt;     /* H2 / Section */
+  --font-size-modal-title: 22pt; /* H3 / Modal Title */
+  --font-size-body-large: 17pt;  /* Body Large */
+  --font-size-body-regular: 15pt;/* Body Regular */
+  --font-size-caption: 13pt;     /* Caption */
   
-  /* Colors - Pure, Minimal Palette */
+  /* Line Heights */
+  --line-height-hero: 41pt;
+  --line-height-section: 34pt;
+  --line-height-modal-title: 28pt;
+  --line-height-body-large: 22pt;
+  --line-height-body-regular: 20pt;
+  --line-height-caption: 18pt;
+  
+  /* Colors - Apple Design Language */
+  --color-primary-blue: #007AFF;
+  --color-primary-gradient: linear-gradient(90deg, #0060DF 0%, #00C6FF 100%);
+  --color-text-primary: #000000;        /* Text primary: 100% opacity */
+  --color-text-secondary: #3C3C4399;    /* Text secondary: 60% opacity */
+  --color-text-tertiary: #3C3C434D;     /* Text tertiary: 30% opacity */
+  --color-text-on-primary: #FFFFFF;
   --color-background: #FFFFFF;
-  --color-background-secondary: #FAFAFA;
-  --color-background-tertiary: #F5F5F5;
-  --color-overlay: rgba(0, 0, 0, 0.4);
+  --color-surface-light: #F2F2F7;       /* Cards, modals, inputs */
+  --color-border: #E5E5EA;              /* Input borders, dividers */
+  --color-error-red: #FF3B30;           /* Disconnect links, errors */
+  --color-accent: #006AF5;              /* AccentColor for focus states */
   
-  /* Text Colors - High Contrast */
-  --text-primary: #000000; /* Text primary: #000000 (100% opacity) */
-  --text-secondary: #3C3C4399; /* Text secondary: #3C3C4399 (60% opacity) */
-  --text-tertiary: #999999;
-  --text-inverse: #FFFFFF;
-  --text-placeholder: #C7C7C7;
-  
-  /* Apple System Colors */
-  --color-blue: #007AFF;
-  --color-blue-hover: #0056CC;
-  --color-accent: #006AF5; /* AccentColor (systemBlue) for focus states */
-  --color-green: #34C759;
-  --color-red: #FF3B30;
-  --color-orange: #FF9500;
-  --color-yellow: #FFCC00;
-  
-  /* Gradient - Landing Page Only */
-  --gradient-cta: linear-gradient(135deg, #0066FF 0%, #00CCFF 100%);
-  
-  /* Neutral Grays */
-  --gray-50: #FAFAFA;
-  --gray-100: #F5F5F5;
-  --gray-200: #EEEEEE;
-  --gray-300: #E0E0E0;
-  --gray-400: #BDBDBD;
-  --gray-500: #9E9E9E;
-  --gray-600: #757575;
-  --gray-700: #616161;
-  --gray-800: #424242;
-  --gray-900: #212121;
-  
-  /* Borders */
-  --border-color: #E5E5E5;
-  --border-color-light: #F0F0F0;
-  --border-color-strong: #D1D1D1;
-  --border-divider: #3C3C434D; /* Borders / dividers: #3C3C434D (30% opacity) */
-  
-  /* Apple-Style Shadows */
-  --shadow-button: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.15);
-  --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  
-  /* Spacing Scale - Consistent 8px Grid */
-  --space-1: 0.125rem;   /* 2px */
-  --space-2: 0.25rem;    /* 4px */
-  --space-3: 0.5rem;     /* 8px */
-  --space-4: 0.75rem;    /* 12px */
-  --space-5: 1rem;       /* 16px - Base unit */
-  --space-6: 1.25rem;    /* 20px */
-  --space-7: 1.5rem;     /* 24px - Card padding */
-  --space-8: 2rem;       /* 32px - Gutter */
-  --space-10: 2.5rem;    /* 40px */
-  --space-12: 3rem;      /* 48px - Section spacing */
-  --space-16: 4rem;      /* 64px */
-  --space-20: 5rem;      /* 80px */
+  /* Spacing Scale - 4px Base Unit */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
   
   /* Border Radius - Apple Consistency */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 20px;
+  --radius-sm: 8px;    /* buttons & inputs */
+  --radius-md: 12px;   /* cards & modals */
+  --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
+  
+  /* Apple-Style Shadows */
+  --shadow-default: 0 1px 2px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 12px rgba(0, 0, 0, 0.06);
+  --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05);
   
   /* Transitions - Apple Timing */
   --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
   
   /* Z-Index Scale */
   --z-dropdown: 1000;
@@ -113,16 +78,68 @@
   --z-tooltip: 1070;
 }
 
+/* Global Typography Setup */
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-        "Helvetica Neue", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+}
+
+/* Typography Styles */
+h1, .text-hero {
+  font-size: var(--font-size-hero);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-hero);
+  color: var(--color-text-primary);
+}
+
+h2, .text-section {
+  font-size: var(--font-size-section);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-section);
+  color: var(--color-text-primary);
+}
+
+h3, .text-modal-title {
+  font-size: var(--font-size-modal-title);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-modal-title);
+  color: var(--color-text-primary);
+}
+
+.text-body-large {
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-large);
+  color: var(--color-text-primary);
+}
+
+.text-body-regular {
+  font-size: var(--font-size-body-regular);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-regular);
+  color: var(--color-text-primary);
+}
+
+.text-caption {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-caption);
+  color: var(--color-text-secondary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-tertiary {
+  color: var(--color-text-tertiary);
 }
 
 code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-        monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
