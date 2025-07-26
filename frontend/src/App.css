@@ -1993,9 +1993,9 @@ body {
 
 .pre-audit-modal {
   background: var(--color-background);
-  border-radius: 20px; /* Large corner radius as specified */
-  box-shadow: var(--shadow-modal);
-  padding: 32px; /* 32px padding as specified */
+  border-radius: 20px; /* Modal container radius: 20px */
+  box-shadow: rgba(0,0,0,0.1) 0 20px 40px; /* Perfect shadows as specified */
+  padding: 24px; /* Outer padding: 24px on all sides */
   width: 90%;
   max-width: 560px;
   position: relative;
