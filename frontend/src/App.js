@@ -1681,7 +1681,7 @@ const AuditResults = () => {
   const stageData = getStageData(business_stage?.stage || 3);
   const stageStats = {
     timeSaved: `${summary?.monthly_hours_saved || 36.8} h/mo`,
-    roi: `$${summary?.annual_roi_total?.toLocaleString() || '23,082'} /yr`,
+    roi: `$${summary?.total_annual_roi?.toLocaleString() || '23,082'} /yr`,
     findings: filteredFindings.length
   };
 
