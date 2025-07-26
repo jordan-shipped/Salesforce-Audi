@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
-import { Bolt, ChartPie, FileText } from 'lucide-react';
+import { Bolt, ChartPie, FileText, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 import './App.css';
+import { 
+  StageSummaryPanel, 
+  AccordionCard, 
+  FiltersBar, 
+  ButtonText, 
+  ButtonOutline, 
+  ButtonPrimary 
+} from './components';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
