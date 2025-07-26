@@ -2367,26 +2367,28 @@ body {
 
 /* ====== APPLE-GRADE LANDING PAGE ====== */
 
-/* ====== APPLE-GRADE LANDING PAGE - DESIGN TOKENS ====== */
+/* ====== APPLE-GRADE LANDING PAGE ====== */
 
-/* Landing Page Layout */
+/* Layout & Spacing */
 .LandingPageWrapper {
   background: var(--color-background);
   min-height: 100vh;
+  padding: var(--space-lg); /* Page padding on left/right */
 }
 
 .LandingPageContent {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--layout-gutter);
+  max-width: 1200px; /* Max-width wrapper */
+  margin: 0 auto; /* Center content */
 }
 
-/* Hero Section - Design Token Driven */
+/* Hero Section */
 .HeroSection {
   background: var(--color-background);
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding: var(--space-xxl) var(--space-lg); /* 48px top/bottom, 24px left/right */
   text-align: center;
+  border-radius: var(--radius-lg); /* 16px */
+  box-shadow: var(--shadow-default);
+  margin-bottom: var(--space-xl); /* Hero bottom margin */
 }
 
 .HeroContent {
@@ -2395,256 +2397,116 @@ body {
 }
 
 .HeroTitle {
-  font-family: var(--font-h1-family);
-  font-size: var(--font-h1-size);
-  font-weight: var(--font-h1-weight);
-  line-height: var(--font-h1-line-height);
+  font-family: var(--font-family);
+  font-size: var(--type-h1); /* 34pt */
+  font-weight: var(--font-weight-bold); /* 700 */
+  line-height: 1.2;
+  margin-bottom: var(--space-sm); /* 8px */
   color: var(--color-text-primary);
-  margin: 0 0 16px 0;
 }
 
 .HeroSubtitle {
-  font-family: var(--font-h1-family);
-  font-size: var(--font-h1-size);
-  font-weight: var(--font-h1-weight);
-  line-height: var(--font-h1-line-height);
+  font-family: var(--font-family);
+  font-size: var(--type-h1); /* Same 34pt, but 600 weight */
+  font-weight: var(--font-weight-semibold); /* 600 */
+  margin-bottom: var(--space-md); /* 16px */
   color: var(--color-text-primary);
-  margin-bottom: 16px;
 }
 
 .PrimaryGradientText {
-  background: linear-gradient(90deg, #007AFF 0%, #007AFF 100%);
+  background: linear-gradient(90deg, #0060DF 0%, #00C6FF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .HeroCopy {
-  font-family: var(--font-body-family);
-  font-size: var(--font-body-size);
-  font-weight: var(--font-body-weight);
-  line-height: var(--font-body-line-height);
+  font-family: var(--font-family);
+  font-size: var(--type-bodyLarge); /* 17pt */
+  line-height: 1.4;
   color: var(--color-text-secondary);
+  margin-bottom: var(--space-xl); /* 32px */
   max-width: 600px;
-  margin: 0 auto 32px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .HeroCTA {
-  margin-top: 32px;
+  padding: var(--space-sm) var(--space-xl); /* 8px 32px */
+  font-size: var(--type-bodyLarge); /* 17pt */
+  font-weight: var(--font-weight-semibold);
 }
 
-/* Features Grid - Using Design Tokens */
+/* Features Grid */
 .FeaturesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--layout-gutter);
-  margin-top: var(--layout-section-spacing);
-  padding: 0 var(--layout-gutter);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-lg); /* 24px */
+  margin-top: var(--space-md); /* 16px - bring cards up closer under hero */
+  padding: 0 var(--space-lg); /* 24px left/right */
 }
 
 .FeatureCard {
-  max-width: 280px;
-  margin: 0 auto;
+  background: var(--color-surface-light);
+  padding: var(--space-md); /* 16px */
+  border-radius: var(--radius-lg); /* 16px */
+  box-shadow: var(--shadow-default);
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.FeatureCard:hover {
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(-1px);
 }
 
 .FeatureIcon {
-  width: 24px;
-  height: 24px;
-  color: var(--color-accent-blue);
+  width: 32px;
+  height: 32px;
+  margin: 0 auto var(--space-sm); /* 8px bottom */
+  color: var(--color-primary-blue);
   display: block;
-  margin: 0 auto 8px;
 }
 
 .FeatureTitle {
-  font-family: var(--font-h3-family);
-  font-size: var(--font-h3-size);
-  font-weight: var(--font-h3-weight);
-  line-height: var(--font-h3-line-height);
+  font-family: var(--font-family);
+  font-size: var(--type-bodyLarge); /* 17pt */
+  font-weight: var(--font-weight-semibold); /* 600 */
+  margin-bottom: var(--space-xs); /* 4px */
   color: var(--color-text-primary);
-  text-align: center;
-  margin: 0 0 8px 0;
 }
 
 .FeatureDescription {
-  font-family: var(--font-body-family);
-  font-size: var(--font-body-size);
-  font-weight: var(--font-body-weight);
-  line-height: var(--font-body-line-height);
-  color: var(--color-text-primary);
-  text-align: center;
-  max-width: 240px;
-  margin: 0 auto;
-}
-
-/* Apple-Grade Modal System - Using Design Tokens */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1050;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.apple-modal {
-  background: var(--color-background);
-  border-radius: 20px;
-  box-shadow: var(--shadow-modal);
-  padding: 32px;
-  width: 90%;
-  max-width: 600px;
-  position: relative;
-  animation: modalSlideIn 300ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-.apple-modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: 24px;
+  font-family: var(--font-family);
+  font-size: var(--type-caption); /* 13pt */
+  line-height: 1.4;
   color: var(--color-text-secondary);
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all var(--transition-fast);
-}
-
-.apple-modal-close:hover {
-  background: var(--color-card-background);
-}
-
-.apple-modal-title {
-  font-family: var(--font-h2-family);
-  font-size: var(--font-h2-size);
-  font-weight: var(--font-h2-weight);
-  line-height: var(--font-h2-line-height);
-  color: var(--color-text-primary);
-  text-align: center;
-  margin: 0 0 16px 0;
-}
-
-.apple-modal-subtitle {
-  font-family: var(--font-caption-family);
-  font-size: var(--font-caption-size);
-  color: var(--color-text-secondary);
-  text-align: center;
-  margin: 0 0 24px 0;
-}
-
-/* Business Form - Using Design Tokens */
-.apple-business-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.apple-form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--layout-gutter);
-}
-
-.apple-form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.apple-form-label {
-  font-family: var(--font-caption-family);
-  font-size: var(--font-caption-size);
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.apple-form-select {
-  height: 44px;
-  font-family: var(--font-body-family);
-  font-size: var(--font-body-size);
-  color: var(--color-text-primary);
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 0 16px 0 12px;
-  transition: all var(--transition-fast);
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238E8E93' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 12px center;
-  background-repeat: no-repeat;
-  background-size: 16px;
-}
-
-.apple-form-select:focus {
-  outline: none;
-  border: 2px solid var(--color-accent-blue);
-  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-}
-
-.apple-form-select option[value=""] {
-  color: var(--color-placeholder-gray);
-}
-
-.apple-form-error {
-  color: #FF3B30;
-  font-family: var(--font-caption-family);
-  font-size: var(--font-caption-size);
-  margin-top: 8px;
-  padding: 12px 16px;
-  background: rgba(255, 59, 48, 0.1);
-  border-radius: 8px;
-  border-left: 3px solid #FF3B30;
+  margin: 0;
 }
 
 /* Mobile Responsive */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
+  .LandingPageWrapper {
+    padding: var(--space-md); /* Reduced padding on mobile */
+  }
+  
   .HeroSection {
-    padding-top: 48px;
-    padding-bottom: 48px;
+    padding: var(--space-lg) var(--space-md); /* Reduced padding on mobile */
   }
   
   .HeroTitle,
   .HeroSubtitle {
-    font-size: var(--font-h2-size);
-    line-height: var(--font-h2-line-height);
+    font-size: var(--type-h2); /* 28pt on mobile */
+  }
+  
+  .HeroCopy {
+    font-size: var(--type-bodyRegular); /* 15pt on mobile */
+    max-width: 100%; /* Full width on mobile */
   }
   
   .FeaturesGrid {
-    grid-template-columns: 1fr;
-    margin-top: 32px;
-  }
-  
-  .apple-form-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .apple-modal {
-    width: 95%;
-    padding: 24px;
+    grid-template-columns: 1fr; /* Single column on mobile */
+    padding: 0; /* No side padding on mobile */
   }
 }
 
