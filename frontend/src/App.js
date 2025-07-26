@@ -546,8 +546,51 @@ const useBusinessInfo = () => {
   return context;
 };
 const BusinessInputForm = ({ onSubmit, initialData }) => {
-  const [revenue, setRevenue] = useState(initialData?.revenue_range || '');
-  const [employees, setEmployees] = useState(initialData?.employee_range || '');
+  const { businessInfo } = useBusinessInfo();
+  
+  // Use stored business info as initial values, then any passed initialData, then defaults
+  const getInitialRevenue = () => {
+    if (initialData?.revenue_range) return initialData.revenue_range;
+    if (businessInfo?.revenue_bucket) {
+      // Convert backend format to frontend format
+      const mapping = {
+        "Under $100K": "<100k",
+        "$100K – $250K": "100k–250k", 
+        "$250K – $500K": "250k–500k",
+        "$500K – $1M": "500k–1M",
+        "$1M – $3M": "1M–3M",
+        "$3M – $10M": "3M–10M", 
+        "$10M – $30M": "10M–30M",
+        "$30M+": "30M+"
+      };
+      return mapping[businessInfo.revenue_bucket] || '';
+    }
+    return '';
+  };
+  
+  const getInitialEmployees = () => {
+    if (initialData?.employee_range) return initialData.employee_range;
+    if (businessInfo?.headcount_bucket) {
+      // Convert backend format to frontend format
+      const mapping = {
+        "Just me, no revenue": "0-only",
+        "Just me, some revenue": "0-some", 
+        "Me & vendors": "vendors",
+        "2 – 4": "2–4",
+        "5 – 9": "5–9",
+        "10 – 19": "10–19",
+        "20 – 49": "20–49",
+        "50 – 99": "50–99",
+        "100 – 249": "100–249",
+        "250 – 500": "250–500"
+      };
+      return mapping[businessInfo.headcount_bucket] || '';
+    }
+    return '';
+  };
+
+  const [revenue, setRevenue] = useState(getInitialRevenue());
+  const [employees, setEmployees] = useState(getInitialEmployees());
 
   // Mapping picklist values to numeric ranges for backend processing
   const revenueMapping = {
