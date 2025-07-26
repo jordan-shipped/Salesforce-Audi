@@ -141,7 +141,7 @@
   }
   
   .text-accent {
-    @apply text-accent;
+    color: #007AFF;
   }
 
   /* Layout Components */
