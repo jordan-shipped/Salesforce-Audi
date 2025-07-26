@@ -1,39 +1,42 @@
 import React from 'react';
-import { colors, typography, spacing, radius, shadow, components } from '../designTokens';
+import { Colors, Layout } from '../styles/tokens';
 
 const Card = ({ 
   children, 
-  className = '',
+  className = '', 
   onClick,
-  hover = false,
+  hover = true,
   ...props 
 }) => {
   const cardStyles = {
-    background: components.card.background,
-    padding: components.card.padding,
-    borderRadius: components.card.borderRadius,
-    boxShadow: components.card.boxShadow,
+    background: Colors.CardBackground,
+    borderRadius: `${Layout.BorderRadius}px`,
+    padding: `${Layout.CardPadding}px`,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: `${Layout.Gutter / 2}px`,
     transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
     cursor: onClick ? 'pointer' : 'default',
   };
 
-  const hoverStyles = hover || onClick ? {
-    boxShadow: shadow.elevated,
-    transform: 'translateY(-1px)',
+  const hoverStyles = hover && onClick ? {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
   } : {};
 
   return (
     <div
-      className={`apple-card ${className}`}
+      className={`unified-card ${className}`}
       style={cardStyles}
       onClick={onClick}
       onMouseEnter={(e) => {
-        if (hover || onClick) {
+        if (hover && onClick) {
           Object.assign(e.target.style, { ...cardStyles, ...hoverStyles });
         }
       }}
       onMouseLeave={(e) => {
-        if (hover || onClick) {
+        if (hover && onClick) {
           Object.assign(e.target.style, cardStyles);
         }
       }}
@@ -44,52 +47,64 @@ const Card = ({
   );
 };
 
-const CardHeader = ({ children, className = '' }) => {
-  const headerStyles = {
-    fontSize: components.card.headlineSize,
-    color: components.card.headlineColor,
-    fontWeight: typography.weights.medium,
-    marginBottom: spacing.sm,
-  };
+// Card subcomponents for consistent structure
+export const CardIcon = ({ children, className = '' }) => (
+  <div 
+    className={`card-icon ${className}`}
+    style={{
+      width: '24px',
+      height: '24px',
+      marginBottom: '8px',
+      alignSelf: 'center',
+    }}
+  >
+    {children}
+  </div>
+);
 
-  return (
-    <div className={`apple-card-header ${className}`} style={headerStyles}>
-      {children}
-    </div>
-  );
-};
+export const CardTitle = ({ children, className = '' }) => (
+  <h3 
+    className={`card-title typography-h3 ${className}`}
+    style={{
+      margin: 0,
+      textAlign: 'center',
+      color: Colors.TextPrimary,
+    }}
+  >
+    {children}
+  </h3>
+);
 
-const CardContent = ({ children, className = '' }) => {
-  const contentStyles = {
-    fontSize: components.card.subtextSize,
-    color: components.card.subtextColor,
-    lineHeight: typography.bodyRegular.lineHeight,
-  };
+export const CardBody = ({ children, className = '' }) => (
+  <div 
+    className={`card-body typography-body ${className}`}
+    style={{
+      textAlign: 'center',
+      color: Colors.TextPrimary,
+      maxWidth: '240px',
+      margin: '0 auto',
+    }}
+  >
+    {children}
+  </div>
+);
 
-  return (
-    <div className={`apple-card-content ${className}`} style={contentStyles}>
-      {children}
-    </div>
-  );
-};
+export const CardMeta = ({ children, className = '' }) => (
+  <div 
+    className={`card-meta typography-caption ${className}`}
+    style={{
+      textAlign: 'center',
+      color: Colors.TextSecondary,
+    }}
+  >
+    {children}
+  </div>
+);
 
-const CardAccent = ({ children, className = '' }) => {
-  const accentStyles = {
-    color: components.card.accentColor,
-    fontSize: components.card.headlineSize,
-    fontWeight: typography.weights.semibold,
-    marginTop: spacing.sm,
-  };
-
-  return (
-    <div className={`apple-card-accent ${className}`} style={accentStyles}>
-      {children}
-    </div>
-  );
-};
-
-Card.Header = CardHeader;
-Card.Content = CardContent;
-Card.Accent = CardAccent;
+// Compound exports
+Card.Icon = CardIcon;
+Card.Title = CardTitle;
+Card.Body = CardBody;
+Card.Meta = CardMeta;
 
 export default Card;
