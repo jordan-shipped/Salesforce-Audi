@@ -33,69 +33,46 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page">
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="gradient-text">SalesAudit Pro</span>
+      <div className="max-w-5xl mx-auto p-8 space-y-16">
+        {/* Hero Section - Apple-Grade */}
+        <section className="text-center space-y-6">
+          <h1 className="text-4xl font-bold text-gray-900">
+            Optimize Your Salesforce
           </h1>
-          <h2 className="hero-subtitle">
-            Unlock Hidden Revenue in Your Salesforce Org
+          <h2 className="text-5xl font-extrabold">
+            <span className="gradient-text">Like Never Before</span>
           </h2>
-          <p className="hero-description">
-            Get instant insights into your Salesforce setup with our intelligent audit engine. 
-            Discover optimization opportunities worth thousands in annual savings.
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed">
+            Discover hidden inefficiencies, automate manual processes, and unlock substantial cost savings 
+            with our AI-powered Salesforce audit tool.
           </p>
-          <button onClick={handleStartFreeAudit} className="cta-button">
+          <button 
+            onClick={handleStartFreeAudit} 
+            className="px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          >
             Start Free Audit
           </button>
-        </div>
-      </section>
+        </section>
 
-      {/* Features Grid */}
-      <section className="features">
-        <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
-            </div>
-            <h3 className="feature-title">Instant Analysis</h3>
-            <p className="feature-description">
-              Complete Salesforce audit in under 60 seconds. No setup, no waiting.
-            </p>
-          </div>
-
-          <div className="feature-card">
-            <div className="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
-              </svg>
-            </div>
-            <h3 className="feature-title">Smart Insights</h3>
-            <p className="feature-description">
-              AI-powered recommendations tailored to your business size and industry.
-            </p>
-          </div>
-
-          <div className="feature-card">
-            <div className="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14,2 14,8 20,8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-                <polyline points="10,9 9,9 8,9"/>
-              </svg>
-            </div>
-            <h3 className="feature-title">Actionable Reports</h3>
-            <p className="feature-description">
-              Detailed PDF reports with step-by-step implementation guides.
-            </p>
-          </div>
-        </div>
-      </section>
+        {/* Features Grid - Premium Cards */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <FeatureCard
+            icon="⚡︎"
+            title="Instant Analysis"
+            description="Complete Salesforce audit in under 60 seconds. No setup, no waiting."
+          />
+          <FeatureCard
+            icon="🤖"
+            title="Smart Insights"
+            description="AI-powered recommendations tailored to your business size and industry."
+          />
+          <FeatureCard
+            icon="📄"
+            title="Actionable Reports"
+            description="Detailed PDF reports with step-by-step implementation guidance."
+          />
+        </section>
+      </div>
 
       {/* PreAudit Modal */}
       <PreAuditModal
