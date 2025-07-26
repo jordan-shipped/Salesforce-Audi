@@ -998,7 +998,43 @@ const Dashboard = () => {
     
     try {
       console.log('🔍 Starting audit with session_id:', sessionId);
-      console.log('💼 Business inputs:', businessInputs);
+      console.log('💼 Business info from context:', businessInfo);
+      
+      // Convert businessInfo from context to the format expected by backend
+      let businessInputs = null;
+      if (businessInfo) {
+        // Convert the picklist format from PreAuditModal to numeric format
+        const revenueMapping = {
+          "Under $100K": 50000,        
+          "$100K – $250K": 175000,   
+          "$250K – $500K": 375000,   
+          "$500K – $1M": 750000,     
+          "$1M – $3M": 2000000,      
+          "$3M – $10M": 6500000,     
+          "$10M – $30M": 20000000,   
+          "$30M+": 150000000      
+        };
+
+        const employeeMapping = {
+          "Just me, no revenue": 0,
+          "Just me, some revenue": 1,
+          "Me & vendors": 2,
+          "2 – 4": 3,
+          "5 – 9": 7,
+          "10 – 19": 15,
+          "20 – 49": 35,
+          "50 – 99": 75,
+          "100 – 249": 175,
+          "250 – 500": 375
+        };
+
+        businessInputs = {
+          annual_revenue: revenueMapping[businessInfo.revenue_bucket] || 1000000,
+          employee_headcount: employeeMapping[businessInfo.headcount_bucket] || 50,
+          revenue_range: businessInfo.revenue_bucket,
+          employee_range: businessInfo.headcount_bucket
+        };
+      }
       
       // Add business inputs to the audit request
       const enhancedRequest = {
