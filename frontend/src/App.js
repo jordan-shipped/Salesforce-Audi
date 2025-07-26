@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+import { Bolt, ChartPie, FileText } from 'lucide-react';
 import axios from 'axios';
 import './App.css';
 
