@@ -8,77 +8,99 @@ const API = `${BACKEND_URL}/api`;
 
 // Landing Page Component - Above the Fold, No Scrolling
 const LandingPage = () => {
-  const navigate = useNavigate();
+  const [showPreAuditModal, setShowPreAuditModal] = useState(false);
+  const { hasBusinessInfo } = useBusinessInfo();
+
+  const handleStartFreeAudit = () => {
+    if (!hasBusinessInfo) {
+      setShowPreAuditModal(true);
+    } else {
+      // Business info already exists, go straight to OAuth
+      window.location.href = `${API}/oauth/authorize`;
+    }
+  };
+
+  const handleBusinessInfoSubmit = (businessInfo) => {
+    console.log('Business info submitted:', businessInfo);
+    setShowPreAuditModal(false);
+    
+    // Store business info in context
+    // Then redirect to OAuth
+    window.location.href = `${API}/oauth/authorize`;
+  };
 
   return (
-    <div className="App landing-page">
-      {/* Hero Section - Compact Above the Fold */}
+    <div className="landing-page">
+      {/* Hero Section */}
       <section className="hero">
-        <div className="container">
-          <h1 className="slide-in-up">
-            Optimize Your Salesforce<br/>
-            <span className="accent">Like Never Before</span>
+        <div className="hero-content">
+          <h1 className="hero-title">
+            <span className="gradient-text">SalesAudit Pro</span>
           </h1>
-          <p className="subhead slide-in-up">
-            Discover hidden inefficiencies, automate manual processes, and unlock 
-            substantial cost savings with our AI-powered Salesforce audit tool.
+          <h2 className="hero-subtitle">
+            Unlock Hidden Revenue in Your Salesforce Org
+          </h2>
+          <p className="hero-description">
+            Get instant insights into your Salesforce setup with our intelligent audit engine. 
+            Discover optimization opportunities worth thousands in annual savings.
           </p>
-          <button 
-            className="btn-primary slide-in-up"
-            onClick={() => navigate('/dashboard')}
-          >
+          <button onClick={handleStartFreeAudit} className="cta-button">
             Start Free Audit
           </button>
         </div>
       </section>
 
-      {/* Features Section - Refined SVG Icons */}
+      {/* Features Grid */}
       <section className="features">
-        <div className="container">
-          <div className="grid">
-            <div className="feature-card slide-in-up">
-              <div className="icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="21 21l-4.35-4.35"></path>
-                </svg>
-              </div>
-              <h3>Deep Analysis</h3>
-              <p>Comprehensive audit of custom fields, data quality, and automation opportunities</p>
+        <div className="features-grid">
+          <div className="feature-card">
+            <div className="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
             </div>
-            
-            <div className="feature-card slide-in-up">
-              <div className="icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="2" x2="12" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-              </div>
-              <h3>ROI Insights</h3>
-              <p>Transparent cost-benefit analysis with customizable assumptions and detailed breakdowns</p>
+            <h3 className="feature-title">Instant Analysis</h3>
+            <p className="feature-description">
+              Complete Salesforce audit in under 60 seconds. No setup, no waiting.
+            </p>
+          </div>
+
+          <div className="feature-card">
+            <div className="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+              </svg>
             </div>
-            
-            <div className="feature-card slide-in-up">
-              <div className="icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                  <path d="M9 9h6v6H9z"></path>
-                  <path d="M9 3v2"></path>
-                  <path d="M15 3v2"></path>
-                  <path d="M9 19v2"></path>
-                  <path d="M15 19v2"></path>
-                  <path d="M3 9h2"></path>
-                  <path d="M3 15h2"></path>
-                  <path d="M19 9h2"></path>
-                  <path d="M19 15h2"></path>
-                </svg>
-              </div>
-              <h3>Actionable Reports</h3>
-              <p>Professional PDF reports with prioritized recommendations and implementation guidance</p>
+            <h3 className="feature-title">Smart Insights</h3>
+            <p className="feature-description">
+              AI-powered recommendations tailored to your business size and industry.
+            </p>
+          </div>
+
+          <div className="feature-card">
+            <div className="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10,9 9,9 8,9"/>
+              </svg>
             </div>
+            <h3 className="feature-title">Actionable Reports</h3>
+            <p className="feature-description">
+              Detailed PDF reports with step-by-step implementation guides.
+            </p>
           </div>
         </div>
       </section>
+
+      {/* PreAudit Modal */}
+      <PreAuditModal
+        isOpen={showPreAuditModal}
+        onClose={() => setShowPreAuditModal(false)}
+        onSubmit={handleBusinessInfoSubmit}
+      />
     </div>
   );
 };
