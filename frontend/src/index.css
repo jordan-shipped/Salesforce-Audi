@@ -39,28 +39,30 @@
   --line-height-body-regular: 20pt;
   --line-height-caption: 18pt;
   
-  /* Colors - Apple Design Language */
-  --color-primary-blue: #007AFF;
-  --color-primary-light: #007AFF33; /* Primary blue at 20% opacity */
-  --color-primary-gradient: linear-gradient(90deg, #0060DF 0%, #00C6FF 100%);
-  --color-text-primary: #000000;        /* Text primary: 100% opacity */
-  --color-text-secondary: #3C3C4399;    /* Text secondary: 60% opacity */
-  --color-text-tertiary: #3C3C434D;     /* Text tertiary: 30% opacity */
-  --color-text-on-primary: #FFFFFF;
-  --color-text-on-secondary: #FFFFFF;
-  --color-background: #FFFFFF;
-  --color-surface: #FFFFFF;             /* Card surfaces */
-  --color-surface-light: #F2F2F7;       /* Cards, modals, inputs */
-  --color-surface-extra-light: #FAFAFA; /* Stage summary background */
-  --color-border: #E5E5EA;              /* Input borders, dividers */
-  --color-focus: #007AFF;               /* Focus outline color */
-  --color-error-red: #FF3B30;           /* Disconnect links, errors */
-  --color-accent: #006AF5;              /* AccentColor for focus states */
+  /* Colors - True Apple Minimalism */
+  --color-accent: #007AFF;                  /* Single accent color */
+  --color-accent-30: #007AFF4D;            /* 30% tone for pill backgrounds */
+  --color-text-black: #1C1C1E;             /* Apple's text black */
+  --color-text-grey-600: #3A3A3C;          /* Body text grey */
+  --color-text-grey-300: #AEAEB2;          /* Light grey text */
+  --color-background-page: #F5F5F7;        /* Page background */
+  --color-background-card: #FFFFFF;        /* Pure white cards */
+  --color-border-subtle: #D2D2D7;          /* Subtle borders */
   
-  /* Priority Colors */
-  --color-priority-high: #FF3B30;       /* High priority - red */
-  --color-priority-medium: #FF9500;     /* Medium priority - orange */
-  --color-priority-low: #8E8E93;        /* Low priority - gray */
+  /* Legacy color mappings for compatibility */
+  --color-primary-blue: #007AFF;
+  --color-primary-gradient: linear-gradient(90deg, #007AFF 0%, #007AFF 100%);
+  --color-text-primary: #1C1C1E;
+  --color-text-secondary: #3A3A3C;
+  --color-text-tertiary: #AEAEB2;
+  --color-text-on-primary: #FFFFFF;
+  --color-background: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-surface-light: #F5F5F7;
+  --color-surface-extra-light: #FAFAFA;
+  --color-border: #D2D2D7;
+  --color-focus: #007AFF;
+  --color-error-red: #FF3B30;
   
   /* Spacing Scale - 4px Base Unit */
   --space-xs: 4px;
