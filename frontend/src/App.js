@@ -1675,16 +1675,66 @@ const About = () => (
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState('success');
+  const [showPreAuditModal, setShowPreAuditModal] = useState(false);
+  const { hasBusinessInfo, saveBusinessInfo } = useBusinessInfo();
 
   useEffect(() => {
-    // Show success state briefly, then redirect
+    // Check if business info exists
+    if (!hasBusinessInfo) {
+      // Business info is missing, show the PreAuditModal
+      setStatus('missing_info');
+      setShowPreAuditModal(true);
+    } else {
+      // Business info exists, show success and redirect to dashboard
+      setStatus('success');
+      
+      // Give user a moment to see the success message
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
+    }
+  }, [navigate, hasBusinessInfo]);
+
+  const handleBusinessInfoSubmit = async (businessInfo) => {
+    console.log('Business info submitted from OAuth callback:', businessInfo);
+    
+    // Save to context
+    saveBusinessInfo(businessInfo);
+    setShowPreAuditModal(false);
     setStatus('success');
     
-    // Give user a moment to see the success message
+    // Now redirect to dashboard
     setTimeout(() => {
       navigate('/dashboard');
     }, 1500);
-  }, [navigate]);
+  };
+
+  if (showPreAuditModal) {
+    return (
+      <div>
+        {/* Success message for OAuth */}
+        <div className="redirect-overlay">
+          <div className="redirect-card">
+            <div className="redirect-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" fill="#28CD41"/>
+                <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <h1 className="redirect-card__title">Successfully Connected</h1>
+            <p className="redirect-card__subtitle">Please complete your business profile to continue.</p>
+          </div>
+        </div>
+        
+        {/* PreAudit Modal */}
+        <PreAuditModal
+          isOpen={showPreAuditModal}
+          onClose={() => setShowPreAuditModal(false)}
+          onSubmit={handleBusinessInfoSubmit}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="redirect-overlay">
