@@ -1976,7 +1976,10 @@ body {
 }
 
 /* ====== PRE-AUDIT MODAL - APPLE-GRADE STYLING ====== */
-.modal-overlay {
+/* ====== APPLE-GRADE DESIGN SYSTEM COMPONENTS ====== */
+
+/* Modal System - Using Design Tokens */
+.apple-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -1991,11 +1994,11 @@ body {
   -webkit-backdrop-filter: blur(25px);
 }
 
-.pre-audit-modal {
+.apple-modal {
   background: var(--color-background);
-  border-radius: 20px; /* Container radius: 20px */
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.05); /* Layered shadows */
-  padding: 24px; /* Modal padding: 24px all around */
+  border-radius: var(--radius-md); /* 12px for modals */
+  box-shadow: var(--shadow-modal); /* Layered shadows */
+  padding: var(--space-lg) var(--space-xl); /* 24px top/bottom, 32px left/right */
   width: 90%;
   max-width: 560px;
   position: relative;
@@ -2013,14 +2016,14 @@ body {
   }
 }
 
-.modal-close {
+.apple-modal-close {
   position: absolute;
-  top: 16px; /* 16px from top edge */
-  right: 16px; /* 16px from right edge */
+  top: var(--space-md); /* 16px from edges */
+  right: var(--space-md);
   background: none;
   border: none;
   font-size: 20pt; /* SF Symbol xmark.circle.fill, 20pt */
-  color: rgba(0, 0, 0, 0.5); /* 50% opacity */
+  color: var(--color-text-tertiary); /* 50% opacity */
   cursor: pointer;
   width: 44px; /* Hit-area: at least 44 × 44px */
   height: 44px;
@@ -2031,162 +2034,195 @@ body {
   transition: all var(--transition-fast);
 }
 
-.modal-close:hover {
-  background: var(--color-background-secondary);
-  color: var(--text-primary);
+.apple-modal-close:hover {
+  background: var(--color-surface-light);
+  color: var(--color-text-primary);
 }
 
-.pre-audit-header {
+.apple-modal-header {
   text-align: center;
-  margin: 24px 0 20px 0; /* 24px above title, 20px below subtitle */
+  margin-bottom: var(--space-lg); /* 24px below header */
 }
 
-.pre-audit-title {
-  font-family: var(--font-family-base);
-  font-size: 24pt; /* SF Pro Bold, 24pt */
-  font-weight: var(--font-weight-bold);
-  color: #000000; /* Text primary: #000000 (100% opacity) */
-  margin: 0 0 12px 0; /* 12px between title & subtitle */
-  line-height: 1.2; /* tight leading (1.2) */
+.apple-modal-title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-modal-title); /* 22pt for modal titles */
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-sm) 0; /* 12px between title & subtitle */
+  line-height: var(--line-height-modal-title);
   letter-spacing: -0.02em;
 }
 
-.pre-audit-subtitle {
-  font-family: var(--font-family-base);
-  font-size: 15pt; /* SF Pro Regular, 15pt */
+.apple-modal-subtitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body-regular); /* 15pt for subtitles */
   font-weight: var(--font-weight-regular);
-  color: rgba(60, 60, 67, 0.5); /* Text secondary: 50% opacity */
+  color: var(--color-text-secondary); /* 60% opacity */
   margin: 0;
-  line-height: 1.4; /* 1.4 line‑height */
+  line-height: var(--line-height-body-regular);
 }
 
-.pre-audit-form {
+/* Form System - Using Design Tokens */
+.apple-business-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-lg);
 }
 
-.form-row {
+.apple-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px; /* Between fields: 16px horizontally */
-  margin-bottom: 24px; /* 24px vertically between field rows */
+  gap: var(--space-md); /* 16px horizontal between fields */
+  margin-bottom: var(--space-lg); /* 24px vertical between rows */
 }
 
-.form-group {
+.apple-form-group {
   display: flex;
   flex-direction: column;
 }
 
-.form-label {
-  font-family: var(--font-family-base);
-  font-size: 13pt; /* SF Pro Medium, 13pt */
+.apple-form-label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-caption); /* 13pt for labels */
   font-weight: var(--font-weight-medium);
-  color: #000000; /* 100% opacity */
-  margin-bottom: 8px; /* 8px below each label before its picker */
+  color: var(--color-text-primary); /* 100% opacity */
+  margin-bottom: var(--space-xs); /* 8px below labels */
   text-transform: uppercase; /* Uppercase labels */
-  letter-spacing: 0.1em; /* letter‑spacing +10% */
+  letter-spacing: 0.1em; /* +10% tracking */
 }
 
-.form-select {
-  height: 44px; /* Height: 44px */
-  font-family: var(--font-family-base);
-  font-size: 15pt; /* SF Pro Regular, 15pt */
+.apple-form-select {
+  height: 44px; /* Standard height */
+  font-family: var(--font-family);
+  font-size: var(--font-size-body-regular); /* 15pt */
   font-weight: var(--font-weight-regular);
-  color: #000000; /* Text primary */
-  background: var(--color-background);
-  border: 1px solid rgba(0,0,0,0.15); /* Border: 1px solid rgba(0,0,0,0.15) */
-  border-radius: 12px; /* Corner radius: 12px */
-  padding: 0 48px 0 16px; /* Right padding for chevron icon */
+  color: var(--color-text-primary);
+  background: var(--color-surface-light);
+  border: 1px solid var(--color-border); /* Standard border */
+  border-radius: var(--radius-sm); /* 8px for inputs */
+  padding: 0 48px 0 var(--space-sm); /* Right padding for chevron */
   transition: all var(--transition-fast);
   appearance: none;
   background-image: url("data:image/svg+xml;charset=utf-8,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4' opacity='0.5'/%3e%3c/svg%3e");
-  background-position: right 16px center; /* right‑padded 16px */
+  background-position: right var(--space-md) center; /* 16px from right */
   background-repeat: no-repeat;
-  background-size: 12pt; /* SF Symbol chevron.down, 12pt, 50% opacity */
+  background-size: 12pt; /* SF Symbol chevron.down, 12pt */
 }
 
-.form-select::placeholder {
-  color: rgba(0, 0, 0, 0.3); /* Placeholder: 30% opacity */
-  font-size: 15pt; /* SF Pro Regular, 15pt */
+.apple-form-select::placeholder {
+  color: var(--color-text-tertiary); /* 30% opacity placeholders */
+  font-size: var(--font-size-body-regular);
 }
 
-.form-select option[value=""] {
-  color: rgba(0, 0, 0, 0.3); /* Placeholder option: 30% opacity */
+.apple-form-select option[value=""] {
+  color: var(--color-text-tertiary);
 }
 
-.form-select:focus {
+.apple-form-select:focus {
   outline: none;
-  border: 2px solid #006AF5; /* AccentColor (systemBlue) */
-  box-shadow: 0 0 0 3px rgba(0, 106, 245, 0.1);
+  border: 2px solid var(--color-primary-blue); /* AccentColor focus */
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
 }
 
-.form-select option {
-  padding: var(--space-3);
-  font-family: var(--font-family-base);
-}
-
-.form-error {
-  color: var(--color-red);
-  font-size: var(--text-sm);
-  margin-top: var(--space-2);
-  padding: var(--space-3) var(--space-4);
+.apple-form-error {
+  color: var(--color-error-red);
+  font-size: var(--font-size-caption);
+  margin-top: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
   background: rgba(255, 59, 48, 0.1);
-  border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-red);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--color-error-red);
 }
 
-.btn-save-connect {
-  height: 44px; /* Height: 44px */
-  font-family: var(--font-family-base);
-  font-size: 17pt; /* SF Pro Semibold, 17pt */
+/* Button System - Using Design Tokens */
+.apple-btn-primary {
+  height: 44px; /* Standard button height */
+  font-family: var(--font-family);
+  font-size: var(--font-size-body-large); /* 17pt for buttons */
   font-weight: var(--font-weight-semibold);
-  color: var(--text-inverse);
-  background: linear-gradient(90deg, #006AF5, #00C6FF); /* Specific gradient */
+  color: var(--color-text-on-primary);
+  background: var(--color-primary-gradient); /* Primary gradient */
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-sm); /* 8px for buttons */
   cursor: pointer;
   transition: all var(--transition-fast);
-  margin-top: 32px; /* Between fields & button: 32px */
-  padding: 0 24px; /* Padding: 0 24px */
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08); /* Base shadow */
+  margin-top: var(--space-xl); /* 32px above buttons */
+  padding: 0 var(--space-lg); /* 24px horizontal padding */
+  box-shadow: var(--shadow-default); /* Standard shadow */
 }
 
-.btn-save-connect:hover {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12); /* Hover: elevate shadow */
-  transform: scale(1.02); /* and scale to 1.02 */
+.apple-btn-primary:hover {
+  box-shadow: var(--shadow-elevated); /* Elevated shadow on hover */
+  transform: scale(1.02);
+  opacity: 0.95;
 }
 
-.btn-save-connect:active {
+.apple-btn-primary:active {
   transform: scale(0.98);
 }
 
-.btn-save-connect:disabled {
-  background: rgba(0,0,0,0.05); /* Disable state background */
-  color: rgba(0,0,0,0.3); /* Disable state color */
+.apple-btn-primary:disabled {
+  background: rgba(0, 0, 0, 0.05); /* Disabled background */
+  color: rgba(0, 0, 0, 0.3); /* Disabled text */
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  opacity: 0.6;
 }
 
-/* Responsive - Stacked on mobile */
+/* Card System - Using Design Tokens */
+.apple-card {
+  background: var(--color-surface-light);
+  padding: var(--space-md); /* 16px all around */
+  border-radius: var(--radius-md); /* 12px for cards */
+  box-shadow: var(--shadow-default);
+  transition: all var(--transition-fast);
+}
+
+.apple-card:hover {
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(-1px);
+}
+
+.apple-card-header {
+  font-size: var(--font-size-body-large); /* 17pt headlines */
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-sm);
+}
+
+.apple-card-content {
+  font-size: var(--font-size-caption); /* 13pt subtext */
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-body-regular);
+}
+
+.apple-card-accent {
+  color: var(--color-primary-blue); /* Accent links */
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-semibold);
+  margin-top: var(--space-sm);
+}
+
+/* Responsive - Maintain Design Tokens */
 @media (max-width: 768px) {  
-  .form-row {
+  .apple-form-row {
     grid-template-columns: 1fr; /* Stacked on mobile */
-    gap: 24px; /* Maintain 24px vertical spacing on mobile */
+    gap: var(--space-lg); /* Maintain 24px vertical spacing */
   }
   
-  .pre-audit-modal {
+  .apple-modal {
     width: 95%;
-    padding: 24px; /* Keep consistent padding */
+    padding: var(--space-lg); /* Consistent padding */
   }
   
-  .pre-audit-title {
-    font-size: 20pt; /* Slightly smaller on mobile but maintain pt units */
+  .apple-modal-title {
+    font-size: 20pt; /* Slightly smaller on mobile */
   }
   
-  .pre-audit-subtitle {
-    font-size: 14pt; /* Slightly smaller subtitle on mobile */
+  .apple-modal-subtitle {
+    font-size: 14pt; /* Adjust subtitle on mobile */
   }
 }
 
