@@ -8,10 +8,7 @@ import Card from './components/Card';
 import { 
   StageSummaryPanel as NewStageSummaryPanel, 
   AccordionCard, 
-  FiltersBar, 
-  ButtonText, 
-  ButtonOutline, 
-  ButtonPrimary 
+  FiltersBar
 } from './components';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
