@@ -1121,14 +1121,6 @@ const Dashboard = () => {
       </div>
 
       <div className="dashboard-content">
-        {/* Business Input Form - Show when starting new audit */}
-        {showBusinessInput && (
-          <BusinessInputForm 
-            onSubmit={handleBusinessInputSubmit}
-            initialData={businessInputs}
-          />
-        )}
-
         {/* History Header - Only show when connected */}
         {connected && (
           <div className="history-header">
