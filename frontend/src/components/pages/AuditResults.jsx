@@ -197,9 +197,10 @@ const AuditResults = () => {
                 domain={finding.domain || 'GENERAL'}
                 priority={finding.impact || finding.priority || 'MEDIUM'}
                 cost={`$${(finding.total_annual_roi || finding.roi_estimate || 0).toLocaleString()}/yr`}
-                expandedContent={<FindingDetails finding={finding} />}
                 className="accordion-card"
-              />
+              >
+                <FindingDetails finding={finding} />
+              </AccordionCard>
             ))}
           </div>
 
