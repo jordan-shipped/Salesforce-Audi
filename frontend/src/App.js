@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logger } from './utils/cleanup';
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import { Bolt, ChartPie, FileText, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
@@ -30,8 +31,7 @@ const LandingPage = () => {
   };
 
   const handleBusinessInfoSubmit = (businessInfo) => {
-    console.log('Business info submitted:', businessInfo);
-    
+        
     // Save to context
     saveBusinessInfo(businessInfo);
     setShowPreAuditModal(false);
@@ -41,46 +41,44 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="LandingPageWrapper">
-      <div className="LandingPageContent">
+    <div className="bg-background-page min-h-screen">
+      <div className="container-page">
         {/* Hero Section */}
-        <section className="HeroSection">
-          <div className="HeroContent">
-            <h1 className="HeroTitle">Optimize Your Salesforce</h1>
-            <h2 className="HeroSubtitle">
-              <span className="PrimaryGradientText">Like Never Before</span>
-            </h2>
-            <p className="HeroCopy">
-              Discover hidden inefficiencies, automate manual processes, and unlock 
-              substantial cost savings with our AI-powered Salesforce audit tool.
-            </p>
-            <button 
-              onClick={handleStartFreeAudit} 
-              className="HeroCTA apple-btn-primary"
-            >
-              Start Free Audit
-            </button>
-          </div>
+        <section className="hero-section">
+          <h1 className="hero-title">Optimize Your Salesforce</h1>
+          <h2 className="hero-subtitle">
+            <span className="gradient-text">Like Never Before</span>
+          </h2>
+          <p className="hero-copy">
+            Discover hidden inefficiencies, automate manual processes, and unlock 
+            substantial cost savings with our AI-powered Salesforce audit tool.
+          </p>
+          <button 
+            onClick={handleStartFreeAudit} 
+            className="btn-primary"
+          >
+            Start Free Audit
+          </button>
         </section>
 
         {/* Features Grid */}
-        <div className="FeaturesGrid">
-          <div className="apple-card FeatureCard">
-            <Bolt className="FeatureIcon" />
-            <h3 className="FeatureTitle">Instant Analysis</h3>
-            <p className="FeatureDescription">Complete Salesforce audit in under 60 seconds. No setup, no waiting.</p>
+        <div className="features-grid">
+          <div className="feature-card">
+            <Bolt className="feature-icon" />
+            <h3 className="feature-title">Instant Analysis</h3>
+            <p className="feature-description">Complete Salesforce audit in under 60 seconds. No setup, no waiting.</p>
           </div>
           
-          <div className="apple-card FeatureCard">
-            <ChartPie className="FeatureIcon" />
-            <h3 className="FeatureTitle">Smart Insights</h3>
-            <p className="FeatureDescription">AI-powered recommendations tailored to your business size and industry.</p>
+          <div className="feature-card">
+            <ChartPie className="feature-icon" />
+            <h3 className="feature-title">Smart Insights</h3>
+            <p className="feature-description">AI-powered recommendations tailored to your business size and industry.</p>
           </div>
           
-          <div className="apple-card FeatureCard">
-            <FileText className="FeatureIcon" />
-            <h3 className="FeatureTitle">Actionable Reports</h3>
-            <p className="FeatureDescription">Professional PDF reports with prioritized recommendations and guidance.</p>
+          <div className="feature-card">
+            <FileText className="feature-icon" />
+            <h3 className="feature-title">Actionable Reports</h3>
+            <p className="feature-description">Professional PDF reports with prioritized recommendations and guidance.</p>
           </div>
         </div>
       </div>
@@ -399,7 +397,7 @@ const PreAuditModal = ({ isOpen, onClose, onSubmit }) => {
         });
       }
     } catch (error) {
-      console.error('Failed to save business info:', error);
+      logger.error('Failed to save business info:', error);
       setError('We couldn\'t save your information. Please try again.');
     } finally {
       setSaving(false);
@@ -494,7 +492,7 @@ const BusinessInfoProvider = ({ children }) => {
         });
         setHasBusinessInfo(true);
       } catch (error) {
-        console.error('Failed to parse stored business info:', error);
+        logger.error('Failed to parse stored business info:', error);
         // Clear invalid data
         localStorage.removeItem('business_info');
         localStorage.removeItem('business_session_id');
@@ -730,9 +728,7 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
           executives: departmentSalaries.executives || null
         }
       };
-      
-      console.log('Choose Your Audit submitting:', auditRequest);
-      
+
       // Analytics tracking
       if (typeof window !== 'undefined' && window.analytics) {
         window.analytics.track('audit_option_selected', { 
@@ -747,7 +743,7 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
       
       onSubmit(auditRequest);
     } catch (error) {
-      console.error('Error preparing audit request:', error);
+      logger.error('Error preparing audit request:', error);
       alert(`Error preparing audit request: ${error.message}`);
     }
   };
@@ -874,7 +870,7 @@ const SessionCard = ({ session, index, onClick }) => {
       
       return { formattedDate, formattedTime };
     } catch (error) {
-      console.error('Date formatting error:', error);
+      logger.error('Date formatting error:', error);
       return { formattedDate: 'Invalid date', formattedTime: '' };
     }
   };
@@ -960,10 +956,9 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/audit/sessions`);
-      console.log('Sessions response:', response.data);
-      setSessions(response.data || []);
+            setSessions(response.data || []);
     } catch (error) {
-      console.error('Failed to load sessions:', error);
+      logger.error('Failed to load sessions:', error);
       setSessions([]);
     } finally {
       setLoading(false);
@@ -996,9 +991,7 @@ const Dashboard = () => {
     setShowOrgProfile(false);
     
     try {
-      console.log('🔍 Starting audit with session_id:', sessionId);
-      console.log('💼 Business info from context:', businessInfo);
-      
+                  
       // Convert businessInfo from context to the format expected by backend
       let businessInputs = null;
       if (businessInfo) {
@@ -1041,48 +1034,41 @@ const Dashboard = () => {
         session_id: sessionId, // Ensure session_id is included
         business_inputs: businessInputs
       };
-      
-      console.log('🚀 Sending audit request:', enhancedRequest);
-      
+
       const response = await axios.post(`${API}/audit/run`, enhancedRequest, {
         timeout: 30000 // 30 second timeout
       });
-      
-      console.log('✅ Audit response received:', response.data);
-      
+
       // Check if we got a valid session ID - be more flexible with response structure
       const auditId = response.data?.session_id;
       
       if (auditId) {
-        console.log('🎯 Got audit session ID:', auditId);
-        
+                
         // Navigate to results IMMEDIATELY - don't wait for sessions refresh
-        console.log('🧭 Navigating to results page...');
-        navigate(`/audit/${auditId}`);
+                navigate(`/audit/${auditId}`);
         
         // Refresh sessions list in background (no await needed)
         setTimeout(async () => {
-          console.log('🔄 Refreshing sessions list...');
-          try {
+                    try {
             await loadSessions();
           } catch (refreshError) {
-            console.warn('Failed to refresh sessions:', refreshError);
+            logger.warn('Failed to refresh sessions:', refreshError);
           }
         }, 1000);
         
       } else {
-        console.error('❌ No session_id in response:', response.data);
-        console.error('❌ Full response structure:', JSON.stringify(response.data, null, 2));
+        logger.error('❌ No session_id in response:', response.data);
+        logger.error('❌ Full response structure:', JSON.stringify(response.data, null, 2));
         alert('Audit completed but no session ID returned. Please check the audit history.');
       }
       
     } catch (error) {
-      console.error('💥 Audit failed with error:', error);
+      logger.error('💥 Audit failed with error:', error);
       
       // Enhanced error handling for different error types
       if (error.response) {
-        console.error('📝 Error response status:', error.response.status);
-        console.error('📝 Error response data:', error.response.data);
+        logger.error('📝 Error response status:', error.response.status);
+        logger.error('📝 Error response data:', error.response.data);
         
         const errorDetail = error.response.data?.detail || error.response.data?.message || 'Unknown server error';
         
@@ -1094,23 +1080,23 @@ const Dashboard = () => {
           setConnected(false);
         } else if (error.response.status === 500) {
           // Server error - show user-friendly message
-          console.error('🚨 Server error details:', errorDetail);
+          logger.error('🚨 Server error details:', errorDetail);
           alert(`Oops! Something went wrong on our end. Our team has been notified.\n\nTechnical details: ${errorDetail.substring(0, 100)}...`);
         } else {
           alert(`Audit failed: ${errorDetail}`);
         }
       } else if (error.request) {
-        console.error('📝 Error request:', error.request);
+        logger.error('📝 Error request:', error.request);
         alert('Network error: Unable to reach the server. Please check your connection and try again.');
       } else if (error.code === 'ECONNABORTED') {
-        console.error('📝 Request timeout');
+        logger.error('📝 Request timeout');
         alert('The audit is taking longer than expected. Please try again or contact support if this persists.');
       } else {
-        console.error('📝 Error message:', error.message);
+        logger.error('📝 Error message:', error.message);
         
         // Check for specific error patterns
         if (error.message.includes('NoneType') || error.message.includes('not supported between instances')) {
-          console.error('🚨 NONE COMPARISON ERROR DETECTED:', error.message);
+          logger.error('🚨 NONE COMPARISON ERROR DETECTED:', error.message);
           alert(`We detected a data processing issue. Our team has been notified.\n\nError: ${error.message}`);
         } else {
           alert(`Audit failed: ${error.message}`);
@@ -1434,8 +1420,7 @@ const AuditResults = () => {
     
     if (auditStatus === 'processing') {
       pollInterval = setInterval(async () => {
-        console.log('🔄 Polling for audit completion...');
-        await loadAuditData();
+                await loadAuditData();
       }, 3000); // Poll every 3 seconds
     }
     
@@ -1448,10 +1433,8 @@ const AuditResults = () => {
 
   const loadAuditData = async () => {
     try {
-      console.log('🔍 Loading audit data for session:', sessionId);
-      const response = await axios.get(`${API}/audit/${sessionId}`);
-      console.log('✅ Audit data loaded successfully:', response.data);
-      
+            const response = await axios.get(`${API}/audit/${sessionId}`);
+            
       const data = response.data;
       const status = data.status || 'completed';
       
@@ -1464,9 +1447,9 @@ const AuditResults = () => {
       }
       
     } catch (error) {
-      console.error('❌ Failed to load audit data:', error);
-      console.error('❌ Session ID:', sessionId);
-      console.error('❌ Error details:', error.response?.data);
+      logger.error('❌ Failed to load audit data:', error);
+      logger.error('❌ Session ID:', sessionId);
+      logger.error('❌ Error details:', error.response?.data);
       
       if (error.response?.status === 404) {
         // Audit never existed - redirect to dashboard
@@ -1486,7 +1469,7 @@ const AuditResults = () => {
       setAuditData(response.data);
       alert('Assumptions updated successfully! Results have been recalculated.');
     } catch (error) {
-      console.error('Failed to update assumptions:', error);
+      logger.error('Failed to update assumptions:', error);
       alert('Failed to update assumptions. Please try again.');
     } finally {
       setUpdating(false);
@@ -1498,7 +1481,7 @@ const AuditResults = () => {
       const response = await axios.get(`${API}/audit/${sessionId}/pdf`);
       alert('PDF report generated! In a real implementation, this would download the file.');
     } catch (error) {
-      console.error('PDF generation failed:', error);
+      logger.error('PDF generation failed:', error);
     }
   };
 
@@ -1839,8 +1822,7 @@ const OAuthCallback = () => {
   }, [navigate, hasBusinessInfo]);
 
   const handleBusinessInfoSubmit = async (businessInfo) => {
-    console.log('Business info submitted from OAuth callback:', businessInfo);
-    
+        
     // Save to context
     saveBusinessInfo(businessInfo);
     setShowPreAuditModal(false);

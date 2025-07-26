@@ -2,40 +2,42 @@ import React from 'react';
 import { Select } from './Input';
 
 const FiltersBar = ({ 
-  domains = ["All","Data Quality","Automation","Security","Reporting","Adoption"],
-  priorities = ["All","High","Medium","Low"],
-  selectedDomain = "All",
-  selectedPriority = "All",
-  onFilterChange
+  selectedDomain, 
+  onDomainChange, 
+  selectedPriority, 
+  onPriorityChange,
+  domains = [],
+  priorities = []
 }) => {
-  const handleDomainChange = (e) => {
-    if (onFilterChange) {
-      onFilterChange({ domain: e.target.value, priority: selectedPriority });
-    }
-  };
+  const domainOptions = [
+    { value: 'All', label: 'All Domains' },
+    ...domains.map(domain => ({ value: domain, label: domain }))
+  ];
 
-  const handlePriorityChange = (e) => {
-    if (onFilterChange) {
-      onFilterChange({ domain: selectedDomain, priority: e.target.value });
-    }
-  };
+  const priorityOptions = [
+    { value: 'All', label: 'All Priorities' },
+    ...priorities.map(priority => ({ value: priority, label: priority }))
+  ];
 
   return (
-    <div className="FiltersBar">
-      <Select
-        label="Domain"
-        value={selectedDomain}
-        onChange={handleDomainChange}
-        options={domains.map(domain => ({ value: domain, label: domain }))}
-        className="FilterSelect"
-      />
-      <Select
-        label="Priority"
-        value={selectedPriority}
-        onChange={handlePriorityChange}
-        options={priorities.map(priority => ({ value: priority, label: priority }))}
-        className="FilterSelect"
-      />
+    <div className="filters-bar">
+      <div className="filter-group">
+        <Select
+          label="Domain"
+          value={selectedDomain}
+          onChange={(e) => onDomainChange(e.target.value)}
+          options={domainOptions}
+        />
+      </div>
+      
+      <div className="filter-group">
+        <Select
+          label="Priority"
+          value={selectedPriority}
+          onChange={(e) => onPriorityChange(e.target.value)}
+          options={priorityOptions}
+        />
+      </div>
     </div>
   );
 };

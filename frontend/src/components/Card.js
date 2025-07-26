@@ -1,42 +1,28 @@
 import React from 'react';
-import { colors, typography, spacing, radius, shadow, components } from '../designTokens';
 
 const Card = ({ 
   children, 
   className = '',
   onClick,
   hover = false,
+  elevated = false,
   ...props 
 }) => {
-  const cardStyles = {
-    background: components.card.background,
-    padding: components.card.padding,
-    borderRadius: components.card.borderRadius,
-    boxShadow: components.card.boxShadow,
-    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-    cursor: onClick ? 'pointer' : 'default',
-  };
-
-  const hoverStyles = hover || onClick ? {
-    boxShadow: shadow.elevated,
-    transform: 'translateY(-1px)',
-  } : {};
+  // Determine card variant classes
+  let cardClasses = 'card';
+  
+  if (elevated) {
+    cardClasses = 'card-elevated';
+  } else if (hover || onClick) {
+    cardClasses = 'card-hover';
+  }
+  
+  const combinedClasses = [cardClasses, className].filter(Boolean).join(' ');
 
   return (
     <div
-      className={`apple-card ${className}`}
-      style={cardStyles}
+      className={combinedClasses}
       onClick={onClick}
-      onMouseEnter={(e) => {
-        if (hover || onClick) {
-          Object.assign(e.target.style, { ...cardStyles, ...hoverStyles });
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (hover || onClick) {
-          Object.assign(e.target.style, cardStyles);
-        }
-      }}
       {...props}
     >
       {children}
@@ -45,44 +31,24 @@ const Card = ({
 };
 
 const CardHeader = ({ children, className = '' }) => {
-  const headerStyles = {
-    fontSize: components.card.headlineSize,
-    color: components.card.headlineColor,
-    fontWeight: typography.weights.medium,
-    marginBottom: spacing.sm,
-  };
-
   return (
-    <div className={`apple-card-header ${className}`} style={headerStyles}>
+    <div className={`text-body-large font-medium text-text-primary mb-2 ${className}`}>
       {children}
     </div>
   );
 };
 
 const CardContent = ({ children, className = '' }) => {
-  const contentStyles = {
-    fontSize: components.card.subtextSize,
-    color: components.card.subtextColor,
-    lineHeight: typography.bodyRegular.lineHeight,
-  };
-
   return (
-    <div className={`apple-card-content ${className}`} style={contentStyles}>
+    <div className={`text-body-regular text-text-grey-600 ${className}`}>
       {children}
     </div>
   );
 };
 
 const CardAccent = ({ children, className = '' }) => {
-  const accentStyles = {
-    color: components.card.accentColor,
-    fontSize: components.card.headlineSize,
-    fontWeight: typography.weights.semibold,
-    marginTop: spacing.sm,
-  };
-
   return (
-    <div className={`apple-card-accent ${className}`} style={accentStyles}>
+    <div className={`text-accent text-body-large font-semibold mt-2 ${className}`}>
       {children}
     </div>
   );
