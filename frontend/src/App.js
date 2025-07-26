@@ -54,34 +54,43 @@ const LandingPage = () => {
               Discover hidden inefficiencies, automate manual processes, and unlock 
               substantial cost savings with our AI-powered Salesforce audit tool.
             </p>
-            <button 
-              onClick={handleStartFreeAudit} 
-              className="HeroCTA apple-btn-primary"
-            >
+            <ButtonPrimary onClick={handleStartFreeAudit} className="HeroCTA">
               Start Free Audit
-            </button>
+            </ButtonPrimary>
           </div>
         </section>
 
         {/* Features Grid */}
         <div className="FeaturesGrid">
-          <div className="apple-card FeatureCard">
-            <Bolt className="FeatureIcon" />
-            <h3 className="FeatureTitle">Instant Analysis</h3>
-            <p className="FeatureDescription">Complete Salesforce audit in under 60 seconds. No setup, no waiting.</p>
-          </div>
+          <Card className="FeatureCard">
+            <Card.Icon>
+              <Bolt className="FeatureIcon" />
+            </Card.Icon>
+            <Card.Title className="FeatureTitle">Instant Analysis</Card.Title>
+            <Card.Body className="FeatureDescription">
+              Complete Salesforce audit in under 60 seconds. No setup, no waiting.
+            </Card.Body>
+          </Card>
           
-          <div className="apple-card FeatureCard">
-            <ChartPie className="FeatureIcon" />
-            <h3 className="FeatureTitle">Smart Insights</h3>
-            <p className="FeatureDescription">AI-powered recommendations tailored to your business size and industry.</p>
-          </div>
+          <Card className="FeatureCard">
+            <Card.Icon>
+              <ChartPie className="FeatureIcon" />
+            </Card.Icon>
+            <Card.Title className="FeatureTitle">Smart Insights</Card.Title>
+            <Card.Body className="FeatureDescription">
+              AI-powered recommendations tailored to your business size and industry.
+            </Card.Body>
+          </Card>
           
-          <div className="apple-card FeatureCard">
-            <FileText className="FeatureIcon" />
-            <h3 className="FeatureTitle">Actionable Reports</h3>
-            <p className="FeatureDescription">Professional PDF reports with prioritized recommendations and guidance.</p>
-          </div>
+          <Card className="FeatureCard">
+            <Card.Icon>
+              <FileText className="FeatureIcon" />
+            </Card.Icon>
+            <Card.Title className="FeatureTitle">Actionable Reports</Card.Title>
+            <Card.Body className="FeatureDescription">
+              Professional PDF reports with prioritized recommendations and guidance.
+            </Card.Body>
+          </Card>
         </div>
       </div>
 
