@@ -40,6 +40,7 @@
   /* Apple System Colors */
   --color-blue: #007AFF;
   --color-blue-hover: #0056CC;
+  --color-accent: #006AF5; /* AccentColor (systemBlue) for focus states */
   --color-green: #34C759;
   --color-red: #FF3B30;
   --color-orange: #FF9500;
