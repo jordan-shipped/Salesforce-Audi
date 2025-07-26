@@ -41,16 +41,26 @@
   
   /* Colors - Apple Design Language */
   --color-primary-blue: #007AFF;
+  --color-primary-light: #007AFF33; /* Primary blue at 20% opacity */
   --color-primary-gradient: linear-gradient(90deg, #0060DF 0%, #00C6FF 100%);
   --color-text-primary: #000000;        /* Text primary: 100% opacity */
   --color-text-secondary: #3C3C4399;    /* Text secondary: 60% opacity */
   --color-text-tertiary: #3C3C434D;     /* Text tertiary: 30% opacity */
   --color-text-on-primary: #FFFFFF;
+  --color-text-on-secondary: #FFFFFF;
   --color-background: #FFFFFF;
+  --color-surface: #FFFFFF;             /* Card surfaces */
   --color-surface-light: #F2F2F7;       /* Cards, modals, inputs */
+  --color-surface-extra-light: #FAFAFA; /* Stage summary background */
   --color-border: #E5E5EA;              /* Input borders, dividers */
+  --color-focus: #007AFF;               /* Focus outline color */
   --color-error-red: #FF3B30;           /* Disconnect links, errors */
   --color-accent: #006AF5;              /* AccentColor for focus states */
+  
+  /* Priority Colors */
+  --color-priority-high: #FF3B30;       /* High priority - red */
+  --color-priority-medium: #FF9500;     /* Medium priority - orange */
+  --color-priority-low: #8E8E93;        /* Low priority - gray */
   
   /* Spacing Scale - 4px Base Unit */
   --space-xs: 4px;
