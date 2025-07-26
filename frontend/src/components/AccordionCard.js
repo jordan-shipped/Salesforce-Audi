@@ -71,26 +71,32 @@ const AccordionCard = ({
 
       {isExpanded && (
         <div className="mt-lg pt-md border-t border-border-subtle">
-          {details && (
-            <div className="mb-md">
-              <h4 className="text-body-medium font-semibold text-text-primary mb-2">
-                Details
-              </h4>
-              <p className="text-body-regular text-text-grey-600 leading-relaxed">
-                {details}
-              </p>
-            </div>
-          )}
-          
-          {implementation && (
-            <div>
-              <h4 className="text-body-medium font-semibold text-text-primary mb-2">
-                Implementation
-              </h4>
-              <p className="text-body-regular text-text-grey-600 leading-relaxed">
-                {implementation}
-              </p>
-            </div>
+          {children ? (
+            children
+          ) : (
+            <>
+              {details && (
+                <div className="mb-md">
+                  <h4 className="text-body-medium font-semibold text-text-primary mb-2">
+                    Details
+                  </h4>
+                  <p className="text-body-regular text-text-grey-600 leading-relaxed">
+                    {details}
+                  </p>
+                </div>
+              )}
+              
+              {implementation && (
+                <div>
+                  <h4 className="text-body-medium font-semibold text-text-primary mb-2">
+                    Implementation
+                  </h4>
+                  <p className="text-body-regular text-text-grey-600 leading-relaxed">
+                    {implementation}
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
