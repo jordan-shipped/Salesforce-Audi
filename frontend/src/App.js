@@ -1742,7 +1742,7 @@ const AuditResults = () => {
       </div>
 
       {/* Stage Summary Panel */}
-      <StageSummaryPanel
+      <NewStageSummaryPanel
         stage={business_stage?.stage || 3}
         name={stageData.name}
         role={stageData.role}
