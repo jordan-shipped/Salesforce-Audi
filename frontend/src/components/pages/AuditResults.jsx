@@ -4,6 +4,11 @@ import { ArrowLeft } from 'lucide-react';
 import { api } from '../../services/apiService';
 import { logger, usePolling } from '../../utils/cleanup';
 import LoadingSpinner from '../common/LoadingSpinner';
+import MetricsDashboard from '../MetricsDashboard';
+import BusinessContext from '../BusinessContext';
+import StrategicOverview from '../StrategicOverview';
+import AccordionCard from '../AccordionCard';
+import FindingDetails from '../FindingDetails';
 
 const AuditResults = () => {
   const { sessionId } = useParams();
@@ -98,116 +103,121 @@ const AuditResults = () => {
           <p className="text-body-regular text-text-grey-600 mb-lg">
             {error}
           </p>
-          <div className="flex gap-md">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="btn-secondary flex-1"
-            >
-              Back to Dashboard
-            </button>
-            <button
-              onClick={() => window.location.reload()}
-              className="btn-primary flex-1"
-            >
-              Retry
-            </button>
-          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-primary"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
   }
 
+  const { summary, findings = [], business_stage: businessStage, session } = auditData || {};
+  const orgName = session?.org_name || 'Your Organization';
+
   return (
     <div className="min-h-screen bg-background-page">
-      <div className="container-page py-lg">
+      <div className="container mx-auto px-lg py-lg max-w-6xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-lg">
-          <div className="flex items-center gap-md">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-lg">
+          <div className="flex items-center mb-md md:mb-0">
             <button
               onClick={() => navigate('/dashboard')}
-              className="btn-text p-2"
+              className="flex items-center text-text-grey-600 hover:text-text-primary mr-lg"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Back
             </button>
             <div>
-              <h1 className="text-h1 font-semibold text-text-primary">
+              <h1 className="text-h1 font-bold text-text-primary">
                 Audit Results
               </h1>
-              {auditData?.org_name && (
-                <p className="text-body-regular text-text-grey-600">
-                  {auditData.org_name}
-                </p>
-              )}
+              <p className="text-body-large text-text-grey-600">
+                {orgName}
+              </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-md">
+          <div className="flex flex-col sm:flex-row gap-sm">
+            <button className="btn-secondary">
+              Edit Assumptions
+            </button>
             <button
               onClick={handleGeneratePDF}
               className="btn-primary"
             >
-              Download PDF
+              Export PDF
             </button>
           </div>
         </div>
 
-        {/* Results Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-          {/* Summary */}
-          <div className="lg:col-span-1">
-            <div className="card">
-              <h2 className="text-section font-semibold text-text-primary mb-md">
-                Summary
-              </h2>
-              <div className="space-y-md">
-                <div>
-                  <div className="text-caption text-text-grey-600 uppercase tracking-wide">
-                    Total Findings
-                  </div>
-                  <div className="text-h2 font-semibold text-text-primary">
-                    {auditData?.summary?.total_findings || 0}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-caption text-text-grey-600 uppercase tracking-wide">
-                    Annual ROI
-                  </div>
-                  <div className="text-h2 font-semibold text-accent">
-                    ${(auditData?.summary?.total_annual_roi || 0).toLocaleString()}/yr
-                  </div>
-                </div>
-                <div>
-                  <div className="text-caption text-text-grey-600 uppercase tracking-wide">
-                    Time Savings
-                  </div>
-                  <div className="text-h2 font-semibold text-text-primary">
-                    {auditData?.total_time_savings_hours || 0} h/mo
-                  </div>
-                </div>
-              </div>
+        {/* Metrics Dashboard */}
+        <MetricsDashboard summary={summary} />
+
+        {/* Business Context */}
+        <BusinessContext businessStage={businessStage} />
+
+        {/* Strategic Overview */}
+        <StrategicOverview businessStage={businessStage} />
+
+        {/* Findings Section */}
+        <div className="space-y-md">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-md">
+            <h2 className="text-section font-semibold text-text-primary mb-sm md:mb-0">
+              Detailed Findings
+            </h2>
+            
+            {/* Filters */}
+            <div className="flex flex-wrap gap-sm">
+              <select className="input-field text-body-regular">
+                <option value="">All Domains</option>
+                <option value="data-quality">Data Quality</option>
+                <option value="automation">Automation</option>
+                <option value="security">Security</option>
+                <option value="reporting">Reporting</option>
+              </select>
+              
+              <select className="input-field text-body-regular">
+                <option value="">All Priorities</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
             </div>
           </div>
 
-          {/* Findings */}
-          <div className="lg:col-span-2">
-            <div className="card">
-              <h2 className="text-section font-semibold text-text-primary mb-md">
-                Findings & Recommendations
-              </h2>
-              <p className="text-body-regular text-text-grey-600">
-                Detailed findings and recommendations will be displayed here once 
-                the AuditResults component is fully extracted from the original App.js.
-              </p>
-              <div className="mt-md">
-                <button
-                  onClick={handleGeneratePDF}
-                  className="btn-secondary"
-                >
-                  View Full Report (PDF)
-                </button>
-              </div>
-            </div>
+          {/* Findings List */}
+          <div className="space-y-md">
+            {findings.map((finding, index) => (
+              <AccordionCard
+                key={finding.id || index}
+                title={finding.title || `Finding ${index + 1}`}
+                domain={finding.domain || 'GENERAL'}
+                priority={finding.impact || finding.priority || 'MEDIUM'}
+                cost={`$${(finding.total_annual_roi || finding.roi_estimate || 0).toLocaleString()}/yr`}
+                expandedContent={<FindingDetails finding={finding} />}
+                className="accordion-card"
+              />
+            ))}
           </div>
+
+          {findings.length === 0 && (
+            <div className="card text-center py-xl">
+              <div className="w-16 h-16 bg-background-secondary rounded-full flex items-center justify-center mx-auto mb-md">
+                <svg className="w-8 h-8 text-text-grey-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-body-large font-semibold text-text-primary mb-2">
+                No findings available
+              </h3>
+              <p className="text-body-regular text-text-grey-600">
+                The audit results are still being processed or no issues were found in your Salesforce org.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
