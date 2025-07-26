@@ -688,7 +688,7 @@ const BusinessInputForm = ({ onSubmit, initialData }) => {
 
 // Apple-Grade "Choose Your Audit" Modal Component
 const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
-  const [selectedAuditType, setSelectedAuditType] = useState('');
+  const [auditMode, setAuditMode] = useState('quick'); // 'quick' or 'custom'
   const [departmentSalaries, setDepartmentSalaries] = useState({
     customer_service: '',
     sales: '',
@@ -697,10 +697,10 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
     executives: ''
   });
 
-  // Reset selection when modal opens
+  // Reset to quick mode when modal opens
   useEffect(() => {
     if (isOpen) {
-      setSelectedAuditType('');
+      setAuditMode('quick');
     }
   }, [isOpen]);
 
@@ -711,20 +711,18 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
     }));
   };
 
-  const handleCardClick = (auditType) => {
-    setSelectedAuditType(auditType);
+  const handleSegmentChange = (mode) => {
+    setAuditMode(mode);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (!selectedAuditType) return;
 
     try {
       const auditRequest = {
         session_id: sessionId,
-        use_quick_estimate: selectedAuditType === 'quick',
-        department_salaries: selectedAuditType === 'quick' ? null : {
+        use_quick_estimate: auditMode === 'quick',
+        department_salaries: auditMode === 'quick' ? null : {
           customer_service: departmentSalaries.customer_service || null,
           sales: departmentSalaries.sales || null,
           marketing: departmentSalaries.marketing || null,
@@ -738,7 +736,7 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
       // Analytics tracking
       if (typeof window !== 'undefined' && window.analytics) {
         window.analytics.track('audit_option_selected', { 
-          mode: selectedAuditType === 'quick' ? 'quick' : 'custom' 
+          mode: auditMode
         });
       }
       
@@ -751,14 +749,6 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
     } catch (error) {
       console.error('Error preparing audit request:', error);
       alert(`Error preparing audit request: ${error.message}`);
-    }
-  };
-
-  // Handle keyboard navigation
-  const handleKeyDown = (e, auditType) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleCardClick(auditType);
     }
   };
 
