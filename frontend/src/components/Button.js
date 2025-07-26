@@ -52,6 +52,27 @@ const Button = ({
         background: colors.border,
       },
     },
+    outline: {
+      background: 'transparent',
+      border: `1px solid ${colors.primaryBlue}`,
+      color: colors.primaryBlue,
+      padding: `${spacing.sm} ${spacing.lg}`,
+      borderRadius: radius.sm,
+      ':hover': {
+        background: colors.primaryBlue,
+        color: colors.textOnPrimary,
+      },
+    },
+    text: {
+      background: 'transparent',
+      color: colors.primaryBlue,
+      padding: `${spacing.sm} ${spacing.md}`,
+      border: 'none',
+      borderRadius: radius.sm,
+      ':hover': {
+        background: colors.surfaceLight,
+      },
+    },
     ghost: {
       background: 'transparent',
       color: colors.primaryBlue,
