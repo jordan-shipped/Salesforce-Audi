@@ -19,7 +19,7 @@ import json
 def test_picklist_fix():
     """Test the corrected picklist mapping for the enterprise scenario"""
     
-    base_url = "https://2119fc09-5852-46cd-9d72-10b69b140f31.preview.emergentagent.com"
+    base_url = "https://0c6c660a-787f-48ab-8364-a6e87a12d36b.preview.emergentagent.com"
     api_url = f"{base_url}/api"
     
     print("🔍 PICKLIST MAPPING FIX VALIDATION")
@@ -97,7 +97,7 @@ def test_picklist_fix():
 def test_old_mapping():
     """Test what the old mapping ($50M) would return"""
     
-    base_url = "https://2119fc09-5852-46cd-9d72-10b69b140f31.preview.emergentagent.com"
+    base_url = "https://0c6c660a-787f-48ab-8364-a6e87a12d36b.preview.emergentagent.com"
     api_url = f"{base_url}/api"
     
     print(f"\n🔍 Testing OLD mapping for comparison:")

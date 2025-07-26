@@ -1,30 +1,25 @@
 <analysis>
-The AI engineer's trajectory shows a highly iterative and detail-oriented development process for a Salesforce Audit application. Initially, the focus was on establishing core user flow by implementing a Pre-Audit Modal for upfront business information collection, seamlessly integrating it with Salesforce OAuth through backend () and frontend () modifications.
-
-A significant portion of the work then shifted to an extensive UI/UX overhaul, driven by specific user feedback for an Apple-style, ultra-clean, premium design. This involved meticulously refining the landing page, streamlining the dashboard by removing redundant forms, and, most notably, transforming the Org Profile modal into a Choose Your Audit sheet. This modal underwent multiple rounds of pixel-perfect adjustments, evolving from basic radio buttons to a sophisticated segmented control with progressive disclosure, refined typography, precise spacing, authentic shadows, and subtle animations, all aimed at mirroring Apple's Human Interface Guidelines. The process involved direct implementation, iterative feedback, and verification using dedicated HTML demos and screenshots.
+The previous AI engineer's work trajectory demonstrates a highly iterative and user-feedback driven development process, primarily focused on transforming the Salesforce Audit application's UI/UX to an Apple-style, ultra-clean, premium standard. This involved initially integrating core functionalities like a Pre-Audit Modal and streamlining the dashboard. A significant part of the effort was dedicated to meticulously refining various UI components, notably the Choose Your Audit modal, through multiple rounds of pixel-perfect adjustments and integrating a comprehensive design system. This system centralized design tokens for colors, typography, spacing, and shadows, ensuring consistency across the Pre-Audit Modal, Landing Page, and Audit Results screen. The engineer systematically applied these design principles, verified changes with screenshots, and addressed user feedback to achieve a polished, native-feeling interface. The final task in progress is the integration of an external GitHub repository.
 </analysis>
 
 <product_requirements>
-The primary goal is a Salesforce audit application that generates clean, branded PDF reports for org inefficiencies. Initially, it required Salesforce OAuth, metadata analysis, findings display, and PDF export. A critical pivot focused on making ROI calculations transparent, org-specific, and detailed, incorporating hybrid models and role-based salaries. Concurrently, the application demanded a comprehensive UI/UX overhaul to achieve an Apple-style, ultra-clean, premium design with progressive disclosure.
-
-Specific, evolving requirements:
-1.  **Upfront Business Information Collection**: Collect Annual Revenue and Total Employees once, upfront, via a Pre-Audit Modal *before* Salesforce OAuth, persisting this info per session/org profile. This data should pre-fill subsequent audit flows.
-2.  **Dashboard Streamlining**: Remove redundant business info forms from the main dashboard. The + New Audit button should directly open the upfront Org Profile (now Choose Your Audit) modal, not a duplicate form.
-3.  **Org Profile Modal Transformation (later Choose Your Audit)**: This modal needed to be redesigned for an Apple-grade feel, encompassing:
-    *   Removal of diagnostic elements (Session ID).
-    *   Simplified selection of audit types (Quick/Custom) using a segmented control instead of cards.
-    *   Progressive disclosure of detailed content (e.g., custom salary inputs only when Custom Audit is selected).
-    *   Refined button styling (gradient, precise shadows, hover effects, no emojis).
-    *   Removal of redundant Cancel buttons.
-    *   Pixel-perfect typography, spacing, corner radii, material blur backdrop, and micro-animations to align with Apple's Human Interface Guidelines, creating a crisp, intuitive, and polished user experience.
+The primary goal is a Salesforce audit application generating clean, branded PDF reports for org inefficiencies. A critical aspect is making ROI calculations transparent and org-specific, incorporating hybrid models and role-based salaries. Concurrently, the application demanded a comprehensive UI/UX overhaul to achieve an Apple-style, ultra-clean, premium design with progressive disclosure.
+Specific requirements and implemented features include:
+1.  **Upfront Business Information Collection**: Implementation of a Pre-Audit Modal to collect Annual Revenue and Total Employees *before* Salesforce OAuth, persisting this data.
+2.  **Dashboard Streamlining**: Removal of redundant business information forms from the dashboard and updating the + New Audit button to directly open the Choose Your Audit modal.
+3.  **Choose Your Audit Modal Transformation**: Redesign for an Apple-grade feel, incorporating segmented controls, progressive disclosure, refined button styling, pixel-perfect typography (SF Pro), spacing, corner radii, material blur backdrop, and micro-animations.
+4.  **Landing Page Redesign**: Transformation of the hero section and feature cards to align with the new Apple-grade design system.
+5.  **Audit Results Screen Overhaul**: Redesign of the display for audit findings to be clean, intuitive, and consistent with Apple's Human Interface Guidelines.
+The overarching intent was to establish a unified design system with centralized tokens for comprehensive UI consistency.
 </product_requirements>
 
 <key_technical_concepts>
 -   **Full-stack Development**: React (frontend), FastAPI (backend), MongoDB (database).
 -   **Salesforce Integration**: OAuth 2.0.
--   **UI/UX Design**: Tailwind CSS, Apple-style minimalism, responsive design, micro-animations, design tokens, segmented controls, progressive disclosure, Material Design backdrop.
--   **State Management**: React Context API () for global business information.
--   **Pydantic**: Backend data validation for API requests.
+-   **UI/UX Design**: Apple-style minimalism, responsive design, micro-animations, design tokens, segmented controls, progressive disclosure, Material Design blur.
+-   **State Management**: React Context API.
+-   **Data Validation**: Pydantic.
+-   **Iconography**: Lucide React.
 </key_technical_concepts>
 
 <code_architecture>
@@ -33,67 +28,43 @@ The application uses a standard full-stack architecture with a FastAPI backend a
 
 
 -   **/app/backend/server.py**:
-    -   **Importance**: The central FastAPI application handling API routes, Salesforce OAuth, MongoDB operations, and ROI calculations.
-    -   **Changes Made**:
-        -   ****: A new endpoint was added to receive and store  and  from frontend picklists in the user's session data.
-        -   ** Model**: A Pydantic model was defined to validate the incoming business information.
-        -   **OAuth Callback**: Logic was updated to ensure  is present in the session after a Salesforce redirect, with redirection to the  if it's missing.
+    -   **Importance**: The central FastAPI application handling API routes, Salesforce OAuth, and MongoDB operations.
+    -   **Changes Made**: Implemented  to store  and  from the frontend. The OAuth callback logic was updated to check for and redirect if  is missing, ensuring mandatory data collection. Salesforce OAuth callback URL was verified and provided to the user.
 
 -   **/app/frontend/src/App.js**:
-    -   **Importance**: The main React component for routing, UI state, and rendering various application pages, acting as the primary hub for frontend logic and component composition.
-    -   **Changes Made**:
-        -   ** Component**: A new modal component was created and integrated to collect initial Annual Revenue and Total Employees data. It is conditionally displayed on the landing page before the Salesforce OAuth flow if the business information is not yet collected.
-        -   ** and **: A React Context was implemented to manage and provide global access to the  (revenue and headcount) throughout the application, ensuring persistence across user sessions.
-        -   **Landing Page**: The landing page's main component was extensively refactored to incorporate an Apple-style hero section (with gradient title, compelling description, and an enhanced CTA button) and a responsive grid of premium feature cards ( component). The Start Free Audit button was wired to display the .
-        -   ****: Modified to check for the presence of  after Salesforce OAuth. If missing, it redirects the user back to the  to ensure mandatory data collection.
-        -   **Dashboard Component**:
-            -   The redundant  (dashboard-level business info collection) was completely removed from the Dashboard's JSX.
-            -   The + New Audit button's functionality was updated to directly open the  (now Choose Your Audit modal), eliminating an unnecessary intermediate step.
-            -    function was updated to pull  consistently from the  context.
-            -   Associated unused state variables like , , and  were removed for cleaner code.
-        -   ** (Transformed into Choose Your Audit Modal)**: This modal underwent multiple stages of refinement:
-            -   Initial changes included removing session ID display, simplifying radio button labels (later converted to a segmented control), collapsing Calculation Assumptions into an accordion (later removed), and refining the primary button style.
-            -   **Major Redesign**: Replaced the card-based selection for Quick Audit vs. Custom Audit with a native Apple-style .
-            -   Implemented **progressive disclosure**, showing only relevant detail (quick audit description or custom salary inputs) based on the segmented control selection.
-            -   Incorporated detailed UI/UX refinements: precise typography (SF Pro fonts, specific weights and sizes), exact spacing (multiples of 4px/8px), perfected corner radii (20px for modal, 12px for controls), and subtle micro-animations (cross-fade for content, button hover effects, segment transitions).
-            -   Integrated a Material blur backdrop, ensuring the modal floats cleanly above content.
-            -   Fine-tuned button height, padding, shadows (including hover elevation), and disabled state opacity.
-            -   Adjusted typography for form labels, including uppercase tracking.
-            -   Ensured accessibility considerations and motion preferences (e.g., Reduce Transparency).
+    -   **Importance**: The main React component for routing, UI state, and rendering application pages.
+    -   **Changes Made**: Integrated the  using  for upfront data collection. The landing page was extensively refactored to an Apple-style hero section and responsive feature grid, replacing old  components with the new  component. The  was modified to ensure  presence. The Dashboard  was removed, and the + New Audit button now directly opens the  (renamed Choose Your Audit modal). The  was transformed into an Apple-grade sheet with , progressive disclosure, and pixel-perfect UI/UX. The  component was completely refactored to use , , and  components for a minimalist dashboard. Imports were adjusted for the new component library.
 
 -   **/app/frontend/src/App.css** & **/app/frontend/src/index.css**:
-    -   **Importance**: These files define the application's global visual style, heavily influenced by Tailwind CSS and custom Apple-style design tokens.
-    -   **Changes Made**: Extensive modifications to support the new Apple-grade design system, including:
-        -   Custom CSS variables for colors, fonts (SF Pro), and spacing.
-        -   Styling for the  (centered card, shadow, picklist appearance).
-        -   Comprehensive styling for the enhanced landing page (gradient text, button effects, feature card shadows and rounded corners).
-        -   Detailed CSS for the transformed Choose Your Audit modal, covering: modal container properties (shadow, backdrop blur, border-radius), segmented control appearance (selected/unselected states, background, border), progressive disclosure panel animations, primary button gradients, shadows, hover/disabled states, and precise typography rules for all elements within the modal.
+    -   **Importance**: Define the application's global visual style, heavily influenced by Tailwind CSS and custom Apple-style design.
+    -   **Changes Made**:  underwent extensive modifications to support the Apple-grade design across the , landing page, and Choose Your Audit modal, including backdrop blur, radii, shadows, typography, segmented control, and button styles.  was updated to define global CSS variables and typography from  and , establishing an 8px grid system and a refined, minimalist color palette. Old, conflicting landing page CSS was removed.
 
--   **/app/apple_grade_modal_demo.html** (later **/app/choose_your_audit_demo.html**):
-    -   **Importance**: A standalone HTML file used for isolated testing and visual demonstration of the intricate Apple-grade UI/UX refinements of the OrgProfileModal / Choose Your Audit modal. This allowed for rapid iteration and verification of design details without requiring the full application context.
-    -   **Changes Made**: This file was iteratively created and updated to reflect each stage of the modal's design evolution, from its initial refinements to the final segmented control and material backdrop implementation.
+-   **/app/frontend/src/designTokens.js** (and later **/app/frontend/src/styles/tokens.js**):
+    -   **Importance**: The centralized source of truth for all design values (colors, typography, layout).
+    -   **Changes Made**: Initially created as  and later standardized into  to export , , and  objects, ensuring a single, consistent design language across the application.
+
+-   **/app/frontend/src/components/** (new directory):
+    -   **Importance**: Houses reusable, token-driven React components.
+    -   **Files Created/Modified**:
+        -   : Exports all unified components.
+        -   : Consolidated into three variants:  (gradient), , and , all adhering to Apple's button specifications (e.g., 28px height, specific paddings/borders).
+        -   : A single wrapper component for all card-like elements (feature cards, audit history, findings), implementing consistent padding, border-radius, and shadows.
+        -   : A unified component for form inputs and select fields, enforcing Apple-style height, borders, and placeholder text.
+        -   : A unified wrapper for all modals, ensuring consistent width, padding, border-radius, and backdrop blur.
+        -   : Component for displaying the audit stage summary, stats, constraints, and next steps, styled with design tokens.
+        -   : Component for interactive, expandable audit finding details, including domain badges, priority pills, and cost display, adhering to the new minimalist design.
+        -   : Component for domain and priority filters, using the unified input styles.
+
 </code_architecture>
 
 <pending_tasks>
--   Integrate the final Choose Your Audit modal design (which has been perfected in  and reflected in  and  edits) into the main application's live flow, ensuring it fully replaces the previous  for a consistent user experience.
--   Review and potentially remove any remaining unused CSS classes or components that are no longer referenced after the recent dashboard and modal transformations, especially if 's specific styling is no longer required anywhere.
+-   Implement the exact code from the user-provided GitHub repository (https://github.com/jordan-shipped/Salesforce-Audi) into the current application.
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary request, the AI engineer was concluding the most recent and precise set of UI/UX refinements for the Choose Your Audit modal (formerly ). The goal was to achieve a truly Designed by Apple aesthetic through micro-polishes, based on detailed user feedback.
-
-The specific changes being implemented and tested include:
-1.  **Native Material Backdrop**: Applying a subtle, light blur effect as the modal's backdrop, allowing it to float visually over the application content, consistent with iOS/macOS sheets.
-2.  **Perfected Corner Radii**: Adjusting the modal container's  to 20px, and the buttons and segmented control's  to 12px, aligning with Apple's guidelines.
-3.  **Harmonized Segmented Control**: Refining its appearance to a height of 32px, SF Pro Semibold 15pt font, a solid systemBlue outline with a fully white fill for the selected segment, a 10% gray fill for unselected segments, and a precise 2px gutter between segments, mimicking macOS controls.
-4.  **Tightened Margins**: Implementing precise 24px edge padding around all sides of the modal content, and specific vertical spacing between elements (20px from title to segmented control, 16px from segmented control to detail pane/fields, 24px from detail pane to button), adhering to consistent multiples of 4px and 8px for a crisp, grid-aligned feel.
-5.  **Button Refinements**: Setting the Start Audit button height to 44px (a standard tappable target), refining horizontal padding, updating its shadow (), enhancing the shadow on hover (), scaling up by 1.03 on hover, and ensuring the disabled state shows 30% opacity of its gradient.
-6.  **Typography Nudges**: Fine-tuning font weights, sizes, and casing for hierarchy: Choose Your Audit title (SF Pro Bold, 22pt), body text (SF Pro Regular, 15pt, 24px max line-length), and form labels (SF Pro Medium, 13pt, uppercase tracking +20%).
-7.  **Accessibility & Motion**: Ensuring adherence to Reduce Transparency and Reduce Motion system settings, and animating the detail pane's slide-fade over 200ms using an ease-in-out curve for fluid transitions.
-
-These changes were applied to  and demonstrated in a dedicated HTML demo file (), which was the subject of the final screenshot verification confirming successful implementation of all detailed refinements. The last instruction received was to finish what you are working on now, indicating the completion of this specific task is expected.
+Immediately prior to this summary, the AI engineer was tasked with integrating the code from the user's GitHub repository (https://github.com/jordan-shipped/Salesforce-Audi). After initial access issues (404 error, then FireCrawl polling error), the repository was made public and successfully accessed. The AI engineer has confirmed the repository's structure and has begun the process of extracting key frontend and backend files. The explicit next step taken by the AI engineer was: Ill implement the exact code from the GitHub repository. Let me get the key frontend files and then systematically replace our current implementation with the repositorys code. This indicates the current work is in the initial phase of systematically replacing the existing codebase with the content from the provided GitHub repository.
 </current_work>
 
 <optional_next_step>
-Integrate the perfected Choose Your Audit modal from the demo into the main application's  flow.
+Continue extracting key frontend and backend files from the GitHub repository and systematically replace the current application's code with them.
 </optional_next_step>
