@@ -1735,18 +1735,20 @@ const Contact = () => (
 // Main App Component
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/oauth/callback" element={<OAuthCallback />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/audit/:sessionId" element={<AuditResults />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BusinessInfoProvider>
+      <div className="App">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/oauth/callback" element={<OAuthCallback />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/audit/:sessionId" element={<AuditResults />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </BusinessInfoProvider>
   );
 }
 
