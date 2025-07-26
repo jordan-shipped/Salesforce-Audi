@@ -173,7 +173,7 @@ const AuditResults = () => {
                     Annual ROI
                   </div>
                   <div className="text-h2 font-semibold text-accent">
-                    ${(auditData?.total_annual_roi || 0).toLocaleString()}/yr
+                    ${(auditData?.summary?.total_annual_roi || 0).toLocaleString()}/yr
                   </div>
                 </div>
                 <div>
