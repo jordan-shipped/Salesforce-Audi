@@ -920,8 +920,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [running, setRunning] = useState(false);
   const [showOrgProfile, setShowOrgProfile] = useState(false);
-  const [showBusinessInput, setShowBusinessInput] = useState(false);
-  const [businessInputs, setBusinessInputs] = useState(null);
   const { businessInfo, hasBusinessInfo } = useBusinessInfo();
   const navigate = useNavigate();
 
