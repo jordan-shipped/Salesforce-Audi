@@ -31,8 +31,8 @@
   --color-overlay: rgba(0, 0, 0, 0.4);
   
   /* Text Colors - High Contrast */
-  --text-primary: #111111;
-  --text-secondary: #666666;
+  --text-primary: #000000; /* Text primary: #000000 (100% opacity) */
+  --text-secondary: #3C3C4399; /* Text secondary: #3C3C4399 (60% opacity) */
   --text-tertiary: #999999;
   --text-inverse: #FFFFFF;
   --text-placeholder: #C7C7C7;
