@@ -2038,26 +2038,26 @@ body {
 
 .pre-audit-header {
   text-align: center;
-  margin-bottom: 20px; /* Subtitle → inputs: 20px */
+  margin: 24px 0 20px 0; /* 24px above title, 20px below subtitle */
 }
 
 .pre-audit-title {
   font-family: var(--font-family-base);
   font-size: 24pt; /* SF Pro Bold, 24pt */
   font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
-  margin: 0 0 12px 0; /* Between title & subtitle: 12px */
-  line-height: 1.2;
+  color: #000000; /* Text primary: #000000 (100% opacity) */
+  margin: 0 0 12px 0; /* 12px between title & subtitle */
+  line-height: 1.2; /* tight leading (1.2) */
   letter-spacing: -0.02em;
 }
 
 .pre-audit-subtitle {
   font-family: var(--font-family-base);
-  font-size: 16pt; /* SF Pro Regular, 16pt, 1.4 line-height */
+  font-size: 15pt; /* SF Pro Regular, 15pt */
   font-weight: var(--font-weight-regular);
-  color: #666666;
+  color: rgba(60, 60, 67, 0.5); /* Text secondary: 50% opacity */
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.4; /* 1.4 line‑height */
 }
 
 .pre-audit-form {
