@@ -1535,7 +1535,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/oauth/callback" element={<OAuthCallback />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/audit/:sessionId" element={<AuditResults />} />
+            <Route path="/audit/:sessionId" element={<NewAuditResults />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
