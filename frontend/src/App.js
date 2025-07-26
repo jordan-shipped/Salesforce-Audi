@@ -686,10 +686,9 @@ const BusinessInputForm = ({ onSubmit, initialData }) => {
   );
 };
 
-// Org Profile Modal Component - Apple-Grade Refinements
+// Apple-Grade "Choose Your Audit" Modal Component
 const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
-  const [useQuickEstimate, setUseQuickEstimate] = useState(true);
-  const [showAssumptions, setShowAssumptions] = useState(false);
+  const [selectedAuditType, setSelectedAuditType] = useState('');
   const [departmentSalaries, setDepartmentSalaries] = useState({
     customer_service: '',
     sales: '',
@@ -698,6 +697,13 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
     executives: ''
   });
 
+  // Reset selection when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedAuditType('');
+    }
+  }, [isOpen]);
+
   const handleSalaryChange = (department, value) => {
     setDepartmentSalaries(prev => ({
       ...prev,
@@ -705,15 +711,20 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
     }));
   };
 
+  const handleCardClick = (auditType) => {
+    setSelectedAuditType(auditType);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    if (!selectedAuditType) return;
+
     try {
-      // Ensure department_salaries is properly structured even if using quick estimate
       const auditRequest = {
         session_id: sessionId,
-        use_quick_estimate: useQuickEstimate,
-        department_salaries: useQuickEstimate ? null : {
+        use_quick_estimate: selectedAuditType === 'quick',
+        department_salaries: selectedAuditType === 'quick' ? null : {
           customer_service: departmentSalaries.customer_service || null,
           sales: departmentSalaries.sales || null,
           marketing: departmentSalaries.marketing || null,
@@ -722,9 +733,15 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
         }
       };
       
-      console.log('Form submitting audit request:', auditRequest);
+      console.log('Choose Your Audit submitting:', auditRequest);
       
-      // Validate session_id exists
+      // Analytics tracking
+      if (typeof analytics !== 'undefined') {
+        analytics.track('audit_option_selected', { 
+          mode: selectedAuditType === 'quick' ? 'quick' : 'custom' 
+        });
+      }
+      
       if (!sessionId) {
         alert('No session ID found. Please reconnect to Salesforce.');
         return;
@@ -734,6 +751,14 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
     } catch (error) {
       console.error('Error preparing audit request:', error);
       alert(`Error preparing audit request: ${error.message}`);
+    }
+  };
+
+  // Handle keyboard navigation
+  const handleKeyDown = (e, auditType) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleCardClick(auditType);
     }
   };
 
