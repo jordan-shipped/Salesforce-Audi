@@ -165,7 +165,7 @@ const AuditResults = () => {
                     Total Findings
                   </div>
                   <div className="text-h2 font-semibold text-text-primary">
-                    {auditData?.total_findings || 0}
+                    {auditData?.summary?.total_findings || 0}
                   </div>
                 </div>
                 <div>
