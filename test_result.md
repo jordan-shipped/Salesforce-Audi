@@ -185,7 +185,11 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Complete PreAuditModal integration with landing page flow"
+    - "Update OAuthCallback to check business info and redirect appropriately"
+    - "Complete BusinessInfoRequest model and validation constants"
+    - "Ensure /api/session/business-info endpoint functions properly"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
