@@ -736,8 +736,8 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
       console.log('Choose Your Audit submitting:', auditRequest);
       
       // Analytics tracking
-      if (typeof analytics !== 'undefined') {
-        analytics.track('audit_option_selected', { 
+      if (typeof window !== 'undefined' && window.analytics) {
+        window.analytics.track('audit_option_selected', { 
           mode: selectedAuditType === 'quick' ? 'quick' : 'custom' 
         });
       }
