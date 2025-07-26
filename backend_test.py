@@ -4915,19 +4915,93 @@ def main():
 if __name__ == "__main__":
     tester = SalesforceAuditAPITester()
     
-    # Run the critical avg_user_rate fix test first
-    print("🚨 RUNNING CRITICAL AVG_USER_RATE FIX TEST")
-    print("=" * 60)
+    print("🚨 COMPREHENSIVE BACKEND TESTING AFTER GITHUB REPOSITORY INTEGRATION")
+    print("=" * 80)
+    print("Testing all critical areas as requested in review")
     
-    success, results = tester.test_critical_avg_user_rate_fix()
+    # 1. Test Core API Endpoints
+    print("\n📋 1. CORE API ENDPOINTS TESTING")
+    print("-" * 50)
     
-    if success:
-        print("\n🎉 CRITICAL FIX VALIDATION PASSED!")
-        print("✅ avg_user_rate bug has been successfully resolved")
-        print("✅ All critical success criteria met")
+    # Test health endpoint
+    health_success, _ = tester.run_test("Health Check", "GET", "health", 200)
+    
+    # Test root endpoint
+    root_success, _ = tester.run_test("Root Endpoint", "GET", "", 200)
+    
+    # Test OAuth endpoints
+    oauth_success, oauth_results = tester.test_oauth_authorize_comprehensive()
+    
+    # Test audit sessions endpoint
+    sessions_success, sessions_data = tester.test_get_audit_sessions()
+    
+    # 2. Test Business Information Flow
+    print("\n📋 2. BUSINESS INFORMATION FLOW TESTING")
+    print("-" * 50)
+    
+    preaudit_success, preaudit_results = tester.test_preaudit_modal_backend_integration()
+    
+    # 3. Test Environment Verification
+    print("\n📋 3. ENVIRONMENT VERIFICATION")
+    print("-" * 50)
+    
+    # Environment variables are tested as part of OAuth testing
+    env_success = oauth_results.get('client_id_exists', False) and oauth_results.get('callback_url_exists', False)
+    if env_success:
+        print("✅ Environment variables verified through OAuth testing")
     else:
-        print("\n⚠️ CRITICAL FIX VALIDATION FAILED!")
-        print("❌ avg_user_rate bug may still be present")
-        print("❌ Additional fixes needed")
+        print("❌ Environment variables verification failed")
     
-    print(f"\n📊 Final Test Results: {tester.tests_passed}/{tester.tests_run} tests passed")
+    # 4. Test Async MongoDB Operations
+    print("\n📋 4. ASYNC MONGODB OPERATIONS TESTING")
+    print("-" * 50)
+    
+    # MongoDB operations are tested through sessions endpoint
+    mongodb_success = sessions_success
+    if mongodb_success:
+        print("✅ Async MongoDB operations working (sessions retrieved successfully)")
+    else:
+        print("❌ Async MongoDB operations may have issues")
+    
+    # 5. Test Critical Audit Flow
+    print("\n📋 5. CRITICAL AUDIT FLOW TESTING")
+    print("-" * 50)
+    
+    audit_flow_success, audit_results = tester.test_critical_audit_creation_flow_debug()
+    
+    # 6. Test avg_user_rate fix
+    print("\n📋 6. AVG_USER_RATE FIX TESTING")
+    print("-" * 50)
+    
+    avg_user_rate_success, avg_results = tester.test_critical_avg_user_rate_fix()
+    
+    # FINAL SUMMARY
+    print("\n📊 COMPREHENSIVE TESTING SUMMARY")
+    print("=" * 80)
+    
+    test_categories = [
+        ("Core API Endpoints", health_success and root_success and oauth_success and sessions_success),
+        ("Business Information Flow", preaudit_success),
+        ("Environment Variables", env_success),
+        ("Async MongoDB Operations", mongodb_success),
+        ("Critical Audit Flow", audit_flow_success),
+        ("avg_user_rate Fix", avg_user_rate_success)
+    ]
+    
+    passed_categories = 0
+    for category, success in test_categories:
+        if success:
+            print(f"✅ {category}: PASSED")
+            passed_categories += 1
+        else:
+            print(f"❌ {category}: FAILED")
+    
+    print(f"\n🎯 OVERALL RESULTS: {passed_categories}/{len(test_categories)} categories passed")
+    print(f"📊 Individual Tests: {tester.tests_passed}/{tester.tests_run} tests passed")
+    
+    if passed_categories == len(test_categories):
+        print("\n🎉 ALL COMPREHENSIVE TESTING CATEGORIES PASSED!")
+        print("✅ Backend is ready for production use after GitHub repository integration")
+    else:
+        print("\n⚠️ SOME TESTING CATEGORIES FAILED")
+        print("❌ Review failed categories above for specific issues")
