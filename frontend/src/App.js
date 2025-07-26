@@ -409,26 +409,26 @@ const PreAuditModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="pre-audit-modal">
+    <div className="apple-modal-overlay">
+      <div className="apple-modal apple-business-modal">
         {/* Close button */}
-        <button className="modal-close" onClick={onClose}>⊗</button>
+        <button className="apple-modal-close" onClick={onClose}>⊗</button>
         
         {/* Header */}
-        <div className="pre-audit-header">
-          <h2 className="pre-audit-title">Tell us about your business</h2>
-          <p className="pre-audit-subtitle">Help us tailor your audit experience.</p>
+        <div className="apple-modal-header">
+          <h3 className="apple-modal-title">Tell us about your business</h3>
+          <p className="apple-modal-subtitle">Help us tailor your audit experience.</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="pre-audit-form">
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label">Annual Revenue</label>
+        <form onSubmit={handleSubmit} className="apple-business-form">
+          <div className="apple-form-row">
+            <div className="apple-form-group">
+              <label className="apple-form-label">Annual Revenue</label>
               <select
                 value={revenueBucket}
                 onChange={(e) => setRevenueBucket(e.target.value)}
-                className="form-select"
+                className="apple-form-select"
                 required
               >
                 <option value="">Select...</option>
@@ -438,12 +438,12 @@ const PreAuditModal = ({ isOpen, onClose, onSubmit }) => {
               </select>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Total Employees</label>
+            <div className="apple-form-group">
+              <label className="apple-form-label">Total Employees</label>
               <select
                 value={headcountBucket}
                 onChange={(e) => setHeadcountBucket(e.target.value)}
-                className="form-select"
+                className="apple-form-select"
                 required
               >
                 <option value="">Select...</option>
@@ -455,14 +455,14 @@ const PreAuditModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
 
           {error && (
-            <div className="form-error">
+            <div className="apple-form-error">
               {error}
             </div>
           )}
 
           <button 
             type="submit" 
-            className="btn-save-connect"
+            className="apple-btn-primary"
             disabled={saving}
           >
             {saving ? 'Saving...' : 'Save & Connect'}
