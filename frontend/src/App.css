@@ -2015,12 +2015,12 @@ body {
 
 .modal-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 16px; /* Flush 16px from top edge */
+  right: 16px; /* Flush 16px from right edge */
   background: none;
   border: none;
-  font-size: 24px;
-  color: var(--text-tertiary);
+  font-size: 20px; /* SF Symbol xmark.circle.fill at 20pt */
+  color: rgba(0, 0, 0, 0.5); /* 50% opacity */
   cursor: pointer;
   width: 32px;
   height: 32px;
