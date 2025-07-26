@@ -686,9 +686,10 @@ const BusinessInputForm = ({ onSubmit, initialData }) => {
   );
 };
 
-// Org Profile Modal Component
+// Org Profile Modal Component - Apple-Grade Refinements
 const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   const [useQuickEstimate, setUseQuickEstimate] = useState(true);
+  const [showAssumptions, setShowAssumptions] = useState(false);
   const [departmentSalaries, setDepartmentSalaries] = useState({
     customer_service: '',
     sales: '',
