@@ -105,152 +105,29 @@
 user_problem_statement: "Complete the integration of the PreAuditModal component into the App.js and the OAuth flow. The OAuthCallback component needs to be updated to check for existing businessInfo in the session and redirect to the PreAuditModal if it's missing. Ensure existing 'New Audit' or 'Quick/Custom' paths auto-prefill inputs from the session context."
 
 backend:
-  - task: "Implement comprehensive picklist + stage engine integration"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 1
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Implemented picklist-based business inputs with stage engine integration for Apple-grade StageSummaryPanel"
-        - working: false
-          agent: "testing"
-          comment: "PICKLIST INTEGRATION TESTING COMPLETED - CRITICAL ISSUE FOUND: ❌ Enterprise scenario mapping failure: 30M+ revenue ($50M) + 250-500 employees (375) maps to Stage 7 (Categorize) instead of expected Stage 9 (Capitalize). Root cause: $50M falls into Stage 7 range (20M-50M) rather than Stage 9 range (≥100M). Picklist conversion '30M+' → $50M needs adjustment to reach Stage 9. ✅ SUCCESSFUL COMPONENTS: Enhanced business_inputs accepts both picklist strings and numeric values, Apple-grade StageSummaryPanel data structure properly defined, constraints_and_actions arrays properly structured, all existing stage engine functionality maintained. ✅ SPECIFIC SUCCESSES: Startup scenario (<100k → $50K, 0-some → 1) correctly maps to Stage 1 (Monetize), Growth scenario (1M-3M → $2M, 5-9 → 7) correctly maps to Stage 4 (Prioritize). RECOMMENDATION: Adjust picklist conversion for '30M+' from $50M to $100M+ to properly reach Stage 9."
-        - working: false
-          agent: "testing"
-          comment: "PICKLIST MAPPING FIX VALIDATION COMPLETED: ✅ CORE STAGE MAPPING VERIFIED: When using $150,000,000 revenue + 375 employees, system correctly maps to Stage 9 (Capitalize) with revenue range ≥100M. ❌ PICKLIST CONVERSION MISSING: The backend currently only accepts numeric values (BusinessInputs model), but review request expects picklist strings like '30M+' to convert to $150M. ROOT CAUSE IDENTIFIED: The issue is not with stage mapping logic (which works correctly), but with the missing picklist-to-numeric conversion layer. SPECIFIC FINDINGS: 1) $50M + 375 employees → Stage 7 (Categorize) - confirms old behavior, 2) $150M + 375 employees → Stage 9 (Capitalize) - confirms fix target works, 3) Backend needs picklist conversion function or enhanced model to accept both picklist strings and numeric values. RECOMMENDATION: Implement picklist conversion logic that maps '30M+' → $150,000,000 before passing to stage mapping function."
-        - working: true
-          agent: "testing"
-          comment: "🚨 CRITICAL AUDIT SESSION FLOW DEBUGGING COMPLETED - ROOT CAUSE IDENTIFIED AND FIXED! ✅ AUDIT SESSION RETRIEVAL FIX: Fixed critical datetime serialization bug in GET /api/audit/{session_id} endpoint. Issue was on line 2266 where session.get('created_at') was already a string but code was calling .isoformat() on it, causing 'str' object has no attribute 'isoformat' error. Applied robust fix to handle both string and datetime objects. ✅ COMPREHENSIVE VALIDATION: Tested 5 existing audit sessions - all now retrieve successfully with all required fields (session, summary, findings, business_stage). ✅ PICKLIST CONVERSION VERIFIED: Enterprise scenario (30M+ → $150M + 250-500 → 375 employees) now correctly maps to Stage 9 (Capitalize). ✅ SESSION CREATION FLOW: POST /api/audit/run creates sessions with valid UUID format, database queries work correctly, response structure includes all required fields. ✅ DATABASE CONSISTENCY: audit_sessions and audit_findings collections properly linked, no ObjectId vs string mismatches found. 🎉 RESOLUTION: The 'Audit not found' issue has been completely resolved. Users can now successfully run audits and retrieve session details without errors."
-        - working: true
-          agent: "testing"
-          comment: "🚨 CRITICAL AVG_USER_RATE FIX VALIDATION COMPLETED - SUCCESS! ✅ CRITICAL SUCCESS CRITERIA: 6/6 PASSED (100% success rate). ✅ POST /api/audit/run processes without avg_user_rate errors - confirmed with exact request structure from review (session_id: test_avg_user_rate_fix, annual_revenue: 375000, employee_headcount: 7, revenue_range: 250k–500k, employee_range: 5–9). ✅ ROI calculations work for all finding types - all 10 business stages (0-9) accessible for ROI calculations with required fields. ✅ Audit completes successfully with valid structure - enhanced business_inputs with both numeric and picklist values accepted. ✅ Session_id generation working correctly - UUID generation validated and working. ✅ Stage-based analysis completes successfully - business stage mapping successful (Stage 2 Advertise for review data). ✅ No more 'cannot access local variable' errors - no avg_user_rate or variable access errors detected in responses. 🎉 RESOLUTION: The critical avg_user_rate bug that was causing 'Audit completed but no session ID returned' error has been successfully fixed. The avg_user_rate variable is now properly defined in all code paths, allowing ROI calculations to complete for all finding types (data quality, automation, reporting, security, adoption) without any errors. All audit session functionality is now working perfectly!"
-
-  - task: "Implement Stage 0-9 business mapping logic with Alex Hormozi stages"
+  - task: "Complete BusinessInfoRequest model and validation constants"
     implemented: true
     working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Added BUSINESS_STAGES lookup table with all 10 stages (0-9) including headcount ranges, revenue ranges, roles, bottom lines, and constraints_and_actions. Implemented determine_business_stage() function to map revenue/headcount to appropriate stage using scoring algorithm."
-        - working: true
-          agent: "testing"
-          comment: "STAGE MAPPING VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) All 6 test scenarios map correctly to expected stages (Stage 0: $0/0 employees → Improvise, Stage 2: $300K/3 employees → Advertise, Stage 4: $3.5M/7 employees → Prioritize, Stage 9: $150M/300 employees → Capitalize, etc.), 2) POST /api/business/stage endpoint accepts BusinessInputs model correctly, 3) Response includes all required fields (stage, name, role, headcount_range, revenue_range, bottom_line, constraints_and_actions), 4) Edge case handling works (revenue=0, headcount=0 properly maps to Stage 0), 5) Scoring algorithm correctly prioritizes both revenue and headcount factors. Fixed minor issue with 0 values being treated as falsy. Stage mapping logic is fully functional and ready for production."
-        - working: true
-          agent: "testing"
-          comment: "RE-VERIFIED WITH PICKLIST INTEGRATION: Stage mapping core functionality remains working correctly. All 10 stages (0-9) properly configured and accessible. Stage mapping algorithm works correctly for most scenarios but has edge case issue with enterprise-level mappings where $50M revenue maps to Stage 7 instead of Stage 9. This is a picklist conversion issue, not a core stage mapping problem."
-          
-  - task: "Add BusinessInputs model and update AuditRequest to accept revenue/headcount"
+          comment: "Added missing BusinessInfoRequest model and VALID_REVENUE_BUCKETS, VALID_HEADCOUNT_BUCKETS constants for PreAuditModal backend validation"
+        
+  - task: "Ensure /api/session/business-info endpoint functions properly"
     implemented: true
     working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Added BusinessInputs model with optional annual_revenue (default $1M) and employee_headcount (default 50). Updated AuditRequest to include business_inputs field. Models support both custom inputs and fallback defaults."
-        - working: true
-          agent: "testing"
-          comment: "BUSINESS INPUTS MODEL VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) AuditRequest accepts business_inputs field correctly in all test scenarios, 2) BusinessInputs model handles custom revenue/headcount values properly, 3) Default values ($1M revenue, 50 employees) are applied when business_inputs is empty or missing, 4) Model validation works correctly (401 errors are for session validation, not structure), 5) Enhanced audit requests with business_inputs are accepted by /api/audit/run endpoint. All test scenarios (Small Business, Mid-Market, Enterprise) successfully accepted business_inputs parameter. Model integration is fully functional."
-          
-  - task: "Implement domain classification system for findings"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Added FINDING_DOMAINS array with 5 domains: Data Quality, Automation, Reporting, Security, Adoption. Implemented classify_finding_domain() function using keyword-based classification rules to categorize findings into appropriate domains."
-        - working: true
-          agent: "testing"
-          comment: "DOMAIN CLASSIFICATION VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) All 5 expected domains are properly defined (Data Quality, Automation, Reporting, Security, Adoption), 2) classify_finding_domain() function implements keyword-based classification logic correctly, 3) Classification rules are comprehensive: Data Quality (unused, orphaned, missing, duplicate, stale), Automation (automation, manual, workflow, alert), Reporting (report, dashboard, forecast, pipeline), Security (security, permission, profile, access), Adoption (adoption, training, usage, layout), 4) Domain classification system integrates properly with audit request structure, 5) GET /api/business/stages returns domains array correctly. Domain classification system is fully functional and ready for production use."
-          
-  - task: "Implement stage-based priority scoring system"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Added STAGE_DOMAIN_PRIORITY mapping showing which domains are most important per stage (0-9). Implemented calculate_finding_priority() function that combines stage alignment, impact score, and ROI value to calculate final priority score."
-        - working: true
-          agent: "testing"
-          comment: "STAGE-BASED PRIORITY SCORING VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) STAGE_DOMAIN_PRIORITY mapping correctly defines domain priorities for all 10 stages (Stage 1 focuses on Adoption/Data Quality, Stage 4 on Automation/Data Quality/Reporting, Stage 8 on Security/Automation/Reporting), 2) calculate_finding_priority() function implements multi-factor scoring (base priority + stage alignment bonus + impact multiplier + ROI boost), 3) Priority scoring logic is comprehensive: Base=1, Stage bonus from mapping, Impact multiplier (High=3, Medium=2, Low=1), ROI boost (>$10k=+2, >$5k=+1), 4) All test scenarios (Early Stage, Growth Stage, Enterprise Stage) successfully accepted priority scoring requests, 5) System integrates properly with business stage determination. Priority scoring system is fully functional and ready for production use."
-          
-  - task: "Implement enhanced task-based ROI calculations"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Added TASK_BASED_ROI_CONSTANTS and HOURLY_RATES_BY_ROLE with realistic US rates. Implemented calculate_task_based_roi() function with stage multipliers, detailed task breakdowns, and separate one-time vs recurring cost analysis."
-        - working: true
-          agent: "testing"
-          comment: "ENHANCED ROI CALCULATIONS VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) Stage multipliers correctly implemented (Stage 0=0.7x, Stage 2=0.9x, Stage 5=1.2x, Stage 9=1.6x), 2) HOURLY_RATES_BY_ROLE contains realistic US rates (Admin=$35, Sales=$55, Customer Service=$25, Marketing=$45, Engineering=$75, Executives=$95), 3) calculate_task_based_roi() function provides detailed task breakdowns with one-time costs vs recurring savings, 4) Role attribution system properly assigns tasks to appropriate roles, 5) Enhanced ROI calculation components include: custom field cleanup (15min per field × admin rate), user confusion elimination (2min/user/field/month × avg user rate), confidence levels (High/Medium/Low), 6) All test scenarios (Small Business, Mid-Market, Enterprise) successfully accepted enhanced ROI requests. Enhanced ROI calculation system is fully functional and ready for production use."
-          
-  - task: "Replace audit function with stage-based engine"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Replaced run_salesforce_audit_with_salaries with run_salesforce_audit_with_stage_engine. New function determines business stage, enhances findings with domain classification, priority scoring, and stage-based ROI analysis. Returns 4 values including business_stage."
-        - working: true
-          agent: "testing"
-          comment: "STAGE-BASED AUDIT ENGINE VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) Complete stage engine integration processes all components correctly (business stage determination → domain classification → priority scoring → enhanced ROI calculations → task breakdowns), 2) Expected processing flow verified: Determine business stage from revenue/headcount, Classify findings into domains, Calculate stage-based priority scores, Apply enhanced ROI calculations with stage multipliers, Generate task breakdowns with role attribution, Return response with business_stage/enhanced findings/metadata, 3) All comprehensive test scenarios successfully accepted (revenue/headcount combinations with department salaries), 4) Stage engine integration maintains backward compatibility while adding new functionality. The complete stage-based audit engine is fully functional and ready for production use."
-          
-  - task: "Add new API endpoints for stage information"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Added /api/business/stage endpoint to get stage info for revenue/headcount inputs. Added /api/business/stages endpoint to get all available stages and domain mappings."
-        - working: true
-          agent: "testing"
-          comment: "NEW STAGE API ENDPOINTS VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) POST /api/business/stage endpoint correctly maps revenue/headcount to appropriate stages with all required response fields (stage, name, role, headcount_range, revenue_range, bottom_line, constraints_and_actions, inputs), 2) GET /api/business/stages endpoint returns all 10 stages (0-9) with complete data structure, includes domains array and stage_domain_priority mapping, 3) Both endpoints handle edge cases correctly (fixed 0 values issue and JSON serialization of infinity), 4) Response structure matches expected format for frontend integration, 5) All test scenarios verified: Stage 0 (Improvise), Stage 2 (Advertise), Stage 4 (Prioritize), Stage 9 (Capitalize), etc. New API endpoints are fully functional and ready for production use."
-          
-  - task: "Update audit response to include business stage data"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-        - working: "unknown"
-          agent: "main"
-          comment: "Enhanced /api/audit/run response to include business_stage object with stage info and metadata object with audit_type, confidence level, and timestamp. Updated findings serialization with convert_objectid()."
-        - working: true
-          agent: "testing"
-          comment: "ENHANCED AUDIT RESPONSE STRUCTURE VERIFIED WORKING! ✅ Comprehensive testing confirms: 1) Expected response structure properly defined with business_stage object (stage, name, role, headcount_range, revenue_range, bottom_line, constraints_and_actions), 2) Enhanced findings structure includes domain classification, priority_score, stage_analysis, enhanced_roi, task_breakdown, 3) Metadata object includes audit_type='stage_based', confidence level, created_at timestamp, 4) All enhanced audit requests with business_inputs and department_salaries are properly accepted by /api/audit/run endpoint, 5) Response structure validation confirms backward compatibility while adding new stage-based enhancements. Enhanced audit response structure is fully functional and ready for production use."
+          comment: "Backend endpoint already exists and now has all required dependencies - BusinessInfoRequest model and validation constants"
 
 frontend:
   - task: "Maintain existing UI while backend implements stage engine"
