@@ -338,7 +338,189 @@ const FindingAccordion = ({ finding, isExpanded, onToggle }) => {
   );
 };
 
-// Business Input Form Component - Enhanced with Picklists
+// PreAuditModal Component - Apple-Grade Business Info Collection
+const PreAuditModal = ({ isOpen, onClose, onSubmit }) => {
+  const [revenueBucket, setRevenueBucket] = useState('');
+  const [headcountBucket, setHeadcountBucket] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const revenueBuckets = [
+    "Under $100K", "$100K – $250K", "$250K – $500K", "$500K – $1M", 
+    "$1M – $3M", "$3M – $10M", "$10M – $30M", "$30M+"
+  ];
+
+  const headcountBuckets = [
+    "Just me, no revenue", "Just me, some revenue", "Me & vendors",
+    "2 – 4", "5 – 9", "10 – 19", "20 – 49", "50 – 99", "100 – 249", "250 – 500"
+  ];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!revenueBucket || !headcountBucket) {
+      setError('Please select both annual revenue and employee count.');
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+
+    try {
+      const response = await axios.post(`${API}/session/business-info`, {
+        revenue_bucket: revenueBucket,
+        headcount_bucket: headcountBucket
+      });
+
+      if (response.data.success) {
+        // Store in localStorage for session persistence
+        localStorage.setItem('business_session_id', response.data.business_session_id);
+        localStorage.setItem('business_info', JSON.stringify({
+          revenue_bucket: revenueBucket,
+          headcount_bucket: headcountBucket
+        }));
+
+        onSubmit({
+          business_session_id: response.data.business_session_id,
+          revenue_bucket: revenueBucket,
+          headcount_bucket: headcountBucket
+        });
+      }
+    } catch (error) {
+      console.error('Failed to save business info:', error);
+      setError('We couldn\'t save your information. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="pre-audit-modal">
+        {/* Close button */}
+        <button className="modal-close" onClick={onClose}>×</button>
+        
+        {/* Header */}
+        <div className="pre-audit-header">
+          <h2 className="pre-audit-title">Tell us about your business</h2>
+          <p className="pre-audit-subtitle">Help us tailor your audit experience.</p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="pre-audit-form">
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Annual Revenue</label>
+              <select
+                value={revenueBucket}
+                onChange={(e) => setRevenueBucket(e.target.value)}
+                className="form-select"
+                required
+              >
+                <option value="">Select...</option>
+                {revenueBuckets.map(bucket => (
+                  <option key={bucket} value={bucket}>{bucket}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Total Employees</label>
+              <select
+                value={headcountBucket}
+                onChange={(e) => setHeadcountBucket(e.target.value)}
+                className="form-select"
+                required
+              >
+                <option value="">Select...</option>
+                {headcountBuckets.map(bucket => (
+                  <option key={bucket} value={bucket}>{bucket}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {error && (
+            <div className="form-error">
+              {error}
+            </div>
+          )}
+
+          <button 
+            type="submit" 
+            className="btn-save-connect"
+            disabled={saving}
+          >
+            {saving ? 'Saving...' : 'Save & Connect'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Business Info Context Provider
+const BusinessInfoContext = React.createContext();
+
+const BusinessInfoProvider = ({ children }) => {
+  const [businessInfo, setBusinessInfo] = useState(null);
+  const [hasBusinessInfo, setHasBusinessInfo] = useState(false);
+
+  useEffect(() => {
+    // Check for stored business info on app load
+    const storedInfo = localStorage.getItem('business_info');
+    const businessSessionId = localStorage.getItem('business_session_id');
+    
+    if (storedInfo && businessSessionId) {
+      try {
+        const parsedInfo = JSON.parse(storedInfo);
+        setBusinessInfo({
+          ...parsedInfo,
+          business_session_id: businessSessionId
+        });
+        setHasBusinessInfo(true);
+      } catch (error) {
+        console.error('Failed to parse stored business info:', error);
+        // Clear invalid data
+        localStorage.removeItem('business_info');
+        localStorage.removeItem('business_session_id');
+      }
+    }
+  }, []);
+
+  const saveBusinessInfo = (info) => {
+    setBusinessInfo(info);
+    setHasBusinessInfo(true);
+  };
+
+  const clearBusinessInfo = () => {
+    setBusinessInfo(null);
+    setHasBusinessInfo(false);
+    localStorage.removeItem('business_info');
+    localStorage.removeItem('business_session_id');
+  };
+
+  return (
+    <BusinessInfoContext.Provider value={{
+      businessInfo,
+      hasBusinessInfo,
+      saveBusinessInfo,
+      clearBusinessInfo
+    }}>
+      {children}
+    </BusinessInfoContext.Provider>
+  );
+};
+
+const useBusinessInfo = () => {
+  const context = React.useContext(BusinessInfoContext);
+  if (!context) {
+    throw new Error('useBusinessInfo must be used within BusinessInfoProvider');
+  }
+  return context;
+};
 const BusinessInputForm = ({ onSubmit, initialData }) => {
   const [revenue, setRevenue] = useState(initialData?.revenue_range || '');
   const [employees, setEmployees] = useState(initialData?.employee_range || '');
