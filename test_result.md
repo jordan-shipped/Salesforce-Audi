@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Complete the integration of the PreAuditModal component into the App.js and the OAuth flow. The OAuthCallback component needs to be updated to check for existing businessInfo in the session and redirect to the PreAuditModal if it's missing. Ensure existing 'New Audit' or 'Quick/Custom' paths auto-prefill inputs from the session context."
+user_problem_statement: "Remove the dashboard‐level business info form and wire 'New Audit' → onboarding flow. Clean up dashboard to remove duplicate business input form and ensure 'New Audit' button opens OrgProfileModal directly without showing picklists again."
 
 backend:
   - task: "Complete BusinessInfoRequest model and validation constants"
