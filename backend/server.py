@@ -116,6 +116,22 @@ class AuditFinding(BaseModel):
     affected_objects: List[str]
     salesforce_data: Optional[Dict[str, Any]] = None
 
+# Business Info Request Model for PreAudit Modal
+class BusinessInfoRequest(BaseModel):
+    revenue_bucket: str
+    headcount_bucket: str
+
+# Valid picklist options for business info
+VALID_REVENUE_BUCKETS = [
+    "Under $100K", "$100K – $250K", "$250K – $500K", "$500K – $1M", 
+    "$1M – $3M", "$3M – $10M", "$10M – $30M", "$30M+"
+]
+
+VALID_HEADCOUNT_BUCKETS = [
+    "Just me, no revenue", "Just me, some revenue", "Me & vendors",
+    "2 – 4", "5 – 9", "10 – 19", "20 – 49", "50 – 99", "100 – 249", "250 – 500"
+]
+
 # Alex Hormozi Stage 0-9 Benchmarking System
 def convert_picklist_to_numeric(business_inputs):
     """
