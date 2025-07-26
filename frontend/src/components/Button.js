@@ -150,4 +150,11 @@ const Button = ({
   );
 };
 
+// Export additional variants as named exports
+export const ButtonPrimary = (props) => <Button variant="primary" {...props} />;
+export const ButtonSecondary = (props) => <Button variant="secondary" {...props} />;
+export const ButtonOutline = (props) => <Button variant="outline" {...props} />;
+export const ButtonText = (props) => <Button variant="text" {...props} />;
+export const ButtonGhost = (props) => <Button variant="ghost" {...props} />;
+
 export default Button;
