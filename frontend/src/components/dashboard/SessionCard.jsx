@@ -4,11 +4,14 @@ const SessionCard = ({ session, formatCurrency, formatDateTime, onClick }) => {
   const {
     id,
     org_name: orgName,
-    total_findings: findingsCount = 0,
-    total_annual_roi: annualSavings = 0,
+    findings_count: findingsCount = 0,
+    estimated_savings = {},
     created_at: createdAt,
     status = 'completed'
   } = session;
+
+  // Extract annual savings from estimated_savings object
+  const annualSavings = estimated_savings.annual_dollars || 0;
 
   const dateInfo = formatDateTime(createdAt);
   
