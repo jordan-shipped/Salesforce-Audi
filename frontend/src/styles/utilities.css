@@ -93,7 +93,11 @@
 
   /* Typography Components */
   .text-hero {
-    @apply text-hero font-bold text-text-primary font-sf;
+    font-size: 34pt;
+    line-height: 41pt;
+    font-weight: 700;
+    color: #000000;
+    font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
   
   .text-section {
