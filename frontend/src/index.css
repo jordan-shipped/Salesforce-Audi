@@ -15,6 +15,13 @@
   --font-weight-bold: 700;
   
   /* Typography Scale - Apple Standard */
+  --type-h1: 34pt;                   /* Hero/H1 */
+  --type-h2: 28pt;                   /* Section/H2 */
+  --type-h3: 22pt;                   /* Modal Title/H3 */
+  --type-bodyLarge: 17pt;            /* Body Large */
+  --type-bodyRegular: 15pt;          /* Body Regular */
+  --type-caption: 13pt;              /* Caption */
+  
   --font-size-hero: 34pt;        /* H1 / Hero */
   --font-size-section: 28pt;     /* H2 / Section */
   --font-size-modal-title: 22pt; /* H3 / Modal Title */
