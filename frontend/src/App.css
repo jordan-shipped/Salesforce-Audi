@@ -2172,7 +2172,8 @@ body {
 /* Responsive - Stacked on mobile */
 @media (max-width: 768px) {  
   .form-row {
-    grid-template-columns: 1fr; /* Stacked on mobile as specified */
+    grid-template-columns: 1fr; /* Stacked on mobile */
+    gap: 24px; /* Maintain 24px vertical spacing on mobile */
   }
   
   .pre-audit-modal {
@@ -2182,6 +2183,10 @@ body {
   
   .pre-audit-title {
     font-size: 20pt; /* Slightly smaller on mobile but maintain pt units */
+  }
+  
+  .pre-audit-subtitle {
+    font-size: 14pt; /* Slightly smaller subtitle on mobile */
   }
 }
 
