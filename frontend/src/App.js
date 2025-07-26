@@ -1690,7 +1690,7 @@ const AuditResults = () => {
     id: finding.id,
     domain: finding.domain,
     title: finding.title,
-    cost: `$${finding.annual_cost?.toLocaleString() || '0'}/yr`,
+    cost: `$${(finding.total_annual_roi || finding.roi_estimate || 0).toLocaleString()}/yr`,
     priority: finding.impact || 'Medium',
     details: {
       description: finding.description,
