@@ -1778,25 +1778,13 @@ const AuditResults = () => {
       )}
 
       {/* Edit Assumptions Modal */}
-      {showEditAssumptions && (
-        <EditAssumptionsModal
-          isOpen={showEditAssumptions}
-          onClose={() => setShowEditAssumptions(false)}
-          onUpdate={handleUpdateAssumptions}
-          assumptions={auditData?.assumptions}
-        />
-      )}
-    </div>
-  );
-
-      {/* Edit Assumptions Modal */}
       <EditAssumptionsModal
         isOpen={showEditAssumptions}
         onClose={() => setShowEditAssumptions(false)}
-        onSubmit={handleUpdateAssumptions}
-        updating={updating}
+        onUpdate={handleUpdateAssumptions}
+        assumptions={auditData?.assumptions}
       />
-    </main>
+    </div>
   );
 };
 
