@@ -9,7 +9,7 @@ const API = `${BACKEND_URL}/api`;
 // Landing Page Component - Above the Fold, No Scrolling
 const LandingPage = () => {
   const [showPreAuditModal, setShowPreAuditModal] = useState(false);
-  const { hasBusinessInfo } = useBusinessInfo();
+  const { hasBusinessInfo, saveBusinessInfo } = useBusinessInfo();
 
   const handleStartFreeAudit = () => {
     if (!hasBusinessInfo) {
@@ -22,9 +22,11 @@ const LandingPage = () => {
 
   const handleBusinessInfoSubmit = (businessInfo) => {
     console.log('Business info submitted:', businessInfo);
+    
+    // Save to context
+    saveBusinessInfo(businessInfo);
     setShowPreAuditModal(false);
     
-    // Store business info in context
     // Then redirect to OAuth
     window.location.href = `${API}/oauth/authorize`;
   };
