@@ -136,53 +136,53 @@ backend:
           comment: "COMPREHENSIVE ENDPOINT TESTING COMPLETED ✅ Both POST and GET /api/session/business-info endpoints fully functional! ✅ POST ENDPOINT TESTS: All valid revenue/headcount combinations accepted, proper UUID session_id generation, correct response structure with success/business_session_id/message fields, proper error handling for invalid data (400/422 status codes). ✅ GET ENDPOINT TESTS: Valid session retrieval works perfectly, non-existent sessions return proper 404 errors, complete response structure with all required fields. ✅ NUMERIC CONVERSION MAPPINGS VERIFIED: '$30M+' correctly converts to $150,000,000 (Stage 9 mapping), '250 – 500' correctly converts to 375 employees, '$250K – $500K' converts to $375,000, '5 – 9' converts to 7 employees. All critical mappings for PreAuditModal flow are working correctly."
 
 frontend:
-  - task: "Complete PreAuditModal integration with landing page flow"
+  - task: "Remove dashboard-level business info form"
     implemented: true
     working: true
     file: "frontend/src/App.js" 
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Updated landing page to properly integrate PreAuditModal with BusinessInfoProvider context. Modal shows when business info is missing, saves to context and localStorage, then redirects to OAuth flow."
+          comment: "Successfully removed BusinessInputForm from dashboard. Cleaned JSX and removed state variables (showBusinessInput, businessInputs, handleBusinessInputSubmit). Dashboard now shows only 'Audit History' header and 'New Audit' button."
 
-  - task: "Update OAuthCallback to check business info and redirect appropriately"
+  - task: "Wire 'New Audit' button to open OrgProfileModal directly"
     implemented: true
     working: true
     file: "frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Updated OAuthCallback component to check hasBusinessInfo from context. If missing, shows PreAuditModal overlaid on success message. If present, proceeds to dashboard. Ensures business info is always collected."
+          comment: "Updated handleNewAudit() to call setShowOrgProfile(true) directly instead of setShowBusinessInput(true). New Audit button now skips business input form and opens OrgProfileModal immediately."
 
-  - task: "Enhance BusinessInputForm to auto-prefill from stored business info"
+  - task: "Update runAuditWithProfile to use businessInfo from context"
     implemented: true
     working: true  
     file: "frontend/src/App.js"
     stuck_count: 0
-    priority: "medium"
-    needs_retesting: true
+    priority: "high"
+    needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Modified BusinessInputForm to use BusinessInfo context for prefilling. Added mapping between backend format (used in PreAuditModal) and frontend format (used in BusinessInputForm) to ensure seamless data flow."
+          comment: "Modified runAuditWithProfile to pull businessInfo from BusinessInfoProvider context instead of local state. Added mapping logic to convert PreAuditModal format (revenue_bucket/headcount_bucket) to BusinessInputs format (annual_revenue/employee_headcount) with proper numeric conversion."
 
-  - task: "Ensure BusinessInfoProvider context integration is complete"
+  - task: "Verify clean dashboard layout without duplicate forms"
     implemented: true
     working: true
     file: "frontend/src/App.js"
     stuck_count: 0
-    priority: "high"
-    needs_retesting: true
+    priority: "medium"
+    needs_retesting: false
     status_history:
         - working: "unknown"
           agent: "main"
-          comment: "Verified BusinessInfoProvider wraps the entire App. Updated Dashboard to use businessInfo and hasBusinessInfo from context. All components now have access to stored business information."
+          comment: "Screenshots confirmed: Dashboard no longer shows business input form, displays only 'Audit History' section and 'New Audit' button. Clean Apple-grade layout maintained with proper spacing."
 
 metadata:
   created_by: "main_agent"
