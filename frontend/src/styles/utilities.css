@@ -1,0 +1,322 @@
+/* ===============================================
+   Design Token Utilities - Single Source of Truth
+   =============================================== */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Component Base Classes */
+@layer components {
+  /* Button Components */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-lg py-2 
+           text-body-large font-medium text-text-on-primary 
+           bg-accent rounded-sm shadow-default
+           transition-all duration-fast ease-apple
+           hover:shadow-elevated hover:-translate-y-px
+           focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2
+           disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-lg py-2 
+           text-body-large font-regular text-text-primary 
+           bg-background-light border border-border-subtle rounded-sm
+           transition-all duration-fast ease-apple
+           hover:bg-background-page
+           focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2
+           disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  
+  .btn-text {
+    @apply inline-flex items-center justify-center gap-2 p-2 
+           text-body-regular font-regular text-text-grey-600 
+           bg-transparent rounded-sm
+           transition-all duration-fast ease-apple
+           hover:bg-background-light
+           focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2
+           disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  /* Card Components */
+  .card {
+    @apply bg-background-card border border-border-subtle rounded-md p-md
+           shadow-subtle transition-shadow duration-fast ease-apple;
+  }
+  
+  .card-hover {
+    @apply card hover:shadow-hover hover:-translate-y-px cursor-pointer;
+  }
+  
+  .card-elevated {
+    @apply card shadow-elevated;
+  }
+
+  /* Input Components */
+  .input {
+    @apply w-full h-11 px-2 text-body-regular text-text-primary
+           bg-background-light border border-border-subtle rounded-sm
+           placeholder:text-text-grey-300
+           focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent
+           disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  
+  .input-label {
+    @apply block text-caption font-semibold text-text-grey-300 
+           uppercase tracking-wide mb-1;
+  }
+
+  /* Modal Components */
+  .modal-overlay {
+    @apply fixed inset-0 bg-white bg-opacity-85 backdrop-blur-md
+           flex items-center justify-center z-modal;
+  }
+  
+  .modal {
+    @apply bg-background-card rounded-md shadow-modal
+           w-11/12 max-w-lg p-lg relative
+           animate-in slide-in-from-bottom-4 fade-in-0 duration-normal;
+  }
+  
+  .modal-title {
+    @apply text-modal-title font-semibold text-text-primary 
+           text-center mb-2;
+  }
+  
+  .modal-close {
+    @apply absolute top-md right-md w-11 h-11 
+           flex items-center justify-center text-text-grey-300
+           bg-transparent border-0 rounded-full cursor-pointer
+           hover:bg-background-light transition-colors duration-fast;
+  }
+
+  /* Typography Components */
+  .text-hero {
+    @apply text-hero font-bold text-text-primary font-sf;
+  }
+  
+  .text-section {
+    @apply text-section font-semibold text-text-primary font-sf;
+  }
+  
+  .text-body-large {
+    @apply text-body-large font-regular text-text-primary font-sf;
+  }
+  
+  .text-body-regular {
+    @apply text-body-regular font-regular text-text-primary font-sf;
+  }
+  
+  .text-caption {
+    @apply text-caption font-regular text-text-grey-600 font-sf;
+  }
+  
+  .text-secondary {
+    @apply text-text-grey-600;
+  }
+  
+  .text-tertiary {
+    @apply text-text-grey-300;
+  }
+  
+  .text-accent {
+    @apply text-accent;
+  }
+
+  /* Layout Components */
+  .container-page {
+    @apply max-w-5xl mx-auto px-lg;
+  }
+  
+  .section-spacing {
+    @apply py-12;
+  }
+  
+  .content-spacing {
+    @apply space-y-6;
+  }
+
+  /* Stage Summary Panel */
+  .stage-panel {
+    @apply bg-background-card border border-border-subtle rounded-md 
+           p-lg mb-8;
+  }
+  
+  .stage-header {
+    @apply text-center mb-lg;
+  }
+  
+  .stage-tag {
+    @apply inline-block text-caption font-semibold text-accent 
+           mb-2 uppercase tracking-wide;
+  }
+  
+  .stage-title {
+    @apply text-h1 font-semibold text-text-black m-0;
+  }
+  
+  .stage-role {
+    @apply text-body font-regular text-text-grey-600 block my-2;
+  }
+  
+  .stage-motto {
+    @apply text-body font-regular text-text-grey-600 italic mt-1 mb-0;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    @apply flex justify-evenly gap-4 my-lg;
+  }
+  
+  .stat-card {
+    @apply bg-background-card border border-border-subtle rounded-md 
+           p-4 text-center flex-1 min-w-0;
+  }
+  
+  .stat-label {
+    @apply text-caption font-semibold text-text-grey-300 
+           mb-1 uppercase tracking-wide;
+  }
+  
+  .stat-value {
+    @apply text-h2 font-medium text-text-black;
+  }
+
+  /* Accordion Card */
+  .accordion-card {
+    @apply bg-background-card border border-border-subtle rounded-md 
+           p-4 transition-shadow duration-fast ease-apple
+           hover:shadow-hover;
+  }
+  
+  .accordion-header {
+    @apply flex justify-between items-center cursor-pointer 
+           rounded-sm p-2 -m-2 focus:outline-none focus:ring-2 focus:ring-accent;
+  }
+  
+  .accordion-header-left {
+    @apply flex items-center gap-3 flex-1 min-w-0;
+  }
+  
+  .accordion-header-right {
+    @apply flex items-center gap-2;
+  }
+  
+  .domain-badge {
+    @apply inline-flex items-center px-2 py-1 text-caption font-medium
+           bg-accent-30 text-accent rounded-sm;
+  }
+  
+  .priority-pill {
+    @apply inline-flex items-center px-2 py-1 text-caption font-semibold
+           rounded-sm uppercase tracking-wide;
+  }
+  
+  .priority-high {
+    @apply priority-pill bg-red-100 text-red-800;
+  }
+  
+  .priority-medium {
+    @apply priority-pill bg-yellow-100 text-yellow-800;
+  }
+  
+  .priority-low {
+    @apply priority-pill bg-green-100 text-green-800;
+  }
+
+  /* Filters */
+  .filters-bar {
+    @apply flex gap-8 mb-8 items-end;
+  }
+  
+  .filter-group {
+    @apply max-w-xs;
+  }
+
+  /* Landing Page */
+  .hero-section {
+    @apply text-center py-16 px-lg;
+  }
+  
+  .hero-title {
+    @apply text-hero font-bold text-text-primary mb-4;
+  }
+  
+  .hero-subtitle {
+    @apply text-section font-semibold mb-6;
+  }
+  
+  .hero-copy {
+    @apply text-body-large text-text-grey-600 max-w-2xl mx-auto 
+           leading-relaxed mb-8;
+  }
+  
+  .features-grid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-8 py-12;
+  }
+  
+  .feature-card {
+    @apply card text-center p-lg;
+  }
+  
+  .feature-icon {
+    @apply w-12 h-12 text-accent mx-auto mb-4;
+  }
+  
+  .feature-title {
+    @apply text-body-large font-semibold text-text-primary mb-2;
+  }
+  
+  .feature-description {
+    @apply text-body-regular text-text-grey-600;
+  }
+
+  /* Utility Classes */
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent to-blue-500 bg-clip-text text-transparent;
+  }
+  
+  .divider {
+    @apply border-t border-border-subtle my-lg;
+  }
+  
+  .visually-hidden {
+    @apply sr-only;
+  }
+}
+
+/* Global Font Setup */
+@layer base {
+  body {
+    @apply font-sf text-text-primary bg-background antialiased;
+  }
+  
+  h1 {
+    @apply text-hero font-bold text-text-primary;
+  }
+  
+  h2 {
+    @apply text-section font-semibold text-text-primary;
+  }
+  
+  h3 {
+    @apply text-modal-title font-semibold text-text-primary;
+  }
+  
+  p {
+    @apply text-body-regular text-text-primary;
+  }
+  
+  .text-primary {
+    @apply text-text-primary;
+  }
+  
+  .text-secondary {
+    @apply text-text-grey-600;
+  }
+  
+  .text-tertiary {
+    @apply text-text-grey-300;
+  }
+}
