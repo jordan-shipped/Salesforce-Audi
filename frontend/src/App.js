@@ -750,7 +750,7 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-        {/* Header with only title and close button */}
+        {/* Clean Header - No Session ID */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Org Profile</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
@@ -759,36 +759,56 @@ const OrgProfileModal = ({ isOpen, onClose, onSubmit, sessionId }) => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Simplified Radio Group with Info Icons */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <div className="space-y-3">
-              <label className="flex items-center group cursor-pointer">
-                <input
-                  type="radio"
-                  checked={useQuickEstimate}
-                  onChange={() => setUseQuickEstimate(true)}
-                  className="mr-3"
-                />
-                <span className="font-medium">Quick Estimate</span>
-                <div className="relative ml-2">
-                  <span className="info-icon group-hover:text-blue-600" title="Uses U.S. national averages">ⓘ</span>
-                  <div className="info-tooltip">Uses U.S. national averages</div>
-                </div>
+          {/* Apple-Grade Radio Group - Light, Airy, Minimal */}
+          <div className="radio-group-apple">
+            <div 
+              className="radio-row-apple"
+              onClick={() => setUseQuickEstimate(true)}
+            >
+              <input
+                type="radio"
+                className="radio-input-apple"
+                checked={useQuickEstimate}
+                onChange={() => setUseQuickEstimate(true)}
+                id="quick-estimate"
+              />
+              <label htmlFor="quick-estimate" className="radio-label-apple">
+                Quick Estimate
               </label>
-              
-              <label className="flex items-center group cursor-pointer">
-                <input
-                  type="radio"
-                  checked={!useQuickEstimate}
-                  onChange={() => setUseQuickEstimate(false)}
-                  className="mr-3"
-                />
-                <span className="font-medium">Custom Estimate</span>
-                <div className="relative ml-2">
-                  <span className="info-icon group-hover:text-blue-600" title="Enter your team's salaries">ⓘ</span>
-                  <div className="info-tooltip">Enter your team's salaries</div>
-                </div>
+              <span 
+                className="info-icon" 
+                aria-label="Uses U.S. national averages"
+                role="button"
+                tabIndex="0"
+              >
+                ○
+                <div className="info-tooltip">Uses U.S. national averages</div>
+              </span>
+            </div>
+            
+            <div 
+              className="radio-row-apple"
+              onClick={() => setUseQuickEstimate(false)}
+            >
+              <input
+                type="radio"
+                className="radio-input-apple"
+                checked={!useQuickEstimate}
+                onChange={() => setUseQuickEstimate(false)}
+                id="custom-estimate"
+              />
+              <label htmlFor="custom-estimate" className="radio-label-apple">
+                Custom Estimate
               </label>
+              <span 
+                className="info-icon" 
+                aria-label="Enter your team's salaries"
+                role="button"
+                tabIndex="0"
+              >
+                ○
+                <div className="info-tooltip">Enter your team's salaries</div>
+              </span>
             </div>
           </div>
 
