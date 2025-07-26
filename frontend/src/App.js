@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Link, useNavigate, useParams } from 'reac
 import { Bolt, ChartPie, FileText, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 import './App.css';
+import { ButtonPrimary, ButtonOutline, ButtonText } from './components/Button';
+import Card from './components/Card';
 import { 
   StageSummaryPanel as NewStageSummaryPanel, 
   AccordionCard, 
