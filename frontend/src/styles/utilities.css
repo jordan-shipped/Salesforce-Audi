@@ -101,19 +101,35 @@
   }
   
   .text-section {
-    @apply text-section font-semibold text-text-primary font-sf;
+    font-size: 28pt;
+    line-height: 34pt;
+    font-weight: 600;
+    color: #000000;
+    font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
   
   .text-body-large {
-    @apply text-body-large font-regular text-text-primary font-sf;
+    font-size: 17pt;
+    line-height: 22pt;
+    font-weight: 400;
+    color: #000000;
+    font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
   
   .text-body-regular {
-    @apply text-body-regular font-regular text-text-primary font-sf;
+    font-size: 15pt;
+    line-height: 20pt;
+    font-weight: 400;
+    color: #000000;
+    font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
   
   .text-caption {
-    @apply text-caption font-regular text-text-grey-600 font-sf;
+    font-size: 13pt;
+    line-height: 18pt;
+    font-weight: 400;
+    color: #000000;
+    font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
   
   .text-secondary {
