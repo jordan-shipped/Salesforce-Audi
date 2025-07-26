@@ -1954,6 +1954,356 @@ body {
 }
 
 /* ====== PRE-AUDIT MODAL - APPLE-GRADE STYLING ====== */
+/* ====== APPLE-GRADE AUDIT RESULTS COMPONENTS ====== */
+
+/* PageContainer Layout */
+.PageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  background: var(--color-surface-light);
+  min-height: 100vh;
+}
+
+/* Header */
+.Header {
+  height: 64px;
+  padding: 0 var(--space-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  margin: calc(-1 * var(--space-lg)) calc(-1 * var(--space-lg)) var(--space-lg);
+}
+
+.HeaderActions {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+/* StageSummaryPanel */
+.StageSummaryPanel {
+  background: var(--color-surface-extra-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-default);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+}
+
+.StageHeader {
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.StageTag {
+  display: inline-block;
+  font-family: var(--font-family);
+  font-size: var(--type-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-blue);
+  margin-bottom: var(--space-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.StageTitle {
+  font-family: var(--font-family);
+  font-size: var(--type-h2);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  color: var(--color-text-primary);
+  line-height: var(--line-height-section);
+}
+
+.StageRole {
+  font-family: var(--font-family);
+  font-size: var(--type-bodySmall);
+  color: var(--color-text-secondary);
+  display: block;
+  margin: var(--space-xs) 0;
+}
+
+.StageMotto {
+  font-family: var(--font-family);
+  font-size: var(--type-bodySmall);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 0;
+}
+
+.StageStats {
+  display: flex;
+  justify-content: space-evenly;
+  margin: var(--space-md) 0;
+  gap: var(--space-sm);
+}
+
+.StatCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  box-shadow: var(--shadow-subtle);
+  flex: 1;
+  min-width: 120px;
+}
+
+.StatLabel {
+  font-family: var(--font-family);
+  font-size: var(--type-caption);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.StatValue {
+  font-family: var(--font-family);
+  font-size: var(--type-bodyLarge);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.StageDetails {
+  display: flex;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.StageDetailsSection {
+  flex: 1;
+}
+
+.StageDetails h3 {
+  font-family: var(--font-family);
+  font-size: var(--type-bodyMedium);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-xs) 0;
+  color: var(--color-text-primary);
+}
+
+.StageDetails ul {
+  list-style: disc inside;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: var(--type-bodyRegular);
+}
+
+.StageDetails li {
+  margin-bottom: var(--space-xs);
+}
+
+/* FiltersBar */
+.FiltersBar {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  align-items: end;
+}
+
+.FilterSelect {
+  min-width: 160px;
+}
+
+/* FindingsGrid */
+.FindingsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 600px) {
+  .FindingsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 900px) {
+  .FindingsGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* AccordionCard */
+.AccordionCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-subtle);
+  padding: var(--space-md);
+  transition: all var(--transition-fast);
+}
+
+.AccordionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.AccordionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs);
+  margin: calc(-1 * var(--space-xs));
+}
+
+.AccordionHeader:focus {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.AccordionHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+  min-width: 0; /* Prevent text overflow */
+}
+
+.AccordionHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.DomainBadge {
+  font-family: var(--font-family);
+  font-size: var(--type-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-on-primary);
+  background: var(--color-primary-blue);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.Title {
+  font-family: var(--font-family);
+  font-size: var(--type-bodyRegular);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.Cost {
+  font-family: var(--font-family);
+  font-size: var(--type-bodyRegular);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-blue);
+  white-space: nowrap;
+}
+
+.PriorityPill {
+  font-family: var(--font-family);
+  font-size: var(--type-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-on-secondary);
+  background: var(--color-priority-medium);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.ExpandIcon {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+  margin-left: var(--space-xs);
+}
+
+.AccordionContent {
+  margin-top: var(--space-sm);
+  font-family: var(--font-family);
+  font-size: var(--type-caption);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.AccordionContent p {
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.AccordionContent h4 {
+  font-family: var(--font-family);
+  font-size: var(--type-bodyRegular);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin: var(--space-sm) 0 var(--space-xs) 0;
+}
+
+.DetailsBreakdown ul,
+.AccordionContent ul {
+  margin: 0;
+  padding-left: var(--space-md);
+}
+
+.DetailsBreakdown li,
+.AccordionContent li {
+  margin-bottom: var(--space-xs);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .PageContainer {
+    padding: var(--space-md);
+  }
+  
+  .Header {
+    height: auto;
+    padding: var(--space-md);
+    flex-direction: column;
+    gap: var(--space-md);
+    align-items: stretch;
+  }
+  
+  .HeaderActions {
+    justify-content: center;
+  }
+  
+  .StageStats {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .StageDetails {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+  
+  .FiltersBar {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .FilterSelect {
+    min-width: auto;
+  }
+  
+  .AccordionHeaderLeft {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+  
+  .AccordionHeaderRight {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-xs);
+  }
+}
+
 /* ====== APPLE-GRADE LANDING PAGE ====== */
 
 /* Layout & Spacing */
