@@ -982,7 +982,8 @@ const Dashboard = () => {
       handleConnect();
       return;
     }
-    setShowBusinessInput(true);
+    // Skip business input form, go directly to OrgProfileModal
+    setShowOrgProfile(true);
   };
 
   const handleBusinessInputSubmit = (inputs) => {
