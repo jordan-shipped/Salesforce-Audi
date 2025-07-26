@@ -41,46 +41,44 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="LandingPageWrapper">
-      <div className="LandingPageContent">
+    <div className="bg-background-page min-h-screen">
+      <div className="container-page">
         {/* Hero Section */}
-        <section className="HeroSection">
-          <div className="HeroContent">
-            <h1 className="HeroTitle">Optimize Your Salesforce</h1>
-            <h2 className="HeroSubtitle">
-              <span className="PrimaryGradientText">Like Never Before</span>
-            </h2>
-            <p className="HeroCopy">
-              Discover hidden inefficiencies, automate manual processes, and unlock 
-              substantial cost savings with our AI-powered Salesforce audit tool.
-            </p>
-            <button 
-              onClick={handleStartFreeAudit} 
-              className="HeroCTA apple-btn-primary"
-            >
-              Start Free Audit
-            </button>
-          </div>
+        <section className="hero-section">
+          <h1 className="hero-title">Optimize Your Salesforce</h1>
+          <h2 className="hero-subtitle">
+            <span className="gradient-text">Like Never Before</span>
+          </h2>
+          <p className="hero-copy">
+            Discover hidden inefficiencies, automate manual processes, and unlock 
+            substantial cost savings with our AI-powered Salesforce audit tool.
+          </p>
+          <button 
+            onClick={handleStartFreeAudit} 
+            className="btn-primary"
+          >
+            Start Free Audit
+          </button>
         </section>
 
         {/* Features Grid */}
-        <div className="FeaturesGrid">
-          <div className="apple-card FeatureCard">
-            <Bolt className="FeatureIcon" />
-            <h3 className="FeatureTitle">Instant Analysis</h3>
-            <p className="FeatureDescription">Complete Salesforce audit in under 60 seconds. No setup, no waiting.</p>
+        <div className="features-grid">
+          <div className="feature-card">
+            <Bolt className="feature-icon" />
+            <h3 className="feature-title">Instant Analysis</h3>
+            <p className="feature-description">Complete Salesforce audit in under 60 seconds. No setup, no waiting.</p>
           </div>
           
-          <div className="apple-card FeatureCard">
-            <ChartPie className="FeatureIcon" />
-            <h3 className="FeatureTitle">Smart Insights</h3>
-            <p className="FeatureDescription">AI-powered recommendations tailored to your business size and industry.</p>
+          <div className="feature-card">
+            <ChartPie className="feature-icon" />
+            <h3 className="feature-title">Smart Insights</h3>
+            <p className="feature-description">AI-powered recommendations tailored to your business size and industry.</p>
           </div>
           
-          <div className="apple-card FeatureCard">
-            <FileText className="FeatureIcon" />
-            <h3 className="FeatureTitle">Actionable Reports</h3>
-            <p className="FeatureDescription">Professional PDF reports with prioritized recommendations and guidance.</p>
+          <div className="feature-card">
+            <FileText className="feature-icon" />
+            <h3 className="feature-title">Actionable Reports</h3>
+            <p className="feature-description">Professional PDF reports with prioritized recommendations and guidance.</p>
           </div>
         </div>
       </div>
