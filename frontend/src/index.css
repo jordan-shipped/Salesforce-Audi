@@ -65,13 +65,15 @@
   --color-focus: #007AFF;
   --color-error-red: #FF3B30;
   
-  /* Spacing Scale - 4px Base Unit */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-xxl: 48px;
+  /* Spacing Scale - 8px Grid System */
+  --space-4: 4px;    /* quarter unit */
+  --space-8: 8px;    /* base unit */
+  --space-12: 12px;  /* 1.5 units */
+  --space-16: 16px;  /* 2 units - card padding */
+  --space-24: 24px;  /* 3 units - global gutter */
+  --space-32: 32px;  /* 4 units - section spacing */
+  --space-40: 40px;  /* 5 units */
+  --space-48: 48px;  /* 6 units */
   
   /* Border Radius - Apple Consistency */
   --radius-sm: 8px;    /* buttons & inputs */
