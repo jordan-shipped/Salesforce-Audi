@@ -2171,11 +2171,11 @@ body {
   
   .pre-audit-modal {
     width: 95%;
-    padding: 24px;
+    padding: 24px; /* Keep consistent padding */
   }
   
   .pre-audit-title {
-    font-size: 28px;
+    font-size: 20pt; /* Slightly smaller on mobile but maintain pt units */
   }
 }
 
