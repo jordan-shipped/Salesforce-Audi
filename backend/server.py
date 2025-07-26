@@ -2130,7 +2130,108 @@ async def salesforce_oauth_callback(request: Request, code: str = Query(...), st
         logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"OAuth callback failed: {str(e)}")
 
-@api_router.post("/business/stage")
+# Business Info Session Storage Model
+class BusinessInfoRequest(BaseModel):
+    revenue_bucket: str
+    headcount_bucket: str
+
+# Validate business info buckets
+VALID_REVENUE_BUCKETS = [
+    "Under $100K", "$100K – $250K", "$250K – $500K", "$500K – $1M", 
+    "$1M – $3M", "$3M – $10M", "$10M – $30M", "$30M+"
+]
+
+VALID_HEADCOUNT_BUCKETS = [
+    "Just me, no revenue", "Just me, some revenue", "Me & vendors",
+    "2 – 4", "5 – 9", "10 – 19", "20 – 49", "50 – 99", "100 – 249", "250 – 500"
+]
+
+@api_router.post("/session/business-info")
+async def save_business_info(business_info: BusinessInfoRequest):
+    """Save business information to session for audit personalization"""
+    try:
+        # Validate revenue bucket
+        if business_info.revenue_bucket not in VALID_REVENUE_BUCKETS:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Invalid revenue bucket. Must be one of: {', '.join(VALID_REVENUE_BUCKETS)}"
+            )
+        
+        # Validate headcount bucket
+        if business_info.headcount_bucket not in VALID_HEADCOUNT_BUCKETS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid headcount bucket. Must be one of: {', '.join(VALID_HEADCOUNT_BUCKETS)}"
+            )
+        
+        # Generate session ID for business info storage
+        business_session_id = str(uuid.uuid4())
+        
+        # Convert to numeric values for internal use
+        revenue_mapping = {
+            "Under $100K": 50000, "$100K – $250K": 175000, "$250K – $500K": 375000,
+            "$500K – $1M": 750000, "$1M – $3M": 2000000, "$3M – $10M": 6500000,
+            "$10M – $30M": 20000000, "$30M+": 150000000
+        }
+        
+        headcount_mapping = {
+            "Just me, no revenue": 0, "Just me, some revenue": 1, "Me & vendors": 2,
+            "2 – 4": 3, "5 – 9": 7, "10 – 19": 15, "20 – 49": 35,
+            "50 – 99": 75, "100 – 249": 175, "250 – 500": 375
+        }
+        
+        # Store business info session
+        business_session_data = {
+            "id": business_session_id,
+            "revenue_bucket": business_info.revenue_bucket,
+            "headcount_bucket": business_info.headcount_bucket,
+            "annual_revenue": revenue_mapping[business_info.revenue_bucket],
+            "employee_headcount": headcount_mapping[business_info.headcount_bucket],
+            "created_at": datetime.utcnow(),
+            "expires_at": datetime.utcnow() + timedelta(hours=24)  # 24 hour session
+        }
+        
+        await db.business_sessions.insert_one(business_session_data)
+        
+        logger.info(f"Saved business info session: {business_session_id}")
+        
+        return {
+            "success": True,
+            "business_session_id": business_session_id,
+            "message": "Business information saved successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving business info: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save business information")
+
+@api_router.get("/session/business-info/{session_id}")
+async def get_business_info(session_id: str):
+    """Retrieve business information from session"""
+    try:
+        business_session = await db.business_sessions.find_one({
+            "id": session_id,
+            "expires_at": {"$gt": datetime.utcnow()}
+        })
+        
+        if not business_session:
+            raise HTTPException(status_code=404, detail="Business session not found or expired")
+        
+        return {
+            "business_session_id": session_id,
+            "revenue_bucket": business_session["revenue_bucket"],
+            "headcount_bucket": business_session["headcount_bucket"],
+            "annual_revenue": business_session["annual_revenue"],
+            "employee_headcount": business_session["employee_headcount"]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving business info: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve business information")
 async def get_business_stage(business_inputs: BusinessInputs):
     """Get business stage information based on revenue and headcount (supports both numeric and picklist inputs)"""
     try:
