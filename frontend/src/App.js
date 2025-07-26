@@ -412,7 +412,7 @@ const PreAuditModal = ({ isOpen, onClose, onSubmit }) => {
     <div className="modal-overlay">
       <div className="pre-audit-modal">
         {/* Close button */}
-        <button className="modal-close" onClick={onClose}>×</button>
+        <button className="modal-close" onClick={onClose}>⊗</button>
         
         {/* Header */}
         <div className="pre-audit-header">
