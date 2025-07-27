@@ -11,27 +11,32 @@ const MetricCard = ({ label, value, accent = false }) => {
   return (
     <div style={{
       backgroundColor: accent ? '#007AFF' : 'white',
-      color: accent ? 'white' : '#000',
-      padding: '1.5rem',
-      borderRadius: '12px',
+      color: accent ? 'white' : '#1a1a1a',
+      padding: '2rem 1.5rem',
+      borderRadius: '16px',
       textAlign: 'center',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      border: '1px solid #f0f0f0'
+      boxShadow: accent ? '0 8px 32px rgba(0, 122, 255, 0.15)' : '0 2px 16px rgba(0, 0, 0, 0.04)',
+      border: accent ? 'none' : '1px solid rgba(0, 0, 0, 0.06)',
+      transition: 'all 0.2s ease',
+      cursor: 'default'
     }}>
       <div style={{
-        fontSize: '2rem',
-        fontWeight: '600',
-        marginBottom: '0.5rem',
-        color: accent ? 'white' : '#000'
+        fontSize: '2.5rem',
+        fontWeight: '700',
+        lineHeight: '1.1',
+        marginBottom: '0.75rem',
+        color: accent ? 'white' : '#1a1a1a',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
       }}>
         {value}
       </div>
       <div style={{
-        fontSize: '0.875rem',
-        fontWeight: '500',
+        fontSize: '0.8125rem',
+        fontWeight: '600',
         textTransform: 'uppercase',
-        letterSpacing: '0.5px',
-        color: accent ? 'rgba(255,255,255,0.8)' : '#666'
+        letterSpacing: '0.05em',
+        color: accent ? 'rgba(255,255,255,0.85)' : '#8E8E93',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
       }}>
         {label}
       </div>
@@ -49,46 +54,58 @@ const BusinessContext = ({ businessStage }) => {
   return (
     <div style={{
       backgroundColor: 'white',
-      padding: '1.5rem',
-      borderRadius: '12px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      border: '1px solid #f0f0f0',
-      marginBottom: '1.5rem'
+      padding: '2rem',
+      borderRadius: '16px',
+      boxShadow: '0 2px 16px rgba(0, 0, 0, 0.04)',
+      border: '1px solid rgba(0, 0, 0, 0.06)',
+      marginBottom: '2rem'
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr 1fr', 
+        gap: '2rem',
+        alignItems: 'start'
+      }}>
         <div>
           <div style={{
-            fontSize: '0.75rem',
-            fontWeight: '600',
+            fontSize: '0.6875rem',
+            fontWeight: '700',
             textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            color: '#666',
-            marginBottom: '0.25rem'
+            letterSpacing: '0.08em',
+            color: '#8E8E93',
+            marginBottom: '0.5rem',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
           }}>
             Business Stage
           </div>
           <div style={{
-            fontSize: '1.125rem',
-            fontWeight: '600',
-            color: '#000'
+            fontSize: '1.375rem',
+            fontWeight: '700',
+            color: '#1a1a1a',
+            lineHeight: '1.3',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
             {stageName} (Stage {stageNumber})
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
           <div style={{
-            fontSize: '0.75rem',
-            fontWeight: '600',
+            fontSize: '0.6875rem',
+            fontWeight: '700',
             textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            color: '#666',
-            marginBottom: '0.25rem'
+            letterSpacing: '0.08em',
+            color: '#8E8E93',
+            marginBottom: '0.5rem',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
           }}>
             Key Focus
           </div>
           <div style={{
-            fontSize: '1.125rem',
-            color: '#000'
+            fontSize: '1.1875rem',
+            fontWeight: '500',
+            color: '#1a1a1a',
+            lineHeight: '1.4',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
             "{keyFocus}"
           </div>
@@ -103,7 +120,6 @@ const StrategicOverview = ({ businessStage }) => {
 
   const constraints = businessStage.constraints_and_actions || [];
   
-  // Split constraints into actual constraints and next steps
   const constraintItems = constraints.filter(item => 
     item.toLowerCase().includes('constraint') || 
     item.toLowerCase().includes('limit') ||
@@ -122,42 +138,61 @@ const StrategicOverview = ({ businessStage }) => {
   return (
     <div style={{
       backgroundColor: 'white',
-      padding: '1.5rem',
-      borderRadius: '12px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      border: '1px solid #f0f0f0',
-      marginBottom: '1.5rem'
+      padding: '2rem',
+      borderRadius: '16px',
+      boxShadow: '0 2px 16px rgba(0, 0, 0, 0.04)',
+      border: '1px solid rgba(0, 0, 0, 0.06)',
+      marginBottom: '2.5rem'
     }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
         <div>
           <h3 style={{
-            fontSize: '1.25rem',
-            fontWeight: '600',
-            color: '#000',
-            marginBottom: '1rem',
-            margin: '0 0 1rem 0'
+            fontSize: '1.375rem',
+            fontWeight: '700',
+            color: '#1a1a1a',
+            marginBottom: '1.5rem',
+            margin: '0 0 1.5rem 0',
+            lineHeight: '1.3',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
             Constraints
           </h3>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {constraintItems.length > 0 ? (
               constraintItems.map((constraint, index) => (
                 <div key={index} style={{
-                  fontSize: '1rem',
-                  color: '#666',
-                  lineHeight: '1.5',
-                  marginBottom: '0.5rem'
+                  fontSize: '1.0625rem',
+                  color: '#3C3C43',
+                  lineHeight: '1.6',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+                  display: 'flex',
+                  alignItems: 'flex-start'
                 }}>
-                  • {constraint}
+                  <span style={{ 
+                    color: '#007AFF', 
+                    marginRight: '0.75rem', 
+                    fontWeight: '600',
+                    marginTop: '0.125rem'
+                  }}>•</span>
+                  <span>{constraint}</span>
                 </div>
               ))
             ) : (
               <div style={{
-                fontSize: '1rem',
-                color: '#666',
-                lineHeight: '1.5'
+                fontSize: '1.0625rem',
+                color: '#3C3C43',
+                lineHeight: '1.6',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+                display: 'flex',
+                alignItems: 'flex-start'
               }}>
-                • Focus on sustainable growth while maintaining quality
+                <span style={{ 
+                  color: '#007AFF', 
+                  marginRight: '0.75rem', 
+                  fontWeight: '600',
+                  marginTop: '0.125rem'
+                }}>•</span>
+                <span>Focus on sustainable growth while maintaining quality</span>
               </div>
             )}
           </div>
@@ -165,37 +200,60 @@ const StrategicOverview = ({ businessStage }) => {
         
         <div>
           <h3 style={{
-            fontSize: '1.25rem',
-            fontWeight: '600',
-            color: '#000',
-            marginBottom: '1rem',
-            margin: '0 0 1rem 0'
+            fontSize: '1.375rem',
+            fontWeight: '700',
+            color: '#1a1a1a',
+            marginBottom: '1.5rem',
+            margin: '0 0 1.5rem 0',
+            lineHeight: '1.3',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
             Next Steps
           </h3>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {nextStepItems.length > 0 ? (
               nextStepItems.map((step, index) => (
                 <div key={index} style={{
-                  fontSize: '1rem',
-                  color: '#666',
-                  lineHeight: '1.5',
-                  marginBottom: '0.5rem'
+                  fontSize: '1.0625rem',
+                  color: '#3C3C43',
+                  lineHeight: '1.6',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+                  display: 'flex',
+                  alignItems: 'flex-start'
                 }}>
-                  • {step}
+                  <span style={{ 
+                    color: '#34C759', 
+                    marginRight: '0.75rem', 
+                    fontWeight: '600',
+                    marginTop: '0.125rem'
+                  }}>•</span>
+                  <span>{step}</span>
                 </div>
               ))
             ) : (
               <>
-                <div style={{ fontSize: '1rem', color: '#666', lineHeight: '1.5', marginBottom: '0.5rem' }}>
-                  • Implement high-impact optimizations first
-                </div>
-                <div style={{ fontSize: '1rem', color: '#666', lineHeight: '1.5', marginBottom: '0.5rem' }}>
-                  • Focus on automation to scale efficiently
-                </div>
-                <div style={{ fontSize: '1rem', color: '#666', lineHeight: '1.5' }}>
-                  • Review and clean up unused system components
-                </div>
+                {[
+                  'Implement high-impact optimizations first',
+                  'Focus on automation to scale efficiently', 
+                  'Review and clean up unused system components'
+                ].map((step, index) => (
+                  <div key={index} style={{
+                    fontSize: '1.0625rem',
+                    color: '#3C3C43',
+                    lineHeight: '1.6',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+                    display: 'flex',
+                    alignItems: 'flex-start'
+                  }}>
+                    <span style={{ 
+                      color: '#34C759', 
+                      marginRight: '0.75rem', 
+                      fontWeight: '600',
+                      marginTop: '0.125rem'
+                    }}>•</span>
+                    <span>{step}</span>
+                  </div>
+                ))}
               </>
             )}
           </div>
@@ -242,7 +300,6 @@ const AuditResults = () => {
     try {
       const pdfBlob = await api.generatePDF(sessionId);
       
-      // Create download link
       const url = window.URL.createObjectURL(pdfBlob);
       const a = document.createElement('a');
       a.href = url;
@@ -259,10 +316,30 @@ const AuditResults = () => {
 
   if (loading || auditStatus === 'processing') {
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '12px', textAlign: 'center', maxWidth: '400px' }}>
+      <div style={{ 
+        minHeight: '100vh', 
+        backgroundColor: '#F2F2F7', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        padding: '2rem'
+      }}>
+        <div style={{ 
+          backgroundColor: 'white', 
+          padding: '3rem', 
+          borderRadius: '20px', 
+          textAlign: 'center', 
+          maxWidth: '400px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.06)'
+        }}>
           <LoadingSpinner size="large" message="Processing your audit..." />
-          <p style={{ marginTop: '1rem', color: '#666', fontSize: '0.875rem' }}>
+          <p style={{ 
+            marginTop: '1.5rem', 
+            color: '#8E8E93', 
+            fontSize: '0.9375rem',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+          }}>
             This may take up to 60 seconds. Please don't close this page.
           </p>
         </div>
@@ -272,26 +349,53 @@ const AuditResults = () => {
 
   if (error) {
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '12px', textAlign: 'center', maxWidth: '400px' }}>
+      <div style={{ 
+        minHeight: '100vh', 
+        backgroundColor: '#F2F2F7', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        padding: '2rem'
+      }}>
+        <div style={{ 
+          backgroundColor: 'white', 
+          padding: '3rem', 
+          borderRadius: '20px', 
+          textAlign: 'center', 
+          maxWidth: '400px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.06)'
+        }}>
           <div style={{
             width: '64px',
             height: '64px',
-            backgroundColor: '#fee2e2',
+            backgroundColor: '#FFEBEE',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 1rem auto'
+            margin: '0 auto 1.5rem auto'
           }}>
-            <svg style={{ width: '32px', height: '32px', color: '#dc2626' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg style={{ width: '32px', height: '32px', color: '#F44336' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#000', marginBottom: '0.5rem' }}>
+          <h2 style={{ 
+            fontSize: '1.375rem', 
+            fontWeight: '700', 
+            color: '#1a1a1a', 
+            marginBottom: '0.75rem',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+          }}>
             Error Loading Results
           </h2>
-          <p style={{ color: '#666', marginBottom: '1.5rem' }}>
+          <p style={{ 
+            color: '#8E8E93', 
+            marginBottom: '2rem',
+            fontSize: '1.0625rem',
+            lineHeight: '1.5',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+          }}>
             {error}
           </p>
           <button
@@ -300,11 +404,13 @@ const AuditResults = () => {
               backgroundColor: '#007AFF',
               color: 'white',
               border: 'none',
-              padding: '0.75rem 1.5rem',
-              borderRadius: '8px',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              cursor: 'pointer'
+              padding: '0.875rem 2rem',
+              borderRadius: '12px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+              boxShadow: '0 4px 16px rgba(0, 122, 255, 0.24)'
             }}
           >
             Try Again
@@ -317,22 +423,21 @@ const AuditResults = () => {
   const { summary, findings = [], business_stage: businessStage, session } = auditData || {};
   const orgName = session?.org_name || 'Your Organization';
   
-  // Get metrics for dashboard
   const findingsCount = summary?.total_findings || 0;
   const timeSavings = summary?.total_time_savings_hours || 0;
   const annualROI = summary?.total_annual_roi || 0;
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9f9f9' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#F2F2F7' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem' }}>
         {/* Header */}
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between', 
-          marginBottom: '2rem',
+          marginBottom: '3rem',
           flexWrap: 'wrap',
-          gap: '1rem'
+          gap: '1.5rem'
         }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <button
@@ -343,34 +448,55 @@ const AuditResults = () => {
                 marginRight: '2rem',
                 background: 'none',
                 border: 'none',
-                color: '#666',
+                color: '#8E8E93',
                 cursor: 'pointer',
-                fontSize: '0.875rem'
+                fontSize: '1rem',
+                fontWeight: '500',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+                transition: 'color 0.2s ease'
               }}
+              onMouseOver={(e) => e.target.style.color = '#007AFF'}
+              onMouseOut={(e) => e.target.style.color = '#8E8E93'}
             >
               <ArrowLeft style={{ width: '20px', height: '20px', marginRight: '8px' }} />
               Back
             </button>
             <div>
-              <h1 style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0 0 0.5rem 0', color: '#000' }}>
+              <h1 style={{ 
+                fontSize: '2.25rem', 
+                fontWeight: '800', 
+                margin: '0 0 0.5rem 0', 
+                color: '#1a1a1a',
+                letterSpacing: '-0.01em',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+              }}>
                 Audit Results
               </h1>
-              <p style={{ color: '#666', margin: 0, fontSize: '1.125rem' }}>
+              <p style={{ 
+                color: '#8E8E93', 
+                margin: 0, 
+                fontSize: '1.1875rem',
+                fontWeight: '500',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+              }}>
                 {orgName}
               </p>
             </div>
           </div>
           
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <button style={{
               backgroundColor: 'white',
               color: '#007AFF',
-              border: '1px solid #007AFF',
-              padding: '0.75rem 1.5rem',
-              borderRadius: '8px',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              cursor: 'pointer'
+              border: '1.5px solid #007AFF',
+              padding: '0.875rem 1.75rem',
+              borderRadius: '12px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 8px rgba(0, 122, 255, 0.12)'
             }}>
               Edit Assumptions
             </button>
@@ -380,11 +506,14 @@ const AuditResults = () => {
                 backgroundColor: '#007AFF',
                 color: 'white',
                 border: 'none',
-                padding: '0.75rem 1.5rem',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                cursor: 'pointer'
+                padding: '0.875rem 1.75rem',
+                borderRadius: '12px',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 4px 16px rgba(0, 122, 255, 0.24)'
               }}
             >
               Export PDF
@@ -395,9 +524,9 @@ const AuditResults = () => {
         {/* Metrics Dashboard */}
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-          gap: '1rem', 
-          marginBottom: '1.5rem' 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+          gap: '1.5rem', 
+          marginBottom: '3rem' 
         }}>
           <MetricCard 
             label="Findings" 
@@ -426,27 +555,35 @@ const AuditResults = () => {
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
-            marginBottom: '1rem',
+            marginBottom: '2rem',
             flexWrap: 'wrap',
-            gap: '1rem'
+            gap: '1.5rem'
           }}>
             <h2 style={{
-              fontSize: '1.5rem',
-              fontWeight: '600',
-              color: '#000',
-              margin: 0
+              fontSize: '1.75rem',
+              fontWeight: '800',
+              color: '#1a1a1a',
+              margin: 0,
+              letterSpacing: '-0.01em',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
             }}>
               Detailed Findings
             </h2>
             
             {/* Filters */}
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <select style={{
-                padding: '0.5rem 0.75rem',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
+                padding: '0.75rem 1rem',
+                borderRadius: '10px',
+                border: '1.5px solid rgba(0, 0, 0, 0.1)',
+                fontSize: '0.9375rem',
+                backgroundColor: 'white',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+                fontWeight: '500',
+                color: '#1a1a1a',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                outline: 'none',
+                cursor: 'pointer'
               }}>
                 <option value="">All Domains</option>
                 <option value="data-quality">Data Quality</option>
@@ -456,11 +593,17 @@ const AuditResults = () => {
               </select>
               
               <select style={{
-                padding: '0.5rem 0.75rem',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                fontSize: '0.875rem',
-                backgroundColor: 'white'
+                padding: '0.75rem 1rem',
+                borderRadius: '10px',
+                border: '1.5px solid rgba(0, 0, 0, 0.1)',
+                fontSize: '0.9375rem',
+                backgroundColor: 'white',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+                fontWeight: '500',
+                color: '#1a1a1a',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                outline: 'none',
+                cursor: 'pointer'
               }}>
                 <option value="">All Priorities</option>
                 <option value="high">High</option>
@@ -471,7 +614,7 @@ const AuditResults = () => {
           </div>
 
           {/* Findings List */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {findings.map((finding, index) => (
               <AccordionCard
                 key={finding.id || index}
@@ -488,30 +631,41 @@ const AuditResults = () => {
           {findings.length === 0 && (
             <div style={{
               backgroundColor: 'white',
-              padding: '3rem',
-              borderRadius: '12px',
+              padding: '4rem 2rem',
+              borderRadius: '16px',
               textAlign: 'center',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              border: '1px solid #f0f0f0'
+              boxShadow: '0 2px 16px rgba(0, 0, 0, 0.04)',
+              border: '1px solid rgba(0, 0, 0, 0.06)'
             }}>
               <div style={{
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#f3f4f6',
+                backgroundColor: '#F2F2F7',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 1rem auto'
+                margin: '0 auto 1.5rem auto'
               }}>
-                <svg style={{ width: '32px', height: '32px', color: '#9ca3af' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg style={{ width: '32px', height: '32px', color: '#C7C7CC' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#000', marginBottom: '0.5rem' }}>
+              <h3 style={{ 
+                fontSize: '1.375rem', 
+                fontWeight: '700', 
+                color: '#1a1a1a', 
+                marginBottom: '0.75rem',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+              }}>
                 No findings available
               </h3>
-              <p style={{ color: '#666' }}>
+              <p style={{ 
+                color: '#8E8E93',
+                fontSize: '1.0625rem',
+                lineHeight: '1.5',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+              }}>
                 The audit results are still being processed or no issues were found in your Salesforce org.
               </p>
             </div>
