@@ -94,18 +94,9 @@ const FindingDetails = ({ finding }) => {
         <h4 className="text-body-medium font-semibold text-text-primary mb-md">
           Why This Matters
         </h4>
-        <div className="space-y-sm">
-          {businessImpacts.map((impact, index) => (
-            <div key={index} className="flex items-start">
-              <span className="text-accent font-semibold mr-sm text-caption">
-                {impact.type}:
-              </span>
-              <span className="text-body-regular text-text-grey-600 leading-relaxed">
-                {impact.description}
-              </span>
-            </div>
-          ))}
-        </div>
+        <p className="text-body-regular text-text-grey-600 leading-relaxed">
+          {businessImpactParagraph}
+        </p>
       </div>
 
       {/* Considerations */}
