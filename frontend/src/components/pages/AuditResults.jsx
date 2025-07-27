@@ -79,13 +79,13 @@ const BusinessContext = ({ businessStage }) => {
             Business Stage
           </div>
           <div style={{
-            fontSize: '1.375rem',
-            fontWeight: '700',
+            fontSize: '1.1875rem',
+            fontWeight: '500',
             color: '#1a1a1a',
-            lineHeight: '1.3',
+            lineHeight: '1.4',
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
-            {stageName} (Stage {stageNumber})
+            {stageName}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
