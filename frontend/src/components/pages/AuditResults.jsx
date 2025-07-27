@@ -107,7 +107,7 @@ const BusinessContext = ({ businessStage }) => {
             lineHeight: '1.4',
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
-            "{keyFocus}"
+            {keyFocus}
           </div>
         </div>
       </div>
