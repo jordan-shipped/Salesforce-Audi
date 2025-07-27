@@ -439,13 +439,12 @@ const AuditResults = () => {
           flexWrap: 'wrap',
           gap: '1.5rem'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <button
               onClick={() => navigate('/dashboard')}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                marginRight: '2rem',
                 background: 'none',
                 border: 'none',
                 color: '#8E8E93',
@@ -453,7 +452,8 @@ const AuditResults = () => {
                 fontSize: '1rem',
                 fontWeight: '500',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                transition: 'color 0.2s ease'
+                transition: 'color 0.2s ease',
+                padding: '0.5rem'
               }}
               onMouseOver={(e) => e.target.style.color = '#007AFF'}
               onMouseOut={(e) => e.target.style.color = '#8E8E93'}
@@ -482,42 +482,6 @@ const AuditResults = () => {
                 {orgName}
               </p>
             </div>
-          </div>
-          
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <button style={{
-              backgroundColor: 'white',
-              color: '#007AFF',
-              border: '1.5px solid #007AFF',
-              padding: '0.875rem 1.75rem',
-              borderRadius: '12px',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 8px rgba(0, 122, 255, 0.12)'
-            }}>
-              Edit Assumptions
-            </button>
-            <button
-              onClick={handleGeneratePDF}
-              style={{
-                backgroundColor: '#007AFF',
-                color: 'white',
-                border: 'none',
-                padding: '0.875rem 1.75rem',
-                borderRadius: '12px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 16px rgba(0, 122, 255, 0.24)'
-              }}
-            >
-              Export PDF
-            </button>
           </div>
         </div>
 
