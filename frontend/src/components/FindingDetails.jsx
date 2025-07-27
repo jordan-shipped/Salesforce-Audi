@@ -31,31 +31,15 @@ const FindingDetails = ({ finding }) => {
 
   const specificDetails = getSpecificDetails(finding);
   
-  // Generate business impact explanations
-  const getBusinessImpact = (finding) => {
-    const impacts = [];
+  // Generate business impact explanation as paragraph
+  const getBusinessImpactParagraph = (finding) => {
     const annualSavings = finding.total_annual_roi || finding.roi_estimate || 0;
     const monthlyHours = finding.time_savings_hours || 2;
     
-    impacts.push({
-      type: 'SAVE TIME',
-      description: `Your team spends extra time navigating around unused elements - approximately ${monthlyHours} hours per month across your whole team`
-    });
-    
-    impacts.push({
-      type: 'MAKE MORE MONEY',  
-      description: `Streamlined processes reduce errors and speed up deal processing, potentially adding $${Math.round(annualSavings * 0.3).toLocaleString()} in additional revenue annually`
-    });
-    
-    impacts.push({
-      type: 'SCALE FASTER',
-      description: `Cleaner systems mean new team members get productive faster and existing staff can focus on revenue-generating activities instead of system confusion`
-    });
-    
-    return impacts;
+    return `Your team currently spends approximately ${monthlyHours} hours per month navigating around these unused elements, which reduces efficiency and slows down daily operations. Streamlined processes reduce errors and speed up deal processing, potentially adding $${Math.round(annualSavings * 0.3).toLocaleString()} in additional revenue annually. Most importantly, cleaner systems mean new team members get productive faster and existing staff can focus on revenue-generating activities instead of dealing with system confusion, helping you scale more effectively.`;
   };
 
-  const businessImpacts = getBusinessImpact(finding);
+  const businessImpactParagraph = getBusinessImpactParagraph(finding);
   
   // Generate considerations based on finding type
   const getConsiderations = (finding) => {
