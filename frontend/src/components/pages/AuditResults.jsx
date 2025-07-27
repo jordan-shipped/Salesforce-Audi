@@ -442,56 +442,42 @@ const AuditResults = () => {
         {/* Header */}
         <div style={{ 
           display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
+          alignItems: 'center',
           marginBottom: '3rem',
-          flexWrap: 'wrap',
-          gap: '1.5rem'
+          gap: '1rem'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <button
-              onClick={() => navigate('/dashboard')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                background: 'none',
-                border: 'none',
-                color: '#8E8E93',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontWeight: '500',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                transition: 'color 0.2s ease',
-                padding: '0.5rem'
-              }}
-              onMouseOver={(e) => e.target.style.color = '#007AFF'}
-              onMouseOut={(e) => e.target.style.color = '#8E8E93'}
-            >
-              <ArrowLeft style={{ width: '20px', height: '20px', marginRight: '8px' }} />
-              Back
-            </button>
-            <div>
-              <h1 style={{ 
-                fontSize: '2.25rem', 
-                fontWeight: '800', 
-                margin: '0 0 0.5rem 0', 
-                color: '#1a1a1a',
-                letterSpacing: '-0.01em',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-              }}>
-                Audit Results
-              </h1>
-              <p style={{ 
-                color: '#8E8E93', 
-                margin: 0, 
-                fontSize: '1.1875rem',
-                fontWeight: '500',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-              }}>
-                {orgName}
-              </p>
-            </div>
-          </div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              background: 'none',
+              border: 'none',
+              color: '#8E8E93',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              fontWeight: '500',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
+              transition: 'color 0.2s ease',
+              padding: '0.5rem'
+            }}
+            onMouseOver={(e) => e.target.style.color = '#007AFF'}
+            onMouseOut={(e) => e.target.style.color = '#8E8E93'}
+          >
+            <ArrowLeft style={{ width: '20px', height: '20px', marginRight: '8px' }} />
+            Back
+          </button>
+          
+          <h1 style={{ 
+            fontSize: '2.25rem', 
+            fontWeight: '800', 
+            margin: 0, 
+            color: '#1a1a1a',
+            letterSpacing: '-0.01em',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+          }}>
+            Audit Results
+          </h1>
         </div>
 
         {/* Metrics Dashboard */}
