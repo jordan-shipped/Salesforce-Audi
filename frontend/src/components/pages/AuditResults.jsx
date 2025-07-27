@@ -120,18 +120,27 @@ const StrategicOverview = ({ businessStage }) => {
 
   const constraints = businessStage.constraints_and_actions || [];
   
+  // Better logic to separate constraints from next steps
   const constraintItems = constraints.filter(item => 
-    item.toLowerCase().includes('constraint') || 
-    item.toLowerCase().includes('limit') ||
-    item.toLowerCase().includes('must') ||
-    item.toLowerCase().includes('foundation')
+    item.toLowerCase().includes('foundation') ||
+    item.toLowerCase().includes('stable') ||
+    item.toLowerCase().includes('maintain') ||
+    item.toLowerCase().includes('sustainable') ||
+    item.toLowerCase().includes('quality') ||
+    item.toLowerCase().includes('must not') ||
+    item.toLowerCase().includes('careful') ||
+    item.toLowerCase().includes('constraint')
   );
   
   const nextStepItems = constraints.filter(item => 
-    item.toLowerCase().includes('move') || 
+    item.toLowerCase().includes('focus:') || 
+    item.toLowerCase().includes('marketing') ||
+    item.toLowerCase().includes('tech:') ||
+    item.toLowerCase().includes('hr:') ||
+    item.toLowerCase().includes('finance:') ||
     item.toLowerCase().includes('build') ||
-    item.toLowerCase().includes('improve') ||
-    item.toLowerCase().includes('scale') ||
+    item.toLowerCase().includes('implement') ||
+    item.toLowerCase().includes('create') ||
     !constraintItems.includes(item)
   );
 
