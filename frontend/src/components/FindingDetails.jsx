@@ -77,6 +77,7 @@ const FindingDetails = ({ finding }) => {
     };
   };
 
+  const businessImpactParagraph = getBusinessImpactParagraph(finding);
   const roiBreakdown = getROIBreakdown(finding);
   
   // Generate considerations based on finding type
