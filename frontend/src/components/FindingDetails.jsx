@@ -138,6 +138,57 @@ const FindingDetails = ({ finding }) => {
         </p>
       </div>
 
+      {/* ROI Breakdown */}
+      <div style={{
+        backgroundColor: '#F8FAFF',
+        border: '1px solid rgba(0, 122, 255, 0.1)',
+        borderRadius: '12px',
+        padding: '1.5rem',
+        marginTop: '1.5rem'
+      }}>
+        <h4 style={{
+          fontSize: '1rem',
+          fontWeight: '600',
+          color: '#1a1a1a',
+          marginBottom: '1rem',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+        }}>
+          ROI Breakdown
+        </h4>
+        <div style={{
+          fontSize: '0.9375rem',
+          lineHeight: '1.6',
+          color: '#3C3C43',
+          fontFamily: 'SF Mono, Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace'
+        }}>
+          <div style={{ marginBottom: '0.75rem' }}>
+            • Time lost per user per field per day: <strong>{roiBreakdown.confusionTimePerFieldPerDay} minutes</strong>
+          </div>
+          <div style={{ marginBottom: '0.75rem' }}>
+            • {roiBreakdown.activeUsers} users × {roiBreakdown.fieldCount} fields × {roiBreakdown.workdaysPerMonth} workdays = <strong>{roiBreakdown.monthlyConfusionHours} hours/month wasted</strong>
+          </div>
+          <div style={{ marginBottom: '0.75rem' }}>
+            • Monthly savings: {roiBreakdown.monthlyConfusionHours} hours × ${roiBreakdown.avgUserRate}/hr = <strong>${roiBreakdown.monthlyConfusionSavings.toLocaleString()}/month</strong>
+          </div>
+          <div style={{ marginBottom: '0.75rem' }}>
+            • Annual savings: ${roiBreakdown.monthlyConfusionSavings.toLocaleString()} × 12 = <strong>${roiBreakdown.annualConfusionSavings.toLocaleString()}/year</strong>
+          </div>
+          <div style={{ marginBottom: '0.75rem' }}>
+            • One-time cleanup: {roiBreakdown.cleanupHours} hours × ${roiBreakdown.adminRate}/hr = <strong>${roiBreakdown.cleanupCost.toLocaleString()}</strong>
+          </div>
+          <div style={{ 
+            marginTop: '1rem',
+            paddingTop: '1rem',
+            borderTop: '1px solid rgba(0, 122, 255, 0.15)',
+            fontSize: '1rem',
+            fontWeight: '600',
+            color: '#007AFF'
+          }}>
+            • Net annual ROI: ${roiBreakdown.annualConfusionSavings.toLocaleString()} - ${roiBreakdown.cleanupCost.toLocaleString()} = <strong>${roiBreakdown.netAnnualROI.toLocaleString()}/year</strong>
+          </div>
+        </div>
+      </div>
+
       {/* Considerations */}
       <div>
         <h4 className="text-body-medium font-semibold text-text-primary mb-md">
