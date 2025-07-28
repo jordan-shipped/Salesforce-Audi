@@ -39,7 +39,45 @@ const FindingDetails = ({ finding }) => {
     return `Your team currently spends approximately ${monthlyHours} hours per month navigating around these unused elements, which reduces efficiency and slows down daily operations. Streamlined processes reduce errors and speed up deal processing, potentially adding $${Math.round(annualSavings * 0.3).toLocaleString()} in additional revenue annually. Most importantly, cleaner systems mean new team members get productive faster and existing staff can focus on revenue-generating activities instead of dealing with system confusion, helping you scale more effectively.`;
   };
 
-  const businessImpactParagraph = getBusinessImpactParagraph(finding);
+  // Generate ROI breakdown details
+  const getROIBreakdown = (finding) => {
+    const annualSavings = finding.total_annual_roi || finding.roi_estimate || 0;
+    const fieldCount = finding.salesforce_data?.custom_fields?.length || 18; // Default fallback
+    const activeUsers = 10; // This should come from org data, but using reasonable default
+    const avgUserRate = 40; // $40/hr average
+    const adminRate = 35; // $35/hr admin rate
+    const confusionTimePerFieldPerDay = 0.5; // 30 seconds
+    const workdaysPerMonth = 22;
+    
+    // Calculate the breakdown
+    const dailyConfusionMinutes = activeUsers * confusionTimePerFieldPerDay * fieldCount;
+    const monthlyConfusionHours = (dailyConfusionMinutes * workdaysPerMonth) / 60;
+    const monthlyConfusionSavings = monthlyConfusionHours * avgUserRate;
+    const annualConfusionSavings = monthlyConfusionSavings * 12;
+    
+    const cleanupHours = fieldCount * 0.25; // 15 minutes per field
+    const cleanupCost = cleanupHours * adminRate;
+    
+    const netAnnualROI = annualConfusionSavings - cleanupCost;
+    
+    return {
+      fieldCount,
+      activeUsers,
+      confusionTimePerFieldPerDay,
+      workdaysPerMonth,
+      dailyConfusionMinutes,
+      monthlyConfusionHours: Math.round(monthlyConfusionHours * 10) / 10,
+      monthlyConfusionSavings: Math.round(monthlyConfusionSavings),
+      annualConfusionSavings: Math.round(annualConfusionSavings),
+      cleanupHours,
+      cleanupCost: Math.round(cleanupCost),
+      netAnnualROI: Math.round(netAnnualROI),
+      avgUserRate,
+      adminRate
+    };
+  };
+
+  const roiBreakdown = getROIBreakdown(finding);
   
   // Generate considerations based on finding type
   const getConsiderations = (finding) => {
