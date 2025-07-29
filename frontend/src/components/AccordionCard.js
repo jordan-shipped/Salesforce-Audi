@@ -147,9 +147,6 @@ const AccordionCard = ({
             flex: 1,
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
-            lineHeight: '1.4',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-          }}>
             {title}
           </h3>
         </div>
