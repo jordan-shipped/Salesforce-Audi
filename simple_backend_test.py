@@ -7,7 +7,7 @@ from datetime import datetime
 
 class SimpleBackendTester:
     def __init__(self):
-        self.base_url = "https://0c6c660a-787f-48ab-8364-a6e87a12d36b.preview.emergentagent.com"
+        self.base_url = "https://dd6a7962-9851-4337-9e39-7a17a3866ce2.preview.emergentagent.com"
         self.api_url = f"{self.base_url}/api"
         self.tests_run = 0
         self.tests_passed = 0

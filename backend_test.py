@@ -6,7 +6,7 @@ import re
 from urllib.parse import urlparse, parse_qs
 
 class SalesforceAuditAPITester:
-    def __init__(self, base_url="https://0c6c660a-787f-48ab-8364-a6e87a12d36b.preview.emergentagent.com"):
+    def __init__(self, base_url="https://dd6a7962-9851-4337-9e39-7a17a3866ce2.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.tests_run = 0
@@ -1147,7 +1147,7 @@ class SalesforceAuditAPITester:
                 oauth_results['callback_url_exists'] = True
                 
                 # Check format
-                expected_callback = "https://0c6c660a-787f-48ab-8364-a6e87a12d36b.preview.emergentagent.com/api/oauth/callback"
+                expected_callback = "https://dd6a7962-9851-4337-9e39-7a17a3866ce2.preview.emergentagent.com/api/oauth/callback"
                 if callback_url == expected_callback:
                     print("✅ SALESFORCE_CALLBACK_URL matches expected format")
                     oauth_results['callback_url_valid'] = True
@@ -1325,7 +1325,7 @@ class SalesforceAuditAPITester:
                     print(f"❌ Invalid client_id")
                     return False, {}
                 
-                expected_callback = "https://0c6c660a-787f-48ab-8364-a6e87a12d36b.preview.emergentagent.com/api/oauth/callback"
+                expected_callback = "https://dd6a7962-9851-4337-9e39-7a17a3866ce2.preview.emergentagent.com/api/oauth/callback"
                 if query_params.get('redirect_uri', [''])[0] != expected_callback:
                     print(f"❌ Invalid redirect_uri. Expected: {expected_callback}")
                     return False, {}
