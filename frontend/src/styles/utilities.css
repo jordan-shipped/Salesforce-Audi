@@ -305,92 +305,34 @@
     @apply sr-only;
   }
 
-  /* Audit Results Page */
-  .metric-card {
-    @apply bg-white text-text-primary p-8 rounded-xl text-center transition-all duration-200 cursor-default;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0, 0, 0, 0.06);
+  /* Shared Card System */
+  .card-system {
+    @apply bg-white rounded-2xl border border-border-subtle;
+    padding: 24px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    transition: all 0.2s ease;
   }
   
-  .metric-card-accent {
-    @apply metric-card bg-accent text-white;
-    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.15);
-    border: none;
+  .card-system-hover {
+    @apply card-system hover:shadow-lg hover:-translate-y-0.5 cursor-pointer;
   }
   
-  .metric-value {
-    @apply text-section font-bold mb-3;
-    line-height: 1.1;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  /* Grid System - 24px gutters */
+  .grid-system {
+    @apply grid gap-6; /* 24px gaps */
   }
   
-  .metric-label {
-    @apply text-caption font-semibold uppercase tracking-wide;
-    color: #8E8E93;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  .grid-system-responsive {
+    @apply grid-system grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
   }
   
-  .metric-label-accent {
-    @apply metric-label;
-    color: rgba(255,255,255,0.85);
+  /* Standardized Spacing */
+  .spacing-vertical-section {
+    @apply mb-6; /* 24px bottom margin for sections */
   }
   
-  .business-context-card {
-    @apply bg-white p-8 rounded-xl mb-8;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-  }
-  
-  .strategic-overview-card {
-    @apply business-context-card mb-10;
-  }
-  
-  .context-grid {
-    @apply grid grid-cols-2 gap-8 items-start;
-  }
-  
-  .context-label {
-    @apply text-caption font-bold uppercase tracking-wider mb-2;
-    color: #8E8E93;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  }
-  
-  .context-value {
-    @apply text-body-large font-medium;
-    color: #1a1a1a;
-    line-height: 1.4;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
-  }
-  
-  .strategic-section-title {
-    @apply text-modal-title font-bold text-text-primary mb-6;
-    margin: 0 0 1.5rem 0;
-    line-height: 1.3;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
-  }
-  
-  .strategic-list {
-    @apply flex flex-col gap-4;
-  }
-  
-  .strategic-item {
-    @apply text-body-large flex items-start;
-    color: #3C3C43;
-    line-height: 1.6;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  }
-  
-  .strategic-bullet {
-    @apply font-semibold mr-3 mt-1;
-  }
-  
-  .strategic-bullet-constraint {
-    @apply strategic-bullet text-accent;
-  }
-  
-  .strategic-bullet-next {
-    @apply strategic-bullet;
-    color: #34C759;
+  .spacing-element {
+    @apply mb-4; /* 16px for individual elements */
   }
 }
 
