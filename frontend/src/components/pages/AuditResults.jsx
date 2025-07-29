@@ -239,7 +239,7 @@ const AuditResults = () => {
 
         {/* Findings Section */}
         <div>
-          <h2 className="text-section mb-lg">
+          <h2 className="text-h2 font-semibold text-text-primary mb-lg">
             Detailed Findings
           </h2>
 
