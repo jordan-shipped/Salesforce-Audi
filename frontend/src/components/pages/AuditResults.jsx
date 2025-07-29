@@ -244,7 +244,7 @@ const AuditResults = () => {
           </h2>
 
           {/* Findings List */}
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-lg">
             {findings.map((finding, index) => (
               <AccordionCard
                 key={finding.id || index}
