@@ -128,12 +128,11 @@ const AccordionCard = ({
           <span
             style={{
               ...domainStyle,
-              padding: '0.375rem 0.75rem',
-              borderRadius: '8px',
-              fontSize: '0.6875rem',
-              fontWeight: '700',
+              padding: '2px 8px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              fontWeight: '600',
               textTransform: 'uppercase',
-              letterSpacing: '0.05em',
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
             }}
           >
@@ -141,13 +140,15 @@ const AccordionCard = ({
           </span>
 
           {/* Title */}
-          <h3 className="text-body-primary font-semibold" style={{
-            margin: 0,
+          <div style={{
+            fontSize: '14px',
+            fontWeight: '400',
+            color: '#333333',
             flex: 1,
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
           }}>
             {title}
-          </h3>
+          </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -155,12 +156,11 @@ const AccordionCard = ({
           <span
             style={{
               ...priorityStyle,
-              padding: '0.375rem 0.75rem',
-              borderRadius: '8px',
-              fontSize: '0.6875rem',
-              fontWeight: '700',
+              padding: '2px 8px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              fontWeight: '600',
               textTransform: 'uppercase',
-              letterSpacing: '0.05em',
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
             }}
           >
@@ -168,9 +168,11 @@ const AccordionCard = ({
           </span>
 
           {/* Cost */}
-          <span className="text-accent font-medium" style={{
-            fontSize: '1rem',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+          <span style={{
+            fontSize: '14px',
+            fontWeight: '600',
+            color: '#007AFF',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
           }}>
             {cost}
           </span>
@@ -178,11 +180,11 @@ const AccordionCard = ({
           {/* Expand/Collapse Icon */}
           <ChevronDown 
             style={{
-              width: '20px',
-              height: '20px',
-              color: '#8E8E93',
+              width: '16px',
+              height: '16px',
+              color: '#999999',
               transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              transition: 'transform 0.2s ease'
             }}
           />
         </div>
