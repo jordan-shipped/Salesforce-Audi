@@ -209,8 +209,8 @@ const AuditResults = () => {
   const annualROI = summary?.total_annual_roi || 0;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f7' }}>
-      {/* Pure White Navigation Bar - Exact History Match */}
+    <div className="min-h-screen">
+      {/* Pure White Navigation Bar with border-bottom */}
       <nav style={{ 
         backgroundColor: '#ffffff',
         borderBottom: '1px solid #f5f5f7',
@@ -247,15 +247,19 @@ const AuditResults = () => {
         </button>
       </nav>
 
-      {/* Container - 1120px max-width, centered */}
+      {/* Container - 1120px max-width, centered, grey background only here */}
       <div style={{ 
         maxWidth: '1120px',
         margin: '0 auto',
         padding: '0 32px',
-        backgroundColor: '#f5f5f7'
+        backgroundColor: '#f5f5f7',
+        minHeight: 'calc(100vh - 64px)'
       }}>
-        {/* Back Button - Below navbar, above page title */}
-        <div style={{ paddingTop: '24px', marginBottom: '16px' }}>
+        {/* Back Button - 24px below navbar, 16px above title */}
+        <div style={{ 
+          paddingTop: '24px', 
+          marginBottom: '16px' 
+        }}>
           <button
             onClick={() => navigate('/dashboard')}
             style={{
@@ -275,12 +279,12 @@ const AuditResults = () => {
           </button>
         </div>
 
-        {/* Page Header */}
-        <div className="flex items-center justify-between" style={{ marginBottom: '32px' }}>
+        {/* Page Header - 24px title, 24px margin-bottom */}
+        <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
           <h1 style={{
             fontSize: '24px',
             fontWeight: '600',
-            color: '#333333',
+            color: '#111111',
             margin: 0,
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
@@ -304,7 +308,7 @@ const AuditResults = () => {
           </button>
         </div>
 
-        {/* Summary Cards - All White Background */}
+        {/* Summary Cards - 3-column CSS grid with 24px gap, 32px margin-bottom */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -325,19 +329,19 @@ const AuditResults = () => {
           />
         </div>
 
-        {/* Findings Section */}
-        <div style={{ paddingBottom: '48px' }}>
+        {/* Detailed Findings Section */}
+        <div style={{ paddingBottom: '32px' }}>
           <h2 style={{
             fontSize: '24px',
             fontWeight: '600',
-            color: '#333333',
-            margin: '0 0 24px 0',
+            color: '#111111',
+            margin: '0 0 16px 0',
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
             Detailed Findings
           </h2>
 
-          {/* Findings List - Each in own card */}
+          {/* Individual Finding Cards - 24px gaps */}
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column', 
@@ -351,17 +355,76 @@ const AuditResults = () => {
                   borderRadius: '16px',
                   boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
                   padding: '24px',
-                  border: '1px solid rgba(0, 0, 0, 0.05)'
+                  border: '1px solid rgba(0, 0, 0, 0.05)',
+                  display: 'grid',
+                  gridTemplateColumns: 'auto 1fr auto auto auto',
+                  alignItems: 'center',
+                  gap: '16px'
                 }}
               >
-                <AccordionCard
-                  title={finding.title || `Finding ${index + 1}`}
-                  domain={finding.domain || 'GENERAL'}
-                  priority={finding.impact || finding.priority || 'MEDIUM'}
-                  cost={`$${(finding.total_annual_roi || finding.roi_estimate || 0).toLocaleString()}/yr`}
+                {/* Domain Badge */}
+                <span
+                  style={{
+                    ...getDomainStyle(finding.domain || 'GENERAL'),
+                    padding: '2px 8px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+                  }}
                 >
-                  <FindingDetails finding={finding} />
-                </AccordionCard>
+                  {finding.domain || 'GENERAL'}
+                </span>
+
+                {/* Finding Title */}
+                <div style={{
+                  fontSize: '14px',
+                  fontWeight: '400',
+                  color: '#111111',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+                }}>
+                  {finding.title || `Finding ${index + 1}`}
+                </div>
+
+                {/* Priority Badge */}
+                <span
+                  style={{
+                    ...getPriorityStyle(finding.impact || finding.priority || 'MEDIUM'),
+                    padding: '2px 8px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+                  }}
+                >
+                  {finding.impact || finding.priority || 'MEDIUM'}
+                </span>
+
+                {/* Annual Value */}
+                <span style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#007AFF',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+                }}>
+                  ${(finding.total_annual_roi || finding.roi_estimate || 0).toLocaleString()}/yr
+                </span>
+
+                {/* Expand Icon */}
+                <button
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '4px'
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999999">
+                    <polyline points="6,9 12,15 18,9"></polyline>
+                  </svg>
+                </button>
               </div>
             ))}
           </div>
@@ -394,7 +457,7 @@ const AuditResults = () => {
               <h3 style={{
                 fontSize: '24px',
                 fontWeight: '600',
-                color: '#333333',
+                color: '#111111',
                 margin: '0 0 8px 0',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
               }}>
