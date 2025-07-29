@@ -201,7 +201,7 @@ const AuditResults = () => {
               // Handle disconnect logic
               navigate('/dashboard');
             }}
-            className="text-body-regular font-medium text-red-600 hover:text-red-700"
+            className="btn-secondary"
           >
             Disconnect
           </button>
