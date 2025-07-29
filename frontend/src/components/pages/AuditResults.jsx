@@ -9,11 +9,11 @@ import FindingDetails from '../FindingDetails';
 
 const MetricCard = ({ label, value, accent = false }) => {
   return (
-    <div className={accent ? 'metric-card-accent' : 'metric-card'}>
-      <div className="metric-value">
+    <div className={`card text-center ${accent ? 'bg-accent text-white' : ''}`}>
+      <div className={`text-h2 font-bold mb-2 ${accent ? 'text-white' : 'text-text-primary'}`}>
         {value}
       </div>
-      <div className={accent ? 'metric-label-accent' : 'metric-label'}>
+      <div className={`text-caption font-semibold uppercase tracking-wide ${accent ? 'text-white opacity-85' : 'text-text-grey-300'}`}>
         {label}
       </div>
     </div>
