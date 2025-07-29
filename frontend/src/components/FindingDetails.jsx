@@ -170,19 +170,19 @@ const FindingDetails = ({ finding }) => {
           fontFamily: '"SF Mono", "Monaco", "Cascadia Code", "Roboto Mono", "Consolas", monospace'
         }}>
           <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
-            • Time lost per user per field per day: <span style={{ fontWeight: '600' }}>{roiBreakdown.confusionTimeSeconds} seconds</span>
+            • Time Lost Per User Per Field Per Day: <span style={{ fontWeight: '600' }}>{roiBreakdown.confusionTimeSeconds} Seconds</span>
           </div>
           <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
-            • {roiBreakdown.activeUsers} users × {roiBreakdown.fieldCount} fields × {roiBreakdown.workdaysPerMonth} workdays = <span style={{ fontWeight: '600' }}>{roiBreakdown.monthlyConfusionHours} hours per month wasted</span>
+            • {roiBreakdown.activeUsers} Users × {roiBreakdown.fieldCount} Fields × {roiBreakdown.workdaysPerMonth} Workdays = <span style={{ fontWeight: '600' }}>{roiBreakdown.monthlyConfusionHours} Hours Per Month Wasted</span>
           </div>
           <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
-            • Monthly savings: {roiBreakdown.monthlyConfusionHours} hours × ${roiBreakdown.avgUserRate}/hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.monthlyConfusionSavings.toLocaleString()}/month</span>
+            • Monthly Savings: {roiBreakdown.monthlyConfusionHours} Hours × ${roiBreakdown.avgUserRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.monthlyConfusionSavings.toLocaleString()}/Month</span>
           </div>
           <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
-            • Annual savings: ${roiBreakdown.monthlyConfusionSavings.toLocaleString()} × 12 = <span style={{ fontWeight: '600' }}>${roiBreakdown.annualConfusionSavings.toLocaleString()}/year</span>
+            • Annual Savings: ${roiBreakdown.monthlyConfusionSavings.toLocaleString()} × 12 = <span style={{ fontWeight: '600' }}>${roiBreakdown.annualConfusionSavings.toLocaleString()}/Year</span>
           </div>
           <div style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
-            • One-time cleanup: {roiBreakdown.cleanupHoursFormatted} × ${roiBreakdown.adminRate}/hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.cleanupCost.toLocaleString()}</span>
+            • One-Time Cleanup: {roiBreakdown.cleanupHoursFormatted} × ${roiBreakdown.adminRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.cleanupCost.toLocaleString()}</span>
           </div>
           
           {/* Subtle separator line */}
@@ -200,14 +200,14 @@ const FindingDetails = ({ finding }) => {
             fontWeight: '600',
             color: '#1a1a1a'
           }}>
-            • Net annual ROI: ${roiBreakdown.annualConfusionSavings.toLocaleString()} - ${roiBreakdown.cleanupCost.toLocaleString()} = <span style={{
+            • Net Annual ROI: ${roiBreakdown.annualConfusionSavings.toLocaleString()} - ${roiBreakdown.cleanupCost.toLocaleString()} = <span style={{
               backgroundColor: 'rgba(0, 122, 255, 0.08)',
               color: '#007AFF',
               padding: '0.25rem 0.5rem',
               borderRadius: '6px',
               fontWeight: '600',
               border: '1px solid rgba(0, 122, 255, 0.12)'
-            }}>${roiBreakdown.netAnnualROI.toLocaleString()}/year</span>
+            }}>${roiBreakdown.netAnnualROI.toLocaleString()}/Year</span>
           </div>
         </div>
       </div>
