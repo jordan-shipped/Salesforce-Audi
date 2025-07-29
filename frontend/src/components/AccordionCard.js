@@ -118,7 +118,7 @@ const AccordionCard = ({
           cursor: 'pointer',
           textAlign: 'left',
           display: 'grid',
-          gridTemplateColumns: 'auto 1fr auto auto auto',
+          gridTemplateColumns: '120px 1fr 100px 140px 40px',
           alignItems: 'center',
           gap: '16px'
         }}
