@@ -39,7 +39,7 @@ const FindingDetails = ({ finding }) => {
     return `Your team currently spends approximately ${monthlyHours} hours per month navigating around these unused elements, which reduces efficiency and slows down daily operations. Streamlined processes reduce errors and speed up deal processing, potentially adding $${Math.round(annualSavings * 0.3).toLocaleString()} in additional revenue annually. Most importantly, cleaner systems mean new team members get productive faster and existing staff can focus on revenue-generating activities instead of dealing with system confusion, helping you scale more effectively.`;
   };
 
-  // Generate ROI breakdown details
+  // Generate ROI breakdown details  
   const getROIBreakdown = (finding) => {
     const annualSavings = finding.total_annual_roi || finding.roi_estimate || 0;
     const fieldCount = finding.salesforce_data?.custom_fields?.length || 18; // Default fallback
@@ -60,16 +60,22 @@ const FindingDetails = ({ finding }) => {
     
     const netAnnualROI = annualConfusionSavings - cleanupCost;
     
+    // Format cleanup hours as "X hours Y minutes"
+    const cleanupHoursFormatted = cleanupHours >= 1 
+      ? `${Math.floor(cleanupHours)} hours ${Math.round((cleanupHours % 1) * 60)} minutes`
+      : `${Math.round(cleanupHours * 60)} minutes`;
+    
     return {
       fieldCount,
       activeUsers,
-      confusionTimePerFieldPerDay,
+      confusionTimeSeconds: Math.round(confusionTimePerFieldPerDay * 60), // Convert to seconds
       workdaysPerMonth,
       dailyConfusionMinutes,
       monthlyConfusionHours: Math.round(monthlyConfusionHours * 10) / 10,
       monthlyConfusionSavings: Math.round(monthlyConfusionSavings),
       annualConfusionSavings: Math.round(annualConfusionSavings),
       cleanupHours,
+      cleanupHoursFormatted,
       cleanupCost: Math.round(cleanupCost),
       netAnnualROI: Math.round(netAnnualROI),
       avgUserRate,
