@@ -5,6 +5,7 @@ import { AccordionCard, FindingDetails } from '../index';
 import { api } from '../../services/apiService';
 import { logger } from '../../utils/cleanup';
 import Card from '../ui/Card';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 const MetricCard = ({ label, value, accent = false }) => {
   return (
