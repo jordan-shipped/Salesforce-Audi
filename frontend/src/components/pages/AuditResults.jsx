@@ -319,10 +319,10 @@ const AuditResults = () => {
           </h1>
         </div>
 
-        {/* Summary Cards - 3-column grid, 24px gaps */}
+        {/* Summary Cards - Align with finding cards, even spacing */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          display: 'flex',
+          justifyContent: 'space-between',
           gap: '24px',
           marginBottom: '32px'
         }}>
