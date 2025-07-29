@@ -28,61 +28,21 @@ const BusinessContext = ({ businessStage }) => {
   const keyFocus = businessStage.bottom_line || 'Focus on core business operations';
 
   return (
-    <div style={{
-      backgroundColor: 'white',
-      padding: '2rem',
-      borderRadius: '16px',
-      boxShadow: '0 2px 16px rgba(0, 0, 0, 0.04)',
-      border: '1px solid rgba(0, 0, 0, 0.06)',
-      marginBottom: '2rem'
-    }}>
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: '1fr 1fr', 
-        gap: '2rem',
-        alignItems: 'start'
-      }}>
+    <div className="business-context-card">
+      <div className="context-grid">
         <div>
-          <div style={{
-            fontSize: '0.6875rem',
-            fontWeight: '700',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            color: '#8E8E93',
-            marginBottom: '0.5rem',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-          }}>
+          <div className="context-label">
             Business Stage
           </div>
-          <div style={{
-            fontSize: '1.1875rem',
-            fontWeight: '500',
-            color: '#1a1a1a',
-            lineHeight: '1.4',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-          }}>
+          <div className="context-value">
             {stageName}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{
-            fontSize: '0.6875rem',
-            fontWeight: '700',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            color: '#8E8E93',
-            marginBottom: '0.5rem',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-          }}>
+          <div className="context-label">
             Key Focus
           </div>
-          <div style={{
-            fontSize: '1.1875rem',
-            fontWeight: '500',
-            color: '#1a1a1a',
-            lineHeight: '1.4',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-          }}>
+          <div className="context-value">
             {keyFocus}
           </div>
         </div>
