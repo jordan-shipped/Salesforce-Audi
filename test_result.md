@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implement the exact code found in the GitHub repository https://github.com/jordan-shipped/Salesforce-Audi by systematically replacing the current application's codebase with the repository's code."
+user_problem_statement: "I feel like all of the design (fonts, colors, gradients, typography, etc.) are consistent other than the audit results page. It appears that when you get to that screen the font sizes are bigger, the fonts look different, the card sizes are bigger, etc. Maybe I am wrong but I'd like to investigate this to see if the items on that audit results page match the same consistent look on the other pages."
 
 backend:
   - task: "Replace backend server.py with repository version"
