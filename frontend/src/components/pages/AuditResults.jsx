@@ -10,10 +10,10 @@ import FindingDetails from '../FindingDetails';
 const MetricCard = ({ label, value, accent = false }) => {
   return (
     <div className={`card text-center ${accent ? 'bg-accent text-white' : ''}`}>
-      <div className={`text-h2 font-bold mb-2 ${accent ? 'text-white' : 'text-text-primary'}`}>
+      <div className={`text-body-large font-semibold mb-2 ${accent ? 'text-white' : 'text-text-primary'}`}>
         {value}
       </div>
-      <div className={`text-caption font-semibold uppercase tracking-wide ${accent ? 'text-white opacity-85' : 'text-text-grey-300'}`}>
+      <div className={`text-caption text-text-grey-600 ${accent ? 'text-white opacity-85' : ''}`}>
         {label}
       </div>
     </div>
