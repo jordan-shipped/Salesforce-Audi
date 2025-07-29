@@ -142,7 +142,7 @@ const AccordionCard = ({
           </span>
 
           {/* Title */}
-          <h3 className="text-body-large font-semibold text-text-primary truncate" style={{
+          <h3 className="text-body-primary font-semibold" style={{
             margin: 0,
             flex: 1,
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
