@@ -196,7 +196,7 @@ const AuditResults = () => {
             <ArrowLeft className="w-5 h-5" />
           </button>
           
-          <h1 className="text-hero">
+          <h1 className="text-section font-bold">
             Audit Results
           </h1>
         </div>
