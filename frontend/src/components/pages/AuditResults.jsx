@@ -28,21 +28,21 @@ const BusinessContext = ({ businessStage }) => {
   const keyFocus = businessStage.bottom_line || 'Focus on core business operations';
 
   return (
-    <div className="business-context-card">
-      <div className="context-grid">
+    <div className="card mb-lg">
+      <div className="grid grid-cols-2 gap-lg items-start">
         <div>
-          <div className="context-label">
+          <div className="text-caption font-bold uppercase tracking-wide text-text-grey-300 mb-2">
             Business Stage
           </div>
-          <div className="context-value">
+          <div className="text-body-large font-medium text-text-primary">
             {stageName}
           </div>
         </div>
-        <div style={{ textAlign: 'right' }}>
-          <div className="context-label">
+        <div className="text-right">
+          <div className="text-caption font-bold uppercase tracking-wide text-text-grey-300 mb-2">
             Key Focus
           </div>
-          <div className="context-value">
+          <div className="text-body-large font-medium text-text-primary">
             {keyFocus}
           </div>
         </div>
