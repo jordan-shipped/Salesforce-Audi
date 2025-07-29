@@ -99,10 +99,10 @@ const AccordionCard = ({
 
   return (
     <div 
-      className={`card-hover animate-in slide-in-from-bottom-4 duration-300 ${className}`}
+      className="card-system"
       style={{
         borderRadius: '16px',
-        boxShadow: isExpanded ? '0 8px 32px rgba(0, 0, 0, 0.08)' : '0 2px 16px rgba(0, 0, 0, 0.04)',
+        boxShadow: isExpanded ? '0 8px 32px rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         overflow: 'hidden'
       }}
