@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { AccordionCard, FindingDetails } from '../index';
 import { api } from '../../services/apiService';
-import { logger, usePolling } from '../../utils/cleanup';
-import LoadingSpinner from '../common/LoadingSpinner';
-import AccordionCard from '../AccordionCard';
-import FindingDetails from '../FindingDetails';
+import { logger } from '../../utils/cleanup';
+import Card from '../ui/Card';
 
 const MetricCard = ({ label, value, accent = false }) => {
   return (
-    <div className={`card-hover animate-in slide-in-from-bottom-4 duration-300 text-center ${accent ? 'bg-accent text-white' : ''}`}>
-      <div className={`text-body-large font-semibold mb-2 ${accent ? 'text-white' : 'text-text-primary'}`}>
+    <Card className={accent ? 'bg-accent text-white' : ''} hover={false}>
+      <div className={`text-metric-value ${accent ? 'text-white' : ''}`}>
         {value}
       </div>
-      <div className={`text-caption text-text-grey-600 ${accent ? 'text-white opacity-85' : ''}`}>
+      <div className={`text-metric-label ${accent ? 'text-white opacity-85' : ''}`}>
         {label}
       </div>
-    </div>
+    </Card>
   );
 };
 
