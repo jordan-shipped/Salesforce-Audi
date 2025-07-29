@@ -335,37 +335,11 @@ const AuditResults = () => {
           />
         </div>
 
-        {/* Business Context */}
-        <BusinessContext businessStage={businessStage} />
-
-        {/* Strategic Overview */}
-        <StrategicOverview businessStage={businessStage} />
-
         {/* Findings Section */}
         <div>
-          <div className="flex justify-between items-center mb-lg flex-wrap gap-md">
-            <h2 className="text-section">
-              Detailed Findings
-            </h2>
-            
-            {/* Filters */}
-            <div className="flex gap-md flex-wrap">
-              <select className="input" style={{ width: 'auto', minWidth: '140px' }}>
-                <option value="">All Domains</option>
-                <option value="data-quality">Data Quality</option>
-                <option value="automation">Automation</option>
-                <option value="security">Security</option>
-                <option value="reporting">Reporting</option>
-              </select>
-              
-              <select className="input" style={{ width: 'auto', minWidth: '140px' }}>
-                <option value="">All Priorities</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </select>
-            </div>
-          </div>
+          <h2 className="text-section mb-lg">
+            Detailed Findings
+          </h2>
 
           {/* Findings List */}
           <div className="space-y-4">
