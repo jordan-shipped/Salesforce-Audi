@@ -40,13 +40,11 @@ const SummaryCard = ({ title, value }) => {
   return (
     <div style={{
       backgroundColor: '#ffffff',
-      color: '#111111',
       width: '240px',
       height: '96px',
       padding: '16px',
       borderRadius: '16px',
-      border: '1px solid rgba(0, 0, 0, 0.05)',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
