@@ -258,21 +258,80 @@ const FindingDetails = ({ finding }) => {
           color: '#3C3C43',
           fontFamily: '"SF Mono", "Monaco", "Cascadia Code", "Roboto Mono", "Consolas", monospace'
         }}>
-          <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
-            • Time Lost Per User Per Field Per Day: <span style={{ fontWeight: '600' }}>{roiBreakdown.confusionTimeSeconds} Seconds</span>
-          </div>
-          <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
-            • {roiBreakdown.activeUsers} Users × {roiBreakdown.fieldCount} Fields × {roiBreakdown.workdaysPerMonth} Workdays = <span style={{ fontWeight: '600' }}>{roiBreakdown.monthlyConfusionHours} Hours Per Month Wasted</span>
-          </div>
-          <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
-            • Monthly Savings: {roiBreakdown.monthlyConfusionHours} Hours × ${roiBreakdown.avgUserRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.monthlyConfusionSavings.toLocaleString()}/Month</span>
-          </div>
-          <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
-            • Annual Savings: ${roiBreakdown.monthlyConfusionSavings.toLocaleString()} × 12 = <span style={{ fontWeight: '600' }}>${roiBreakdown.annualConfusionSavings.toLocaleString()}/Year</span>
-          </div>
-          <div style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
-            • One-Time Cleanup: {roiBreakdown.cleanupHoursFormatted} × ${roiBreakdown.adminRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.cleanupCost.toLocaleString()}</span>
-          </div>
+          {/* Custom Fields ROI Breakdown */}
+          {roiBreakdown.findingType === 'custom_fields' && (
+            <>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Time Lost Per User Per Field Per Day: <span style={{ fontWeight: '600' }}>{roiBreakdown.confusionTimeSeconds} Seconds</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • {roiBreakdown.activeUsers} Users × {roiBreakdown.fieldCount} Fields × {roiBreakdown.workdaysPerMonth} Workdays = <span style={{ fontWeight: '600' }}>{roiBreakdown.monthlyConfusionHours} Hours Per Month Wasted</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Monthly Savings: {roiBreakdown.monthlyConfusionHours} Hours × ${roiBreakdown.avgUserRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.monthlyConfusionSavings.toLocaleString()}/Month</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Annual Savings: ${roiBreakdown.monthlyConfusionSavings.toLocaleString()} × 12 = <span style={{ fontWeight: '600' }}>${roiBreakdown.annualConfusionSavings.toLocaleString()}/Year</span>
+              </div>
+              <div style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
+                • One-Time Cleanup: {roiBreakdown.cleanupHoursFormatted} × ${roiBreakdown.adminRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.cleanupCost.toLocaleString()}</span>
+              </div>
+            </>
+          )}
+          
+          {/* Automation/Manual Process ROI Breakdown */}
+          {roiBreakdown.findingType === 'automation' && (
+            <>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Manual Time Per Month: <span style={{ fontWeight: '600' }}>{roiBreakdown.monthlyTimeSavings} Hours</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Monthly Savings: {roiBreakdown.monthlyTimeSavings} Hours × ${roiBreakdown.avgUserRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.monthlySavings.toLocaleString()}/Month</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Annual Savings: ${roiBreakdown.monthlySavings.toLocaleString()} × 12 = <span style={{ fontWeight: '600' }}>${roiBreakdown.annualSavings.toLocaleString()}/Year</span>
+              </div>
+              <div style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
+                • One-Time Setup: {roiBreakdown.setupHoursFormatted} × ${roiBreakdown.adminRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.setupCost.toLocaleString()}</span>
+              </div>
+            </>
+          )}
+          
+          {/* Data Quality ROI Breakdown */}
+          {roiBreakdown.findingType === 'data_quality' && (
+            <>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Records To Clean: <span style={{ fontWeight: '600' }}>{roiBreakdown.recordCount} Records</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Monthly Efficiency Gain: <span style={{ fontWeight: '600' }}>{roiBreakdown.monthlyEfficiencyHours} Hours Per Month</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Monthly Savings: {roiBreakdown.monthlyEfficiencyHours} Hours × ${roiBreakdown.avgUserRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.monthlyEfficiencySavings.toLocaleString()}/Month</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Annual Savings: ${roiBreakdown.monthlyEfficiencySavings.toLocaleString()} × 12 = <span style={{ fontWeight: '600' }}>${roiBreakdown.annualEfficiencySavings.toLocaleString()}/Year</span>
+              </div>
+              <div style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
+                • One-Time Cleanup: {roiBreakdown.cleanupHoursFormatted} × ${roiBreakdown.adminRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.cleanupCost.toLocaleString()}</span>
+              </div>
+            </>
+          )}
+          
+          {/* Generic Process Improvement ROI Breakdown */}
+          {roiBreakdown.findingType === 'generic' && (
+            <>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Time Saved Per Month: <span style={{ fontWeight: '600' }}>{roiBreakdown.monthlyTimeSavings} Hours</span>
+              </div>
+              <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+                • Monthly Savings: {roiBreakdown.monthlyTimeSavings} Hours × ${roiBreakdown.avgUserRate}/Hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.monthlySavings.toLocaleString()}/Month</span>
+              </div>
+              <div style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
+                • Annual Savings: ${roiBreakdown.monthlySavings.toLocaleString()} × 12 = <span style={{ fontWeight: '600' }}>${roiBreakdown.annualSavings.toLocaleString()}/Year</span>
+              </div>
+            </>
+          )}
           
           {/* Subtle separator line */}
           <div style={{
@@ -281,7 +340,7 @@ const FindingDetails = ({ finding }) => {
             margin: '1.25rem 0'
           }}></div>
           
-          {/* Final result with subtle highlight */}
+          {/* Final result with subtle highlight - shows actual calculated ROI */}
           <div style={{ 
             marginTop: '1.25rem',
             paddingLeft: '0.5rem',
@@ -289,7 +348,7 @@ const FindingDetails = ({ finding }) => {
             fontWeight: '600',
             color: '#1a1a1a'
           }}>
-            • Net Annual ROI: ${roiBreakdown.annualConfusionSavings.toLocaleString()} - ${roiBreakdown.cleanupCost.toLocaleString()} = <span style={{
+            • Net Annual ROI: <span style={{
               backgroundColor: 'rgba(0, 122, 255, 0.08)',
               color: '#007AFF',
               padding: '0.25rem 0.5rem',
