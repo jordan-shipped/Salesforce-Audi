@@ -307,7 +307,7 @@ const AuditResults = () => {
         </div>
 
         {/* Page Header - 24px/600, 24px margin-bottom */}
-        <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
+        <div style={{ marginBottom: '24px' }}>
           <h1 style={{
             fontSize: '24px',
             fontWeight: '600',
@@ -317,22 +317,6 @@ const AuditResults = () => {
           }}>
             Audit Results
           </h1>
-          <button
-            onClick={() => navigate('/dashboard')}
-            style={{
-              background: 'transparent',
-              border: '1px solid #007AFF',
-              color: '#007AFF',
-              fontSize: '14px',
-              fontWeight: '500',
-              padding: '8px 16px',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-            }}
-          >
-            + New Audit
-          </button>
         </div>
 
         {/* Summary Cards - 3-column grid, 24px gaps */}
