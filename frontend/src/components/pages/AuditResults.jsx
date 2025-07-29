@@ -48,6 +48,7 @@ const SummaryCard = ({ title, value }) => {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
+      textAlign: 'center',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
     }}>
       <div style={{
