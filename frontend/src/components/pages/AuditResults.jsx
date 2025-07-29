@@ -7,6 +7,35 @@ import { logger } from '../../utils/cleanup';
 import Card from '../ui/Card';
 import LoadingSpinner from '../common/LoadingSpinner';
 
+// Helper functions for pill styling
+const getDomainStyle = (domain) => {
+  switch (domain?.toUpperCase()) {
+    case 'DATA QUALITY':
+      return { backgroundColor: '#E5F2FF', color: '#007AFF' };
+    case 'AUTOMATION':
+      return { backgroundColor: '#F3E5F5', color: '#7B1FA2' };
+    case 'SECURITY':
+      return { backgroundColor: '#FFF3E0', color: '#E65100' };
+    case 'REPORTING':
+      return { backgroundColor: '#E8F4EA', color: '#2E7D32' };
+    default:
+      return { backgroundColor: '#F5F5F5', color: '#666666' };
+  }
+};
+
+const getPriorityStyle = (priority) => {
+  switch (priority?.toLowerCase()) {
+    case 'high':
+      return { backgroundColor: '#FFEBEE', color: '#D32F2F' };
+    case 'medium':
+      return { backgroundColor: '#FFF7E0', color: '#FFD60A' };
+    case 'low':
+      return { backgroundColor: '#E8F4EA', color: '#34C759' };
+    default:
+      return { backgroundColor: '#F5F5F5', color: '#666666' };
+  }
+};
+
 const SummaryCard = ({ title, value }) => {
   return (
     <div style={{
