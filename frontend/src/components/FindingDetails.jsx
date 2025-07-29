@@ -39,48 +39,137 @@ const FindingDetails = ({ finding }) => {
     return `Your team currently spends approximately ${monthlyHours} hours per month navigating around these unused elements, which reduces efficiency and slows down daily operations. Streamlined processes reduce errors and speed up deal processing, potentially adding $${Math.round(annualSavings * 0.3).toLocaleString()} in additional revenue annually. Most importantly, cleaner systems mean new team members get productive faster and existing staff can focus on revenue-generating activities instead of dealing with system confusion, helping you scale more effectively.`;
   };
 
-  // Generate ROI breakdown details  
+  // Generate ROI breakdown details based on finding type and data
   const getROIBreakdown = (finding) => {
-    const annualSavings = finding.total_annual_roi || finding.roi_estimate || 0;
-    const fieldCount = finding.salesforce_data?.custom_fields?.length || 18; // Default fallback
-    const activeUsers = 10; // This should come from org data, but using reasonable default
-    const avgUserRate = 40; // $40/hr average
-    const adminRate = 35; // $35/hr admin rate
-    const confusionTimePerFieldPerDay = 0.5; // 30 seconds
+    // Extract actual finding data
+    const category = finding.category || '';
+    const title = (finding.title || '').toLowerCase();
+    const enhancedROI = finding.enhanced_roi || {};
+    const taskBreakdown = enhancedROI.task_breakdown || [];
+    
+    // Default values
+    const activeUsers = 10; // This should come from org data eventually
     const workdaysPerMonth = 22;
     
-    // Calculate the breakdown
-    const dailyConfusionMinutes = activeUsers * confusionTimePerFieldPerDay * fieldCount;
-    const monthlyConfusionHours = (dailyConfusionMinutes * workdaysPerMonth) / 60;
-    const monthlyConfusionSavings = monthlyConfusionHours * avgUserRate;
-    const annualConfusionSavings = monthlyConfusionSavings * 12;
+    // Determine finding type and extract relevant data
+    let findingType, breakdownData;
     
-    const cleanupHours = fieldCount * 0.25; // 15 minutes per field
-    const cleanupCost = cleanupHours * adminRate;
+    if (title.includes('custom fields')) {
+      // Custom Fields Logic
+      findingType = 'custom_fields';
+      const fieldCount = finding.field_count || finding.salesforce_data?.custom_fields?.length || 18;
+      const confusionTimeSeconds = 30; // 0.5 minutes
+      const avgUserRate = 40;
+      const adminRate = 35;
+      
+      const dailyConfusionMinutes = activeUsers * 0.5 * fieldCount;
+      const monthlyConfusionHours = (dailyConfusionMinutes * workdaysPerMonth) / 60;
+      const monthlyConfusionSavings = Math.round(monthlyConfusionHours * avgUserRate);
+      const annualConfusionSavings = monthlyConfusionSavings * 12;
+      
+      const cleanupHours = fieldCount * 0.25; // 15 minutes per field
+      const cleanupHoursFormatted = cleanupHours >= 1 
+        ? `${Math.floor(cleanupHours)} Hours ${Math.round((cleanupHours % 1) * 60)} Minutes`
+        : `${Math.round(cleanupHours * 60)} Minutes`;
+      const cleanupCost = Math.round(cleanupHours * adminRate);
+      
+      breakdownData = {
+        fieldCount,
+        activeUsers,
+        confusionTimeSeconds,
+        workdaysPerMonth,
+        monthlyConfusionHours: Math.round(monthlyConfusionHours * 10) / 10,
+        monthlyConfusionSavings,
+        annualConfusionSavings,
+        cleanupHoursFormatted,
+        cleanupCost,
+        netAnnualROI: annualConfusionSavings - cleanupCost,
+        avgUserRate,
+        adminRate,
+        calculationType: 'User Confusion Elimination'
+      };
+      
+    } else if (category === 'Automation Opportunities' || title.includes('manual') || title.includes('reporting')) {
+      // Automation/Manual Process Logic
+      findingType = 'automation';
+      const estimatedMonthlyHours = finding.estimated_monthly_hours || finding.time_savings_hours || 8;
+      const avgUserRate = 40;
+      const adminRate = 35;
+      const setupHours = 4; // Standard automation setup time
+      
+      const monthlyTimeSavings = estimatedMonthlyHours;
+      const monthlySavings = Math.round(monthlyTimeSavings * avgUserRate);
+      const annualSavings = monthlySavings * 12;
+      const setupCost = Math.round(setupHours * adminRate);
+      
+      const setupHoursFormatted = `${setupHours} Hours`;
+      
+      breakdownData = {
+        monthlyTimeSavings,
+        monthlySavings,
+        annualSavings,
+        setupHours,
+        setupHoursFormatted,
+        setupCost,
+        netAnnualROI: annualSavings - setupCost,
+        avgUserRate,
+        adminRate,
+        calculationType: 'Manual Process Automation'
+      };
+      
+    } else if (category === 'Revenue Leaks') {
+      // Data Quality Logic
+      findingType = 'data_quality';
+      const recordCount = finding.record_count || 100;
+      const cleanupTimePerRecord = 0.1; // 6 minutes per record
+      const monthlyEfficiencyHours = Math.min(activeUsers * 0.5, 8); // Cap at 8 hours
+      const avgUserRate = 40;
+      const adminRate = 35;
+      
+      const cleanupHours = recordCount * cleanupTimePerRecord;
+      const cleanupCost = Math.round(cleanupHours * adminRate);
+      const monthlyEfficiencySavings = Math.round(monthlyEfficiencyHours * avgUserRate);
+      const annualEfficiencySavings = monthlyEfficiencySavings * 12;
+      
+      const cleanupHoursFormatted = cleanupHours >= 1 
+        ? `${Math.round(cleanupHours * 10) / 10} Hours`
+        : `${Math.round(cleanupHours * 60)} Minutes`;
+      
+      breakdownData = {
+        recordCount,
+        cleanupHours: Math.round(cleanupHours * 10) / 10,
+        cleanupHoursFormatted,
+        cleanupCost,
+        monthlyEfficiencyHours,
+        monthlyEfficiencySavings,
+        annualEfficiencySavings,
+        netAnnualROI: annualEfficiencySavings - cleanupCost,
+        avgUserRate,
+        adminRate,
+        calculationType: 'Data Quality Improvement'
+      };
+      
+    } else {
+      // Default/Generic Logic
+      findingType = 'generic';
+      const timeSavingsHours = finding.time_savings_hours || 2.0;
+      const avgUserRate = 40;
+      
+      const monthlyTimeSavings = timeSavingsHours;
+      const monthlySavings = Math.round(monthlyTimeSavings * avgUserRate);
+      const annualSavings = monthlySavings * 12;
+      
+      breakdownData = {
+        monthlyTimeSavings,
+        monthlySavings,
+        annualSavings,
+        netAnnualROI: annualSavings,
+        avgUserRate,
+        calculationType: 'Process Improvement'
+      };
+    }
     
-    const netAnnualROI = annualConfusionSavings - cleanupCost;
-    
-    // Format cleanup hours as "X hours Y minutes"
-    const cleanupHoursFormatted = cleanupHours >= 1 
-      ? `${Math.floor(cleanupHours)} hours ${Math.round((cleanupHours % 1) * 60)} minutes`
-      : `${Math.round(cleanupHours * 60)} minutes`;
-    
-    return {
-      fieldCount,
-      activeUsers,
-      confusionTimeSeconds: Math.round(confusionTimePerFieldPerDay * 60), // Convert to seconds
-      workdaysPerMonth,
-      dailyConfusionMinutes,
-      monthlyConfusionHours: Math.round(monthlyConfusionHours * 10) / 10,
-      monthlyConfusionSavings: Math.round(monthlyConfusionSavings),
-      annualConfusionSavings: Math.round(annualConfusionSavings),
-      cleanupHours,
-      cleanupHoursFormatted,
-      cleanupCost: Math.round(cleanupCost),
-      netAnnualROI: Math.round(netAnnualROI),
-      avgUserRate,
-      adminRate
-    };
+    return { findingType, ...breakdownData };
   };
 
   const businessImpactParagraph = getBusinessImpactParagraph(finding);
