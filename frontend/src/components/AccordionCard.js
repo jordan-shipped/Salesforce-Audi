@@ -38,14 +38,14 @@ const AccordionCard = ({
         };
       case 'medium':
         return {
-          backgroundColor: '#FFF8E1',
-          color: '#F57C00',
+          backgroundColor: '#FFF7E0',
+          color: '#FFD60A',
           border: '1px solid #FFE082'
         };
       case 'low':
         return {
-          backgroundColor: '#E8F5E8',
-          color: '#2E7D32',
+          backgroundColor: '#E8F4EA',
+          color: '#34C759',
           border: '1px solid #A5D6A7'
         };
       default:
