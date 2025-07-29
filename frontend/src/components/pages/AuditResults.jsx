@@ -7,17 +7,17 @@ import { logger } from '../../utils/cleanup';
 import Card from '../ui/Card';
 import LoadingSpinner from '../common/LoadingSpinner';
 
-const SummaryCard = ({ title, value, accent = false }) => {
+const SummaryCard = ({ title, value }) => {
   return (
     <div style={{
-      backgroundColor: accent ? '#007AFF' : 'white',
-      color: accent ? 'white' : '#111111',
+      backgroundColor: '#ffffff',
+      color: '#333333',
       width: '240px',
       height: '96px',
-      padding: '20px',
+      padding: '16px',
       borderRadius: '16px',
-      border: accent ? 'none' : '1px solid rgba(0, 0, 0, 0.06)',
-      boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
+      border: '1px solid rgba(0, 0, 0, 0.05)',
+      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -26,7 +26,7 @@ const SummaryCard = ({ title, value, accent = false }) => {
       <div style={{
         fontSize: '18px',
         fontWeight: '600',
-        color: accent ? 'white' : '#111111',
+        color: '#333333',
         marginBottom: '4px',
         lineHeight: '1.2'
       }}>
@@ -35,7 +35,7 @@ const SummaryCard = ({ title, value, accent = false }) => {
       <div style={{
         fontSize: '14px',
         fontWeight: '400',
-        color: accent ? 'rgba(255, 255, 255, 0.85)' : '#666666',
+        color: '#666666',
         lineHeight: '1.2'
       }}>
         {title}
