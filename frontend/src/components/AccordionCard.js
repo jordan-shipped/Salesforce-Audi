@@ -112,18 +112,16 @@ const AccordionCard = ({
         onClick={handleToggle}
         style={{
           width: '100%',
-          padding: '1.75rem 2rem',
+          padding: 0,
           border: 'none',
           background: 'none',
           cursor: 'pointer',
           textAlign: 'left',
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: 'auto 1fr auto auto auto',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          transition: 'background-color 0.2s ease'
+          gap: '16px'
         }}
-        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#FAFAFA'}
-        onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
           {/* Domain Badge */}
