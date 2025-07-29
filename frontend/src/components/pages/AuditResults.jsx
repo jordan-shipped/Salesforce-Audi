@@ -187,18 +187,45 @@ const AuditResults = () => {
   return (
     <div className="min-h-screen bg-background-page">
       <div className="container-page py-lg">
-        {/* Header */}
-        <div className="flex items-center gap-md mb-lg">
+        {/* Connection Status Strip */}
+        <div className="flex items-center justify-between mb-lg p-md bg-white rounded-lg border border-border-subtle">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">⚡</span>
+            <span className="text-body-regular font-medium text-text-primary">Connected to Salesforce</span>
+          </div>
           <button
-            onClick={() => navigate('/dashboard')}
-            className="btn-text p-2"
+            onClick={() => {
+              // Handle disconnect logic
+              navigate('/dashboard');
+            }}
+            className="text-body-regular font-medium text-red-600 hover:text-red-700"
           >
-            <ArrowLeft className="w-5 h-5" />
+            Disconnect
           </button>
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between mb-lg">
+          <div className="flex items-center gap-md">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="btn-text p-2"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <h1 className="text-section font-bold">
+              Audit Results
+            </h1>
+          </div>
           
-          <h1 className="text-section font-bold">
-            Audit Results
-          </h1>
+          <div className="flex items-center gap-md">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="btn-primary"
+            >
+              + New Audit
+            </button>
+          </div>
         </div>
 
         {/* Metrics Dashboard */}
