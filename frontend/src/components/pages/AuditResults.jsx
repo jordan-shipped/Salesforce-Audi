@@ -187,12 +187,15 @@ const AuditResults = () => {
   return (
     <div className="min-h-screen bg-background-page">
       <div className="container-page py-lg">
-        {/* Connection Status Strip */}
-        <div className="flex items-center justify-between mb-lg p-md bg-white rounded-lg border border-border-subtle">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">⚡</span>
-            <span className="text-body-regular font-medium text-text-primary">Connected to Salesforce</span>
-          </div>
+        {/* Top Navigation Strip */}
+        <div className="flex items-center justify-between mb-lg">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="btn-text p-2 flex items-center gap-2"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back
+          </button>
           <button
             onClick={() => {
               // Handle disconnect logic
@@ -204,28 +207,17 @@ const AuditResults = () => {
           </button>
         </div>
 
-        {/* Header */}
+        {/* Clean Header Section - Match Audit History */}
         <div className="flex items-center justify-between mb-lg">
-          <div className="flex items-center gap-md">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="btn-text p-2"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <h1 className="text-section font-bold">
-              Audit Results
-            </h1>
-          </div>
-          
-          <div className="flex items-center gap-md">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="btn-primary"
-            >
-              + New Audit
-            </button>
-          </div>
+          <h1 className="text-section font-bold">
+            Audit Results
+          </h1>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="btn-secondary"
+          >
+            + New Audit
+          </button>
         </div>
 
         {/* Metrics Dashboard */}
