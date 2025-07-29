@@ -209,7 +209,7 @@ const AuditResults = () => {
 
         {/* Clean Header Section - Match Audit History */}
         <div className="flex items-center justify-between mb-lg">
-          <h1 className="text-body-large font-semibold text-text-primary">
+          <h1 className="text-section font-semibold text-text-primary">
             Audit Results
           </h1>
           <button
