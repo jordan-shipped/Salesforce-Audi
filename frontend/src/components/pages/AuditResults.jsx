@@ -9,35 +9,11 @@ import FindingDetails from '../FindingDetails';
 
 const MetricCard = ({ label, value, accent = false }) => {
   return (
-    <div style={{
-      backgroundColor: accent ? '#007AFF' : 'white',
-      color: accent ? 'white' : '#1a1a1a',
-      padding: '2rem 1.5rem',
-      borderRadius: '16px',
-      textAlign: 'center',
-      boxShadow: accent ? '0 8px 32px rgba(0, 122, 255, 0.15)' : '0 2px 16px rgba(0, 0, 0, 0.04)',
-      border: accent ? 'none' : '1px solid rgba(0, 0, 0, 0.06)',
-      transition: 'all 0.2s ease',
-      cursor: 'default'
-    }}>
-      <div style={{
-        fontSize: '2.5rem',
-        fontWeight: '700',
-        lineHeight: '1.1',
-        marginBottom: '0.75rem',
-        color: accent ? 'white' : '#1a1a1a',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-      }}>
+    <div className={accent ? 'metric-card-accent' : 'metric-card'}>
+      <div className="metric-value">
         {value}
       </div>
-      <div style={{
-        fontSize: '0.8125rem',
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-        color: accent ? 'rgba(255,255,255,0.85)' : '#8E8E93',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-      }}>
+      <div className={accent ? 'metric-label-accent' : 'metric-label'}>
         {label}
       </div>
     </div>
