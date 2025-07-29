@@ -236,8 +236,8 @@ const AuditResults = () => {
   const annualROI = summary?.total_annual_roi || 0;
 
   return (
-    <div className="min-h-screen">
-      {/* Pure White Navigation Bar - Only Salesforce connection */}
+    <>
+      {/* Pure White Navigation Bar - Full Width */}
       <nav style={{ 
         backgroundColor: '#ffffff',
         borderBottom: '1px solid #f5f5f7',
@@ -245,7 +245,7 @@ const AuditResults = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 calc((100% - 1120px) / 2 + 24px)'
+        padding: '0 24px'
       }}>
         <div className="flex items-center gap-2">
           <span style={{ fontSize: '16px' }}>⚡</span>
@@ -274,7 +274,7 @@ const AuditResults = () => {
         </button>
       </nav>
 
-      {/* Container - 1120px max-width, centered, grey background only here */}
+      {/* Container - 1120px max-width, 24px padding, grey background */}
       <div style={{ 
         maxWidth: '1120px',
         margin: '0 auto',
@@ -500,7 +500,7 @@ const AuditResults = () => {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
