@@ -239,7 +239,7 @@ const AuditResults = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Pure White Navigation Bar with border-bottom */}
+      {/* Pure White Navigation Bar - Only Salesforce connection */}
       <nav style={{ 
         backgroundColor: '#ffffff',
         borderBottom: '1px solid #f5f5f7',
@@ -247,7 +247,7 @@ const AuditResults = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 96px'
+        padding: '0 calc((100% - 1120px) / 2 + 24px)'
       }}>
         <div className="flex items-center gap-2">
           <span style={{ fontSize: '16px' }}>⚡</span>
@@ -280,14 +280,13 @@ const AuditResults = () => {
       <div style={{ 
         maxWidth: '1120px',
         margin: '0 auto',
-        padding: '0 32px',
+        padding: '0 24px',
         backgroundColor: '#f5f5f7',
         minHeight: 'calc(100vh - 64px)'
       }}>
-        {/* Back Button - 24px below navbar, 16px above title */}
+        {/* Back Button - 14px #666, 24px margin-bottom */}
         <div style={{ 
-          paddingTop: '24px', 
-          marginBottom: '16px' 
+          paddingTop: '24px'
         }}>
           <button
             onClick={() => navigate('/dashboard')}
@@ -300,6 +299,7 @@ const AuditResults = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
+              marginBottom: '24px',
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
             }}
           >
@@ -308,7 +308,7 @@ const AuditResults = () => {
           </button>
         </div>
 
-        {/* Page Header - 24px title, 24px margin-bottom */}
+        {/* Page Header - 24px/600, 24px margin-bottom */}
         <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
           <h1 style={{
             fontSize: '24px',
@@ -337,7 +337,7 @@ const AuditResults = () => {
           </button>
         </div>
 
-        {/* Summary Cards - 3-column CSS grid with 24px gap, 32px margin-bottom */}
+        {/* Summary Cards - 3-column grid, 24px gaps */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -382,9 +382,8 @@ const AuditResults = () => {
                 style={{
                   backgroundColor: '#ffffff',
                   borderRadius: '16px',
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                   padding: '24px',
-                  border: '1px solid rgba(0, 0, 0, 0.05)',
                   display: 'grid',
                   gridTemplateColumns: 'auto 1fr auto auto auto',
                   alignItems: 'center',
@@ -406,7 +405,7 @@ const AuditResults = () => {
                   {finding.domain || 'GENERAL'}
                 </span>
 
-                {/* Finding Title */}
+                {/* Finding Title - 14px/400 #111 */}
                 <div style={{
                   fontSize: '14px',
                   fontWeight: '400',
@@ -431,7 +430,7 @@ const AuditResults = () => {
                   {finding.impact || finding.priority || 'MEDIUM'}
                 </span>
 
-                {/* Annual Value */}
+                {/* Annual Value - 14px/600 #007AFF */}
                 <span style={{
                   fontSize: '14px',
                   fontWeight: '600',
@@ -464,8 +463,7 @@ const AuditResults = () => {
               padding: '48px 24px',
               borderRadius: '16px',
               textAlign: 'center',
-              border: '1px solid rgba(0, 0, 0, 0.05)',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
               maxWidth: '400px',
               margin: '0 auto'
             }}>
