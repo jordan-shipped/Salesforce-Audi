@@ -186,52 +186,96 @@ const AuditResults = () => {
 
   return (
     <div className="min-h-screen bg-background-page">
-      <div className="container-page py-lg">
-        {/* Top Navigation Strip */}
-        <div className="flex items-center justify-between spacing-vertical-section">
+      {/* White Navigation Bar - 64px height */}
+      <div style={{ 
+        backgroundColor: 'white', 
+        borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+        height: '64px',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 96px'
+      }}>
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="btn-text p-1"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+            <span style={{ color: '#333', fontSize: '14px', fontWeight: '500' }}>
+              ⚡ Connected to Salesforce
+            </span>
+          </div>
           <button
             onClick={() => navigate('/dashboard')}
-            className="btn-text p-2 flex items-center gap-2"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back
-          </button>
-          <button
-            onClick={() => {
-              // Handle disconnect logic
-              navigate('/dashboard');
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#DC3545',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
             }}
-            className="btn-audit-secondary"
           >
             Disconnect
           </button>
         </div>
+      </div>
 
-        {/* Clean Header Section - Match Audit History */}
-        <div className="flex items-center justify-between spacing-vertical-section">
-          <h1 className="text-heading-main">
+      {/* Main Content Container - 96px side padding */}
+      <div style={{ 
+        maxWidth: 'none',
+        padding: '32px 96px',
+        margin: '0 auto'
+      }}>
+        {/* Header */}
+        <div className="flex items-center justify-between" style={{ marginBottom: '32px' }}>
+          <h1 style={{
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#111111',
+            margin: 0,
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+          }}>
             Audit Results
           </h1>
           <button
             onClick={() => navigate('/dashboard')}
-            className="btn-audit-primary"
+            style={{
+              background: 'white',
+              border: '1px solid rgba(0, 0, 0, 0.15)',
+              color: '#333333',
+              fontSize: '14px',
+              fontWeight: '500',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+            }}
           >
             + New Audit
           </button>
         </div>
 
-        {/* Metrics Dashboard */}
-        <div className="grid-system-responsive spacing-vertical-section">
-          <MetricCard 
-            label="Findings" 
+        {/* Summary Cards - Exact 3-column grid with 24px gutters */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '24px',
+          marginBottom: '48px'
+        }}>
+          <SummaryCard 
+            title="Findings" 
             value={findingsCount.toString()} 
           />
-          <MetricCard 
-            label="Time Savings" 
+          <SummaryCard 
+            title="Time Savings" 
             value={`${timeSavings} h/mo`} 
           />
-          <MetricCard 
-            label="ROI" 
+          <SummaryCard 
+            title="ROI" 
             value={`$${annualROI.toLocaleString()}/yr`} 
             accent={true}
           />
@@ -239,12 +283,18 @@ const AuditResults = () => {
 
         {/* Findings Section */}
         <div>
-          <h2 className="text-heading-section spacing-element">
+          <h2 style={{
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#111111',
+            margin: '0 0 24px 0',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+          }}>
             Detailed Findings
           </h2>
 
           {/* Findings List */}
-          <div className="grid-system">
+          <div style={{ display: 'grid', gap: '16px' }}>
             {findings.map((finding, index) => (
               <AccordionCard
                 key={finding.id || index}
@@ -259,19 +309,48 @@ const AuditResults = () => {
           </div>
 
           {findings.length === 0 && (
-            <Card className="max-w-md mx-auto text-center" style={{ padding: '48px 24px' }}>
-              <div className="w-16 h-16 bg-background-light rounded-full flex items-center justify-center mx-auto spacing-element">
-                <svg className="w-8 h-8 text-text-grey-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div style={{
+              backgroundColor: 'white',
+              padding: '48px 24px',
+              borderRadius: '16px',
+              textAlign: 'center',
+              border: '1px solid rgba(0, 0, 0, 0.06)',
+              boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
+              maxWidth: '400px',
+              margin: '0 auto'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                backgroundColor: '#F8F9FA',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 24px auto'
+              }}>
+                <svg style={{ width: '32px', height: '32px', color: '#666666' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 className="text-heading-section spacing-element">
+              <h3 style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#111111',
+                margin: '0 0 8px 0',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+              }}>
                 No findings available
               </h3>
-              <p className="text-body-secondary">
+              <p style={{
+                fontSize: '14px',
+                color: '#666666',
+                margin: 0,
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+              }}>
                 The audit results are still being processed or no issues were found in your Salesforce org.
               </p>
-            </Card>
+            </div>
           )}
         </div>
       </div>
