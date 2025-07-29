@@ -146,54 +146,84 @@ const FindingDetails = ({ finding }) => {
 
       {/* ROI Breakdown */}
       <div style={{
-        backgroundColor: '#F8FAFF',
-        border: '1px solid rgba(0, 122, 255, 0.1)',
+        backgroundColor: '#F7F9FF',
+        border: '1px solid rgba(0, 122, 255, 0.08)',
         borderRadius: '12px',
-        padding: '1.5rem',
-        marginTop: '1.5rem'
+        padding: '1.75rem',
+        marginTop: '1.75rem',
+        animation: 'fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         <h4 style={{
-          fontSize: '1rem',
+          fontSize: '1.0625rem',
           fontWeight: '600',
           color: '#1a1a1a',
-          marginBottom: '1rem',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
+          marginBottom: '1.25rem',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif',
+          letterSpacing: '-0.01em'
         }}>
           ROI Breakdown
         </h4>
         <div style={{
           fontSize: '0.9375rem',
-          lineHeight: '1.6',
+          lineHeight: '1.7',
           color: '#3C3C43',
-          fontFamily: 'SF Mono, Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace'
+          fontFamily: '"SF Mono", "Monaco", "Cascadia Code", "Roboto Mono", "Consolas", monospace'
         }}>
-          <div style={{ marginBottom: '0.75rem' }}>
-            • Time lost per user per field per day: <strong>{roiBreakdown.confusionTimePerFieldPerDay} minutes</strong>
+          <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+            • Time lost per user per field per day: <span style={{ fontWeight: '600' }}>{roiBreakdown.confusionTimeSeconds} seconds</span>
           </div>
-          <div style={{ marginBottom: '0.75rem' }}>
-            • {roiBreakdown.activeUsers} users × {roiBreakdown.fieldCount} fields × {roiBreakdown.workdaysPerMonth} workdays = <strong>{roiBreakdown.monthlyConfusionHours} hours/month wasted</strong>
+          <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+            • {roiBreakdown.activeUsers} users × {roiBreakdown.fieldCount} fields × {roiBreakdown.workdaysPerMonth} workdays = <span style={{ fontWeight: '600' }}>{roiBreakdown.monthlyConfusionHours} hours per month wasted</span>
           </div>
-          <div style={{ marginBottom: '0.75rem' }}>
-            • Monthly savings: {roiBreakdown.monthlyConfusionHours} hours × ${roiBreakdown.avgUserRate}/hr = <strong>${roiBreakdown.monthlyConfusionSavings.toLocaleString()}/month</strong>
+          <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+            • Monthly savings: {roiBreakdown.monthlyConfusionHours} hours × ${roiBreakdown.avgUserRate}/hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.monthlyConfusionSavings.toLocaleString()}/month</span>
           </div>
-          <div style={{ marginBottom: '0.75rem' }}>
-            • Annual savings: ${roiBreakdown.monthlyConfusionSavings.toLocaleString()} × 12 = <strong>${roiBreakdown.annualConfusionSavings.toLocaleString()}/year</strong>
+          <div style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>
+            • Annual savings: ${roiBreakdown.monthlyConfusionSavings.toLocaleString()} × 12 = <span style={{ fontWeight: '600' }}>${roiBreakdown.annualConfusionSavings.toLocaleString()}/year</span>
           </div>
-          <div style={{ marginBottom: '0.75rem' }}>
-            • One-time cleanup: {roiBreakdown.cleanupHours} hours × ${roiBreakdown.adminRate}/hr = <strong>${roiBreakdown.cleanupCost.toLocaleString()}</strong>
+          <div style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
+            • One-time cleanup: {roiBreakdown.cleanupHoursFormatted} × ${roiBreakdown.adminRate}/hr = <span style={{ fontWeight: '600' }}>${roiBreakdown.cleanupCost.toLocaleString()}</span>
           </div>
+          
+          {/* Subtle separator line */}
+          <div style={{
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(0, 122, 255, 0.15) 50%, transparent 100%)',
+            margin: '1.25rem 0'
+          }}></div>
+          
+          {/* Final result with subtle highlight */}
           <div style={{ 
-            marginTop: '1rem',
-            paddingTop: '1rem',
-            borderTop: '1px solid rgba(0, 122, 255, 0.15)',
+            marginTop: '1.25rem',
+            paddingLeft: '0.5rem',
             fontSize: '1rem',
             fontWeight: '600',
-            color: '#007AFF'
+            color: '#1a1a1a'
           }}>
-            • Net annual ROI: ${roiBreakdown.annualConfusionSavings.toLocaleString()} - ${roiBreakdown.cleanupCost.toLocaleString()} = <strong>${roiBreakdown.netAnnualROI.toLocaleString()}/year</strong>
+            • Net annual ROI: ${roiBreakdown.annualConfusionSavings.toLocaleString()} - ${roiBreakdown.cleanupCost.toLocaleString()} = <span style={{
+              backgroundColor: 'rgba(0, 122, 255, 0.08)',
+              color: '#007AFF',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '6px',
+              fontWeight: '600',
+              border: '1px solid rgba(0, 122, 255, 0.12)'
+            }}>${roiBreakdown.netAnnualROI.toLocaleString()}/year</span>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
 
       {/* Considerations */}
       <div>
