@@ -187,7 +187,7 @@ const AuditResults = () => {
     <div className="min-h-screen bg-background-page">
       <div className="container-page py-lg">
         {/* Top Navigation Strip */}
-        <div className="flex items-center justify-between mb-lg">
+        <div className="flex items-center justify-between spacing-vertical-section">
           <button
             onClick={() => navigate('/dashboard')}
             className="btn-text p-2 flex items-center gap-2"
@@ -200,27 +200,27 @@ const AuditResults = () => {
               // Handle disconnect logic
               navigate('/dashboard');
             }}
-            className="btn-secondary"
+            className="btn-audit-secondary"
           >
             Disconnect
           </button>
         </div>
 
         {/* Clean Header Section - Match Audit History */}
-        <div className="flex items-center justify-between mb-lg">
-          <h1 className="text-section font-semibold text-text-primary">
+        <div className="flex items-center justify-between spacing-vertical-section">
+          <h1 className="text-heading-main">
             Audit Results
           </h1>
           <button
             onClick={() => navigate('/dashboard')}
-            className="btn-primary"
+            className="btn-audit-primary"
           >
             + New Audit
           </button>
         </div>
 
         {/* Metrics Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg mb-lg">
+        <div className="grid-system-responsive spacing-vertical-section">
           <MetricCard 
             label="Findings" 
             value={findingsCount.toString()} 
@@ -238,12 +238,12 @@ const AuditResults = () => {
 
         {/* Findings Section */}
         <div>
-          <h2 className="text-body-large font-semibold text-text-primary mb-lg">
+          <h2 className="text-heading-section spacing-element">
             Detailed Findings
           </h2>
 
           {/* Findings List */}
-          <div className="grid grid-cols-1 gap-lg">
+          <div className="grid-system">
             {findings.map((finding, index) => (
               <AccordionCard
                 key={finding.id || index}
@@ -258,19 +258,19 @@ const AuditResults = () => {
           </div>
 
           {findings.length === 0 && (
-            <div className="card max-w-md mx-auto text-center py-12">
-              <div className="w-16 h-16 bg-background-light rounded-full flex items-center justify-center mx-auto mb-lg">
+            <Card className="max-w-md mx-auto text-center" style={{ padding: '48px 24px' }}>
+              <div className="w-16 h-16 bg-background-light rounded-full flex items-center justify-center mx-auto spacing-element">
                 <svg className="w-8 h-8 text-text-grey-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 className="text-body-large font-semibold text-text-primary mb-2">
+              <h3 className="text-heading-section spacing-element">
                 No findings available
               </h3>
-              <p className="text-body-regular text-text-grey-600">
+              <p className="text-body-secondary">
                 The audit results are still being processed or no issues were found in your Salesforce org.
               </p>
-            </div>
+            </Card>
           )}
         </div>
       </div>
