@@ -7,16 +7,40 @@ import { logger } from '../../utils/cleanup';
 import Card from '../ui/Card';
 import LoadingSpinner from '../common/LoadingSpinner';
 
-const MetricCard = ({ label, value, accent = false }) => {
+const SummaryCard = ({ title, value, accent = false }) => {
   return (
-    <Card className={accent ? 'bg-accent text-white' : ''} hover={false}>
-      <div className={`text-metric-value ${accent ? 'text-white' : ''}`}>
+    <div style={{
+      backgroundColor: accent ? '#007AFF' : 'white',
+      color: accent ? 'white' : '#111111',
+      width: '240px',
+      height: '96px',
+      padding: '20px',
+      borderRadius: '16px',
+      border: accent ? 'none' : '1px solid rgba(0, 0, 0, 0.06)',
+      boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
+    }}>
+      <div style={{
+        fontSize: '18px',
+        fontWeight: '600',
+        color: accent ? 'white' : '#111111',
+        marginBottom: '4px',
+        lineHeight: '1.2'
+      }}>
         {value}
       </div>
-      <div className={`text-metric-label ${accent ? 'text-white opacity-85' : ''}`}>
-        {label}
+      <div style={{
+        fontSize: '14px',
+        fontWeight: '400',
+        color: accent ? 'rgba(255, 255, 255, 0.85)' : '#666666',
+        lineHeight: '1.2'
+      }}>
+        {title}
       </div>
-    </Card>
+    </div>
   );
 };
 
