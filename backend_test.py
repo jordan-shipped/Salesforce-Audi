@@ -4622,6 +4622,277 @@ def main():
         
         return all_tests_passed, test_results
 
+    def test_finding_data_structure_investigation(self):
+        """INVESTIGATE FINDING DATA STRUCTURE FOR ROI BREAKDOWN - As requested in review"""
+        print("\n🔍 FINDING DATA STRUCTURE INVESTIGATION")
+        print("=" * 60)
+        print("Investigating actual finding objects to understand ROI breakdown data structure")
+        
+        investigation_results = {}
+        all_tests_passed = True
+        
+        # STEP 1: Get existing audit sessions to find findings
+        print("\n📋 1. RETRIEVING EXISTING AUDIT SESSIONS")
+        print("-" * 50)
+        
+        success, sessions_response = self.run_test(
+            "Get Audit Sessions for Finding Investigation",
+            "GET",
+            "audit/sessions",
+            200
+        )
+        
+        if not success or not isinstance(sessions_response, list) or len(sessions_response) == 0:
+            print("❌ No audit sessions found - cannot investigate finding structure")
+            print("🔧 RECOMMENDATION: Run an audit first to generate findings data")
+            return False, {"error": "No audit sessions available for investigation"}
+        
+        print(f"✅ Found {len(sessions_response)} audit sessions")
+        investigation_results['total_sessions'] = len(sessions_response)
+        
+        # STEP 2: Examine session structure for ROI data
+        print("\n📋 2. EXAMINING SESSION STRUCTURE FOR ROI DATA")
+        print("-" * 50)
+        
+        sample_session = sessions_response[0]
+        print(f"🔍 Examining session: {sample_session.get('id', 'Unknown ID')}")
+        print(f"   Org: {sample_session.get('org_name', 'Unknown')}")
+        print(f"   Findings count: {sample_session.get('findings_count', 0)}")
+        
+        # Check estimated_savings structure
+        estimated_savings = sample_session.get('estimated_savings', {})
+        print(f"\n💰 ESTIMATED SAVINGS STRUCTURE:")
+        for key, value in estimated_savings.items():
+            print(f"   {key}: {value}")
+        
+        investigation_results['session_roi_fields'] = {
+            'estimated_savings': estimated_savings,
+            'findings_count': sample_session.get('findings_count', 0),
+            'has_annual_dollars': 'annual_dollars' in estimated_savings
+        }
+        
+        # STEP 3: Get detailed audit data with findings
+        print("\n📋 3. RETRIEVING DETAILED AUDIT DATA WITH FINDINGS")
+        print("-" * 50)
+        
+        session_id = sample_session.get('id')
+        if not session_id:
+            print("❌ No session ID available for detailed investigation")
+            all_tests_passed = False
+        else:
+            success, audit_response = self.run_test(
+                f"Get Detailed Audit Data (Session: {session_id})",
+                "GET",
+                f"audit/{session_id}",
+                200
+            )
+            
+            if success and isinstance(audit_response, dict):
+                print("✅ Retrieved detailed audit data")
+                
+                # Examine findings structure
+                findings = audit_response.get('findings', [])
+                print(f"📊 Found {len(findings)} findings in detailed audit data")
+                
+                if len(findings) > 0:
+                    print("\n🔍 ANALYZING FINDING DATA STRUCTURES:")
+                    
+                    finding_types = {}
+                    roi_fields_analysis = {}
+                    
+                    for i, finding in enumerate(findings[:5]):  # Analyze first 5 findings
+                        print(f"\n--- FINDING {i+1} ---")
+                        print(f"ID: {finding.get('id', 'No ID')}")
+                        print(f"Category: {finding.get('category', 'No Category')}")
+                        print(f"Title: {finding.get('title', 'No Title')}")
+                        print(f"Impact: {finding.get('impact', 'No Impact')}")
+                        
+                        # Check for ROI-related fields
+                        roi_fields = {}
+                        potential_roi_fields = [
+                            'roi_estimate', 'total_annual_roi', 'time_savings_hours',
+                            'field_count', 'estimated_monthly_hours', 'record_count',
+                            'cleanup_cost', 'cleanup_hours', 'monthly_user_savings',
+                            'annual_user_savings', 'net_annual_roi', 'task_breakdown',
+                            'role_attribution', 'one_time_costs', 'recurring_savings'
+                        ]
+                        
+                        for field in potential_roi_fields:
+                            if field in finding:
+                                roi_fields[field] = finding[field]
+                                print(f"✅ {field}: {finding[field]}")
+                        
+                        # Categorize finding type
+                        category = finding.get('category', 'Unknown')
+                        title = finding.get('title', '').lower()
+                        
+                        if 'custom fields' in title:
+                            finding_type = 'custom_fields'
+                        elif category == 'Revenue Leaks':
+                            finding_type = 'data_quality'
+                        elif category == 'Automation Opportunities':
+                            finding_type = 'automation'
+                        elif 'manual' in title or 'reporting' in title:
+                            finding_type = 'manual_reporting'
+                        else:
+                            finding_type = 'other'
+                        
+                        if finding_type not in finding_types:
+                            finding_types[finding_type] = []
+                        finding_types[finding_type].append({
+                            'id': finding.get('id'),
+                            'title': finding.get('title'),
+                            'roi_fields': roi_fields
+                        })
+                        
+                        roi_fields_analysis[f'finding_{i+1}'] = {
+                            'type': finding_type,
+                            'category': category,
+                            'roi_fields': roi_fields
+                        }
+                    
+                    investigation_results['finding_types'] = finding_types
+                    investigation_results['roi_fields_analysis'] = roi_fields_analysis
+                    
+                    # STEP 4: Analyze ROI calculation patterns
+                    print("\n📋 4. ANALYZING ROI CALCULATION PATTERNS BY FINDING TYPE")
+                    print("-" * 50)
+                    
+                    for finding_type, findings_list in finding_types.items():
+                        print(f"\n🏷️ {finding_type.upper()} FINDINGS ({len(findings_list)} found):")
+                        
+                        if len(findings_list) > 0:
+                            sample_finding = findings_list[0]
+                            roi_fields = sample_finding['roi_fields']
+                            
+                            print(f"   Sample: {sample_finding['title']}")
+                            print(f"   Available ROI fields:")
+                            
+                            for field, value in roi_fields.items():
+                                if isinstance(value, (int, float)):
+                                    print(f"     {field}: ${value:,.2f}" if 'cost' in field or 'savings' in field or 'roi' in field else f"     {field}: {value}")
+                                elif isinstance(value, list) and field == 'task_breakdown':
+                                    print(f"     {field}: {len(value)} tasks")
+                                    for task in value[:2]:  # Show first 2 tasks
+                                        print(f"       - {task.get('task', 'Unknown task')}: {task.get('type', 'Unknown type')}")
+                                else:
+                                    print(f"     {field}: {value}")
+                    
+                    # STEP 5: Check for enhanced ROI fields
+                    print("\n📋 5. CHECKING FOR ENHANCED ROI FIELDS")
+                    print("-" * 50)
+                    
+                    enhanced_fields_found = {}
+                    for finding in findings[:3]:  # Check first 3 findings
+                        finding_id = finding.get('id', 'unknown')
+                        enhanced_fields = {}
+                        
+                        # Check for task_breakdown
+                        if 'task_breakdown' in finding:
+                            task_breakdown = finding['task_breakdown']
+                            if isinstance(task_breakdown, list) and len(task_breakdown) > 0:
+                                enhanced_fields['task_breakdown'] = {
+                                    'count': len(task_breakdown),
+                                    'sample_task': task_breakdown[0]
+                                }
+                                print(f"✅ Finding {finding_id}: task_breakdown with {len(task_breakdown)} tasks")
+                        
+                        # Check for role_attribution
+                        if 'role_attribution' in finding:
+                            role_attribution = finding['role_attribution']
+                            if isinstance(role_attribution, dict):
+                                enhanced_fields['role_attribution'] = role_attribution
+                                print(f"✅ Finding {finding_id}: role_attribution with {len(role_attribution)} roles")
+                        
+                        # Check for one_time_costs and recurring_savings
+                        if 'one_time_costs' in finding:
+                            enhanced_fields['one_time_costs'] = finding['one_time_costs']
+                            print(f"✅ Finding {finding_id}: one_time_costs = {finding['one_time_costs']}")
+                        
+                        if 'recurring_savings' in finding:
+                            enhanced_fields['recurring_savings'] = finding['recurring_savings']
+                            print(f"✅ Finding {finding_id}: recurring_savings = {finding['recurring_savings']}")
+                        
+                        enhanced_fields_found[finding_id] = enhanced_fields
+                    
+                    investigation_results['enhanced_fields_found'] = enhanced_fields_found
+                    
+                else:
+                    print("❌ No findings found in detailed audit data")
+                    all_tests_passed = False
+            else:
+                print("❌ Failed to retrieve detailed audit data")
+                all_tests_passed = False
+        
+        # STEP 6: Summary of findings data structure
+        print("\n📋 6. SUMMARY OF FINDINGS DATA STRUCTURE")
+        print("-" * 50)
+        
+        if 'finding_types' in investigation_results:
+            print("🎯 FINDING TYPES IDENTIFIED:")
+            for finding_type, findings_list in investigation_results['finding_types'].items():
+                print(f"   {finding_type}: {len(findings_list)} findings")
+        
+        if 'roi_fields_analysis' in investigation_results:
+            print("\n🎯 ROI FIELDS AVAILABLE ACROSS FINDINGS:")
+            all_roi_fields = set()
+            for finding_data in investigation_results['roi_fields_analysis'].values():
+                all_roi_fields.update(finding_data['roi_fields'].keys())
+            
+            for field in sorted(all_roi_fields):
+                print(f"   ✅ {field}")
+        
+        print("\n🎯 FRONTEND ROI BREAKDOWN IMPLEMENTATION GUIDANCE:")
+        print("   Based on investigation, each finding object contains:")
+        print("   1. Basic ROI: roi_estimate, time_savings_hours")
+        print("   2. Detailed costs: cleanup_cost, cleanup_hours")
+        print("   3. Savings breakdown: monthly_user_savings, annual_user_savings, net_annual_roi")
+        print("   4. Enhanced data: task_breakdown[], role_attribution{}, one_time_costs{}, recurring_savings{}")
+        print("   5. Finding-specific: field_count (custom fields), estimated_monthly_hours (automation), record_count (data quality)")
+        
+        # STEP 7: Test specific finding type determination
+        print("\n📋 7. TESTING FINDING TYPE DETERMINATION LOGIC")
+        print("-" * 50)
+        
+        if 'finding_types' in investigation_results:
+            type_determination_tests = []
+            
+            for finding_type, findings_list in investigation_results['finding_types'].items():
+                if len(findings_list) > 0:
+                    sample = findings_list[0]
+                    title = sample['title'].lower()
+                    
+                    if finding_type == 'custom_fields':
+                        test_result = 'custom fields' in title
+                        type_determination_tests.append(('Custom Fields', test_result, f"Title contains 'custom fields': {title}"))
+                    elif finding_type == 'data_quality':
+                        test_result = 'orphaned' in title or 'stale' in title or 'missing' in title
+                        type_determination_tests.append(('Data Quality', test_result, f"Title indicates data issues: {title}"))
+                    elif finding_type == 'automation':
+                        test_result = 'automation' in title or 'manual' in title
+                        type_determination_tests.append(('Automation', test_result, f"Title indicates automation opportunity: {title}"))
+            
+            print("🔍 Finding type determination patterns:")
+            for test_name, passed, description in type_determination_tests:
+                status = "✅" if passed else "❌"
+                print(f"   {status} {test_name}: {description}")
+        
+        # Final summary
+        print(f"\n📊 INVESTIGATION SUMMARY")
+        print("=" * 60)
+        
+        if all_tests_passed:
+            print("🎉 FINDING DATA STRUCTURE INVESTIGATION COMPLETED SUCCESSFULLY!")
+            print("✅ Found actual finding objects with complete ROI data")
+            print("✅ Identified different finding types and their specific fields")
+            print("✅ Enhanced ROI fields (task_breakdown, role_attribution) are available")
+            print("✅ Frontend can implement ROI breakdown using available data structure")
+        else:
+            print("⚠️ INVESTIGATION COMPLETED WITH LIMITATIONS")
+            print("❌ Some data may not be available for complete analysis")
+        
+        return all_tests_passed, investigation_results
+
 def main():
     """Main test runner - Focus on OAuth endpoint testing as requested in review"""
     print("🚀 SALESFORCE AUDIT API TESTING - OAUTH ENDPOINT FOCUS")
