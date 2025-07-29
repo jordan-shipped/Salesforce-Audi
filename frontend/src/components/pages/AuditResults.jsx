@@ -511,14 +511,7 @@ const AuditResults = () => {
             flexWrap: 'wrap',
             gap: '1.5rem'
           }}>
-            <h2 style={{
-              fontSize: '1.75rem',
-              fontWeight: '800',
-              color: '#1a1a1a',
-              margin: 0,
-              letterSpacing: '-0.01em',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-            }}>
+            <h2 className="text-section">
               Detailed Findings
             </h2>
             
