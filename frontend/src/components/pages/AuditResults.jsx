@@ -40,7 +40,7 @@ const SummaryCard = ({ title, value }) => {
   return (
     <div style={{
       backgroundColor: '#ffffff',
-      color: '#333333',
+      color: '#111111',
       width: '240px',
       height: '96px',
       padding: '16px',
@@ -55,7 +55,7 @@ const SummaryCard = ({ title, value }) => {
       <div style={{
         fontSize: '18px',
         fontWeight: '600',
-        color: '#333333',
+        color: '#111111',
         marginBottom: '4px',
         lineHeight: '1.2'
       }}>
