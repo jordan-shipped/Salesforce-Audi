@@ -117,10 +117,10 @@ const AccordionCard = ({
           background: 'none',
           cursor: 'pointer',
           textAlign: 'left',
-          display: 'grid',
-          gridTemplateColumns: '120px 1fr 100px 140px 40px',
+          display: 'flex',
           alignItems: 'center',
-          gap: '16px'
+          justifyContent: 'space-between',
+          gap: '24px'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
