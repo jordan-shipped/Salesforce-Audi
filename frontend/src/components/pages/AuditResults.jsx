@@ -81,39 +81,39 @@ const StrategicOverview = ({ businessStage }) => {
   );
 
   return (
-    <div className="strategic-overview-card">
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
+    <div className="card mb-lg">
+      <div className="grid grid-cols-2 gap-lg">
         <div>
-          <h3 className="strategic-section-title">
+          <h3 className="text-modal-title font-bold text-text-primary mb-lg">
             Constraints
           </h3>
-          <div className="strategic-list">
+          <div className="space-y-4">
             {constraintItems.length > 0 ? (
               constraintItems.map((constraint, index) => (
-                <div key={index} className="strategic-item">
-                  <span className="strategic-bullet-constraint">•</span>
-                  <span>{constraint}</span>
+                <div key={index} className="flex items-start">
+                  <span className="text-accent font-semibold mr-3 mt-1">•</span>
+                  <span className="text-body-large text-text-grey-600">{constraint}</span>
                 </div>
               ))
             ) : (
-              <div className="strategic-item">
-                <span className="strategic-bullet-constraint">•</span>
-                <span>Focus on sustainable growth while maintaining quality</span>
+              <div className="flex items-start">
+                <span className="text-accent font-semibold mr-3 mt-1">•</span>
+                <span className="text-body-large text-text-grey-600">Focus on sustainable growth while maintaining quality</span>
               </div>
             )}
           </div>
         </div>
         
         <div>
-          <h3 className="strategic-section-title">
+          <h3 className="text-modal-title font-bold text-text-primary mb-lg">
             Next Steps
           </h3>
-          <div className="strategic-list">
+          <div className="space-y-4">
             {nextStepItems.length > 0 ? (
               nextStepItems.map((step, index) => (
-                <div key={index} className="strategic-item">
-                  <span className="strategic-bullet-next">•</span>
-                  <span>{step}</span>
+                <div key={index} className="flex items-start">
+                  <span className="font-semibold mr-3 mt-1" style={{ color: '#34C759' }}>•</span>
+                  <span className="text-body-large text-text-grey-600">{step}</span>
                 </div>
               ))
             ) : (
@@ -123,9 +123,9 @@ const StrategicOverview = ({ businessStage }) => {
                   'Focus on automation to scale efficiently', 
                   'Review and clean up unused system components'
                 ].map((step, index) => (
-                  <div key={index} className="strategic-item">
-                    <span className="strategic-bullet-next">•</span>
-                    <span>{step}</span>
+                  <div key={index} className="flex items-start">
+                    <span className="font-semibold mr-3 mt-1" style={{ color: '#34C759' }}>•</span>
+                    <span className="text-body-large text-text-grey-600">{step}</span>
                   </div>
                 ))}
               </>
