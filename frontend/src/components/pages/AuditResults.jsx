@@ -302,35 +302,15 @@ const AuditResults = () => {
   const annualROI = summary?.total_annual_roi || 0;
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#F2F2F7' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem' }}>
+    <div className="min-h-screen bg-background-page">
+      <div className="container-page py-lg">
         {/* Header */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center',
-          marginBottom: '3rem',
-          gap: '1rem'
-        }}>
+        <div className="flex items-center gap-md mb-lg">
           <button
             onClick={() => navigate('/dashboard')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              background: 'none',
-              border: 'none',
-              color: '#8E8E93',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              fontWeight: '500',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-              transition: 'color 0.2s ease',
-              padding: '0.5rem'
-            }}
-            onMouseOver={(e) => e.target.style.color = '#007AFF'}
-            onMouseOut={(e) => e.target.style.color = '#8E8E93'}
+            className="btn-text p-2"
           >
-            <ArrowLeft style={{ width: '20px', height: '20px', marginRight: '8px' }} />
-            Back
+            <ArrowLeft className="w-5 h-5" />
           </button>
           
           <h1 className="text-hero">
@@ -339,12 +319,7 @@ const AuditResults = () => {
         </div>
 
         {/* Metrics Dashboard */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-          gap: '1.5rem', 
-          marginBottom: '3rem' 
-        }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-lg mb-lg">
           <MetricCard 
             label="Findings" 
             value={findingsCount.toString()} 
@@ -368,33 +343,14 @@ const AuditResults = () => {
 
         {/* Findings Section */}
         <div>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            marginBottom: '2rem',
-            flexWrap: 'wrap',
-            gap: '1.5rem'
-          }}>
+          <div className="flex justify-between items-center mb-lg flex-wrap gap-md">
             <h2 className="text-section">
               Detailed Findings
             </h2>
             
             {/* Filters */}
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <select style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                border: '1.5px solid rgba(0, 0, 0, 0.1)',
-                fontSize: '0.9375rem',
-                backgroundColor: 'white',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                fontWeight: '500',
-                color: '#1a1a1a',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-                outline: 'none',
-                cursor: 'pointer'
-              }}>
+            <div className="flex gap-md flex-wrap">
+              <select className="input" style={{ width: 'auto', minWidth: '140px' }}>
                 <option value="">All Domains</option>
                 <option value="data-quality">Data Quality</option>
                 <option value="automation">Automation</option>
@@ -402,19 +358,7 @@ const AuditResults = () => {
                 <option value="reporting">Reporting</option>
               </select>
               
-              <select style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                border: '1.5px solid rgba(0, 0, 0, 0.1)',
-                fontSize: '0.9375rem',
-                backgroundColor: 'white',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                fontWeight: '500',
-                color: '#1a1a1a',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-                outline: 'none',
-                cursor: 'pointer'
-              }}>
+              <select className="input" style={{ width: 'auto', minWidth: '140px' }}>
                 <option value="">All Priorities</option>
                 <option value="high">High</option>
                 <option value="medium">Medium</option>
@@ -424,7 +368,7 @@ const AuditResults = () => {
           </div>
 
           {/* Findings List */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div className="space-y-4">
             {findings.map((finding, index) => (
               <AccordionCard
                 key={finding.id || index}
@@ -439,43 +383,16 @@ const AuditResults = () => {
           </div>
 
           {findings.length === 0 && (
-            <div style={{
-              backgroundColor: 'white',
-              padding: '4rem 2rem',
-              borderRadius: '16px',
-              textAlign: 'center',
-              boxShadow: '0 2px 16px rgba(0, 0, 0, 0.04)',
-              border: '1px solid rgba(0, 0, 0, 0.06)'
-            }}>
-              <div style={{
-                width: '64px',
-                height: '64px',
-                backgroundColor: '#F2F2F7',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 1.5rem auto'
-              }}>
-                <svg style={{ width: '32px', height: '32px', color: '#C7C7CC' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="card text-center py-12">
+              <div className="w-16 h-16 bg-background-light rounded-full flex items-center justify-center mx-auto mb-lg">
+                <svg className="w-8 h-8 text-text-grey-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 style={{ 
-                fontSize: '1.375rem', 
-                fontWeight: '700', 
-                color: '#1a1a1a', 
-                marginBottom: '0.75rem',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-              }}>
+              <h3 className="text-modal-title font-semibold text-text-primary mb-2">
                 No findings available
               </h3>
-              <p style={{ 
-                color: '#8E8E93',
-                fontSize: '1.0625rem',
-                lineHeight: '1.5',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-              }}>
+              <p className="text-body-regular text-text-grey-600">
                 The audit results are still being processed or no issues were found in your Salesforce org.
               </p>
             </div>
