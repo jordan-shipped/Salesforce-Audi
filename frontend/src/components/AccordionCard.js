@@ -99,12 +99,10 @@ const AccordionCard = ({
 
   return (
     <div 
-      className={`accordion-card ${className}`}
+      className={`card-hover animate-in slide-in-from-bottom-4 duration-300 ${className}`}
       style={{
-        backgroundColor: 'white',
         borderRadius: '16px',
         boxShadow: isExpanded ? '0 8px 32px rgba(0, 0, 0, 0.08)' : '0 2px 16px rgba(0, 0, 0, 0.04)',
-        border: '1px solid rgba(0, 0, 0, 0.06)',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         overflow: 'hidden'
       }}
