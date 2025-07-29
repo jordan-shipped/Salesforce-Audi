@@ -9,6 +9,9 @@ export { default as StageSummaryPanel } from './StageSummaryPanel';
 export { default as AccordionCard } from './AccordionCard';
 export { default as FiltersBar } from './FiltersBar';
 
+// New Design System Components
+export { default as SharedCard } from './ui/Card';
+
 // Audit Results Components
 export { default as MetricsDashboard } from './MetricsDashboard';
 export { default as BusinessContext } from './BusinessContext';
