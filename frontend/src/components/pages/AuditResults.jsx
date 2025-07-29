@@ -214,7 +214,7 @@ const AuditResults = () => {
           </h1>
           <button
             onClick={() => navigate('/dashboard')}
-            className="btn-secondary"
+            className="btn-primary"
           >
             + New Audit
           </button>
