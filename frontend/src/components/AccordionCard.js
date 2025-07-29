@@ -169,10 +169,8 @@ const AccordionCard = ({
           </span>
 
           {/* Cost */}
-          <span style={{
-            fontSize: '1.125rem',
-            fontWeight: '700',
-            color: '#007AFF',
+          <span className="text-accent font-medium" style={{
+            fontSize: '1rem',
             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
           }}>
             {cost}
