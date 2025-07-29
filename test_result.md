@@ -304,6 +304,20 @@ backend:
           comment: "RE-TESTED: Sorting fix is working perfectly! Verified 32 sessions are properly sorted by created_at descending (newest first). All sessions have correct data structure with required fields (id, org_name, findings_count, estimated_savings.annual_dollars, created_at). Endpoint returns 200 status and proper array format. The Python-based sorting successfully handles both old ISO string records and new datetime records."
 
 frontend:
+  - task: "Fix design consistency between audit results page and other pages"
+    implemented: true
+    working: true
+    file: "frontend/src/components/pages/AuditResults.jsx, frontend/src/styles/utilities.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "User reported design inconsistency: audit results page has different font sizes, fonts look different, and card sizes are bigger compared to landing page and dashboard. Investigation confirmed the issue - audit results page uses inline styles while other pages use CSS classes from the design token system."
+        - working: true
+          agent: "main"
+          comment: "FIXED: Replaced inline styles in AuditResults.jsx with CSS classes that reference the centralized design token system. Added new audit-specific CSS classes to utilities.css: .metric-card, .metric-value, .metric-label, .business-context-card, .strategic-overview-card, .context-label, .context-value, .strategic-section-title, .strategic-list, .strategic-item, .strategic-bullet-constraint, .strategic-bullet-next. Updated main headings to use .text-hero and .text-section classes. Now all typography, font sizes, colors, and spacing match the Apple-style design system used throughout the application."
   - task: "Fix API endpoint mismatch in Dashboard loadSessions function"
     implemented: true
     working: true
