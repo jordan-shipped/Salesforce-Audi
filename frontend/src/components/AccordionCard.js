@@ -112,7 +112,7 @@ const AccordionCard = ({
         onClick={handleToggle}
         style={{
           width: '100%',
-          padding: 0,
+          padding: '24px',
           border: 'none',
           background: 'none',
           cursor: 'pointer',
