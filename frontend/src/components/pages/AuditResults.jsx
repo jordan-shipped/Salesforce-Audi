@@ -468,14 +468,7 @@ const AuditResults = () => {
             Back
           </button>
           
-          <h1 style={{ 
-            fontSize: '2.25rem', 
-            fontWeight: '800', 
-            margin: 0, 
-            color: '#1a1a1a',
-            letterSpacing: '-0.01em',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-          }}>
+          <h1 className="text-hero">
             Audit Results
           </h1>
         </div>
