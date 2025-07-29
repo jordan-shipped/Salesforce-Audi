@@ -366,76 +366,17 @@ const AuditResults = () => {
                   backgroundColor: '#ffffff',
                   borderRadius: '16px',
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  padding: '24px',
-                  display: 'grid',
-                  gridTemplateColumns: 'auto 1fr auto auto auto',
-                  alignItems: 'center',
-                  gap: '16px'
+                  overflow: 'hidden'
                 }}
               >
-                {/* Domain Badge */}
-                <span
-                  style={{
-                    ...getDomainStyle(finding.domain || 'GENERAL'),
-                    padding: '2px 8px',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    textTransform: 'uppercase',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-                  }}
+                <AccordionCard
+                  title={finding.title || `Finding ${index + 1}`}
+                  domain={finding.domain || 'GENERAL'}
+                  priority={finding.impact || finding.priority || 'MEDIUM'}
+                  cost={`$${(finding.total_annual_roi || finding.roi_estimate || 0).toLocaleString()}/yr`}
                 >
-                  {finding.domain || 'GENERAL'}
-                </span>
-
-                {/* Finding Title - 14px/400 #111 */}
-                <div style={{
-                  fontSize: '14px',
-                  fontWeight: '400',
-                  color: '#111111',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-                }}>
-                  {finding.title || `Finding ${index + 1}`}
-                </div>
-
-                {/* Priority Badge */}
-                <span
-                  style={{
-                    ...getPriorityStyle(finding.impact || finding.priority || 'MEDIUM'),
-                    padding: '2px 8px',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    textTransform: 'uppercase',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-                  }}
-                >
-                  {finding.impact || finding.priority || 'MEDIUM'}
-                </span>
-
-                {/* Annual Value - 14px/600 #007AFF */}
-                <span style={{
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#007AFF',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif'
-                }}>
-                  ${(finding.total_annual_roi || finding.roi_estimate || 0).toLocaleString()}/yr
-                </span>
-
-                {/* Expand Icon */}
-                <button
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '4px'
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999999">
-                    <polyline points="6,9 12,15 18,9"></polyline>
-                  </svg>
-                </button>
+                  <FindingDetails finding={finding} />
+                </AccordionCard>
               </div>
             ))}
           </div>
