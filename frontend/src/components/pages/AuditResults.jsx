@@ -40,7 +40,7 @@ const SummaryCard = ({ title, value }) => {
   return (
     <div style={{
       backgroundColor: '#ffffff',
-      width: '240px',
+      flex: 1,
       height: '96px',
       padding: '16px',
       borderRadius: '16px',
