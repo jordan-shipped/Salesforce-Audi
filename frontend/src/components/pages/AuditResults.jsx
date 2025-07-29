@@ -9,7 +9,7 @@ import FindingDetails from '../FindingDetails';
 
 const MetricCard = ({ label, value, accent = false }) => {
   return (
-    <div className={`card text-center ${accent ? 'bg-accent text-white' : ''}`}>
+    <div className={`card-hover animate-in slide-in-from-bottom-4 duration-300 text-center ${accent ? 'bg-accent text-white' : ''}`}>
       <div className={`text-body-large font-semibold mb-2 ${accent ? 'text-white' : 'text-text-primary'}`}>
         {value}
       </div>
