@@ -193,10 +193,9 @@ const AccordionCard = ({
       {isExpanded && (
         <div 
           style={{
-            padding: '0 2rem 2rem 2rem',
-            borderTop: '1px solid rgba(0, 0, 0, 0.06)',
-            backgroundColor: '#FAFAFA',
-            animation: 'expandIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+            padding: '0 24px 24px 24px',
+            borderTop: '1px solid #f0f0f0',
+            marginTop: '16px'
           }}
         >
           {children ? (
