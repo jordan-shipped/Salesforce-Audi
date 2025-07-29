@@ -38,6 +38,43 @@
            focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2
            disabled:opacity-60 disabled:cursor-not-allowed;
   }
+  
+  /* Audit History Button System - Exact Match */
+  .btn-audit-primary {
+    background: #007AFF;
+    color: white;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-audit-primary:hover {
+    background-color: #0056CC;
+    transform: translateY(-1px);
+  }
+  
+  .btn-audit-secondary {
+    background: white;
+    color: #333333;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-audit-secondary:hover {
+    background-color: #F8F9FA;
+    border-color: rgba(0, 0, 0, 0.15);
+  }
 
   /* Card Components */
   .card {
