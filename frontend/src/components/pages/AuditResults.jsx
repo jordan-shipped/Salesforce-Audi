@@ -221,7 +221,7 @@ const AuditResults = () => {
         </div>
 
         {/* Metrics Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-lg mb-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg mb-lg">
           <MetricCard 
             label="Findings" 
             value={findingsCount.toString()} 
