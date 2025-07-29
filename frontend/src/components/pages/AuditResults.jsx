@@ -81,62 +81,23 @@ const StrategicOverview = ({ businessStage }) => {
   );
 
   return (
-    <div style={{
-      backgroundColor: 'white',
-      padding: '2rem',
-      borderRadius: '16px',
-      boxShadow: '0 2px 16px rgba(0, 0, 0, 0.04)',
-      border: '1px solid rgba(0, 0, 0, 0.06)',
-      marginBottom: '2.5rem'
-    }}>
+    <div className="strategic-overview-card">
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
         <div>
-          <h3 style={{
-            fontSize: '1.375rem',
-            fontWeight: '700',
-            color: '#1a1a1a',
-            marginBottom: '1.5rem',
-            margin: '0 0 1.5rem 0',
-            lineHeight: '1.3',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-          }}>
+          <h3 className="strategic-section-title">
             Constraints
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="strategic-list">
             {constraintItems.length > 0 ? (
               constraintItems.map((constraint, index) => (
-                <div key={index} style={{
-                  fontSize: '1.0625rem',
-                  color: '#3C3C43',
-                  lineHeight: '1.6',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                  display: 'flex',
-                  alignItems: 'flex-start'
-                }}>
-                  <span style={{ 
-                    color: '#007AFF', 
-                    marginRight: '0.75rem', 
-                    fontWeight: '600',
-                    marginTop: '0.125rem'
-                  }}>•</span>
+                <div key={index} className="strategic-item">
+                  <span className="strategic-bullet-constraint">•</span>
                   <span>{constraint}</span>
                 </div>
               ))
             ) : (
-              <div style={{
-                fontSize: '1.0625rem',
-                color: '#3C3C43',
-                lineHeight: '1.6',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                display: 'flex',
-                alignItems: 'flex-start'
-              }}>
-                <span style={{ 
-                  color: '#007AFF', 
-                  marginRight: '0.75rem', 
-                  fontWeight: '600',
-                  marginTop: '0.125rem'
-                }}>•</span>
+              <div className="strategic-item">
+                <span className="strategic-bullet-constraint">•</span>
                 <span>Focus on sustainable growth while maintaining quality</span>
               </div>
             )}
@@ -144,34 +105,14 @@ const StrategicOverview = ({ businessStage }) => {
         </div>
         
         <div>
-          <h3 style={{
-            fontSize: '1.375rem',
-            fontWeight: '700',
-            color: '#1a1a1a',
-            marginBottom: '1.5rem',
-            margin: '0 0 1.5rem 0',
-            lineHeight: '1.3',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif'
-          }}>
+          <h3 className="strategic-section-title">
             Next Steps
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="strategic-list">
             {nextStepItems.length > 0 ? (
               nextStepItems.map((step, index) => (
-                <div key={index} style={{
-                  fontSize: '1.0625rem',
-                  color: '#3C3C43',
-                  lineHeight: '1.6',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                  display: 'flex',
-                  alignItems: 'flex-start'
-                }}>
-                  <span style={{ 
-                    color: '#34C759', 
-                    marginRight: '0.75rem', 
-                    fontWeight: '600',
-                    marginTop: '0.125rem'
-                  }}>•</span>
+                <div key={index} className="strategic-item">
+                  <span className="strategic-bullet-next">•</span>
                   <span>{step}</span>
                 </div>
               ))
@@ -182,20 +123,8 @@ const StrategicOverview = ({ businessStage }) => {
                   'Focus on automation to scale efficiently', 
                   'Review and clean up unused system components'
                 ].map((step, index) => (
-                  <div key={index} style={{
-                    fontSize: '1.0625rem',
-                    color: '#3C3C43',
-                    lineHeight: '1.6',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif',
-                    display: 'flex',
-                    alignItems: 'flex-start'
-                  }}>
-                    <span style={{ 
-                      color: '#34C759', 
-                      marginRight: '0.75rem', 
-                      fontWeight: '600',
-                      marginTop: '0.125rem'
-                    }}>•</span>
+                  <div key={index} className="strategic-item">
+                    <span className="strategic-bullet-next">•</span>
                     <span>{step}</span>
                   </div>
                 ))}
